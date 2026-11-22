@@ -34238,7 +34238,7 @@ do
 
 	-- FIX: Godhuman / Sanguine Art are never bought, so they were only farmed if the inventory list showed them.
 	-- When the Melee toggle starts, tries to load every style that is still unknown (owned ones load, the rest do nothing).
-	local function probeStyles()
+	function hud.probeStyles() -- inside hud: the script is at the limit of 200 local variables
 		for _, m in ipairs(MasteryMeleeList) do
 			if not markGet("Mastery Done", m.name) and not findTool(m.name) and not markGet("Mastery Owned", m.name) and not invItemFuzzy(m.name) then
 				pcall(function() CommF:InvokeServer("LoadItem", m.name) end)
@@ -34329,7 +34329,7 @@ do
 				SaveSettings("Select Method Farm Mastery", "Melee")
 				SaveSettings("Farm Mastery", true)
 				SaveSettings("Start Farm", true)
-				spawn(function() pcall(probeStyles) run("Melee", "Auto Farm Mastery 600 Melees", scanMelee, acquireMelee) end)
+				spawn(function() pcall(hud.probeStyles) run("Melee", "Auto Farm Mastery 600 Melees", scanMelee, acquireMelee) end)
 			else
 				releaseEngine("Melee")
 			end

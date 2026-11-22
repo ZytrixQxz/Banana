@@ -8291,7 +8291,7 @@ local Q, d =
 		end
 	)
 SettingFarmMainSection.CreateToggle(
-	{ Title = "Use Skills + M1 (Blox Fruit)", Desc = "Uses the selected fruit skills while farming (use with Double Damage)", Default = Settings["Use M1 + Skills Farm"] or false },
+	{ Title = "Use M1 + Skills Farm", Desc = "Uses the selected fruit skills while farming (use with Double Damage)", Default = Settings["Use M1 + Skills Farm"] or false },
 	function(I)
 		SaveSettings("Use M1 + Skills Farm", I)
 	end
@@ -8309,7 +8309,7 @@ do
 	)
 end
 SettingFarmMainSection.CreateToggle(
-	{ Title = "Double Damage (Blox Fruit)", Desc = "Uses the selected weapon together with the fruit", Default = Settings["Double Damage"] or false },
+	{ Title = "Double Damage", Desc = "Uses the selected weapon together with the fruit", Default = Settings["Double Damage"] or false },
 	function(I)
 		SaveSettings("Double Damage", I)
 	end
@@ -8322,7 +8322,7 @@ SettingFarmMainSection.CreateToggle(
 )
 SettingFarmMainSection.CreateToggle(
 	{
-		Title = "Kill Aura Only Volcano",
+		Title = "Kill Aura Only Raid And Volcano",
 		Desc = nil,
 		Default = Settings["Kill Aura Only Raid And Volcano"] or false,
 	},
@@ -9099,7 +9099,7 @@ function SyncMasteryToggle(title, v)
 		getgenv().__MasterySyncing = false
 	end)
 end
-__SQFarmSection = FarmMain.CreateSection("Secret Quest") -- filled later by the Secret Quest code (Auto Secret Quest)
+__SQEarlySection = FarmMain.CreateSection("Secret Quest") -- filled later by the Secret Quest code (Auto Secret Quest toggle + status)
 MasteryFarmSection = FarmMain.CreateSection("Mastery Farm")
 MasteryFarmSection.CreateDropdown(
 	{
@@ -12480,7 +12480,7 @@ end)
 FarmotherMain = Main.CreatePage({ Page_Name = "Farming Other", Page_Title = "Farming Other" })
 
 -- ===== Secret Quest + Halloween (Zyrox) =====
-__NXSQPageSync = FarmMain -- Secret Quest now lives inside the Farming page (no separate Secret Quest tab)
+__NXSQPageSync = FarmMain -- Secret Quest tab removed: its section now lives in the Farming tab
 task.spawn(function() local __sqOk, __sqErr = pcall(function()
 local plr = game:GetService("Players").LocalPlayer
 local replicated = game:GetService("ReplicatedStorage")
@@ -12766,7 +12766,7 @@ task.spawn(function() pcall(function()
 		end
 end) end)
 local FarmotherMain = NXSQPage
-	HiddenEventSection = __SQFarmSection or FarmotherMain.CreateSection("Secret Quest")
+	HiddenEventSection = __SQEarlySection or FarmotherMain.CreateSection("Secret Quest")
 	StatusHiddenProgress = HiddenEventSection.CreateLabel({ Title = "Secret Quest : 0/39 Quests" })
 	StatusHiddenQuest = HiddenEventSection.CreateLabel({ Title = "Title Quest : ..." })
 	StatusHiddenStep = HiddenEventSection.CreateLabel({ Title = "Doing Quest : None" })
@@ -34009,7 +34009,8 @@ do
 			local lvTool = toolMastery(tool)
 			local lvInv = it and tonumber(it.Mastery) or 0
 			-- remembers what was seen: 600 reached / style owned
-			if lvTool >= 600 or lvInv >= 600 then markSet("Mastery Done", m.name) end
+			-- FIX: the inventory value of a style that is not loaded can be wrong; a loaded tool's level always wins
+			if lvTool >= 600 or (not tool and lvInv >= 600) then markSet("Mastery Done", m.name) end
 			if tool or it then markSet("Mastery Owned", m.name) end
 			if markGet("Mastery Done", m.name) then
 				-- already has 600 mastery: never farmed, loaded or bought again
@@ -34024,6 +34025,17 @@ do
 				table.insert(textParts, m.name .. " (not owned)")
 			end
 		end
+		-- FIX: styles you already own (Godhuman / Sanguine Art included) are farmed first; styles that still need
+		-- buying go last. Before, one style that could not be bought (money / requirement / far NPC) blocked the others.
+		local ownedFirst, toBuy = {}, {}
+		for _, m in ipairs(missing) do table.insert(m.owned and ownedFirst or toBuy, m) end
+		missing = ownedFirst
+		for _, m in ipairs(toBuy) do table.insert(missing, m) end
+		sigParts, textParts = {}, {}
+		for _, m in ipairs(missing) do
+			table.insert(sigParts, m.name .. (m.owned and "+" or "-"))
+			table.insert(textParts, m.name .. (m.owned and (" (" .. (m.mastery or 0) .. "/600)") or " (not owned)"))
+		end
 		return missing, table.concat(sigParts, ","), table.concat(textParts, "\n")
 	end
 	local npcWait, buyTry = {}, {}
@@ -34033,6 +34045,18 @@ do
 			-- owns it, but it is not equipped / loaded: loads it from the inventory
 			loadItem(m.name, skip)
 			return
+		end
+		-- FIX: tries to load it first (already owned but not listed in the inventory) before traveling / buying
+		getgenv().__MasteryLoadProbe = getgenv().__MasteryLoadProbe or {}
+		if os.clock() - (getgenv().__MasteryLoadProbe[m.name] or -100) > 60 then
+			getgenv().__MasteryLoadProbe[m.name] = os.clock()
+			pcall(function() CommF:InvokeServer("LoadItem", m.name) end)
+			task.wait(1)
+			if findTool(m.name) then
+				markSet("Mastery Owned", m.name)
+				hud.done(m.name)
+				return
+			end
 		end
 		local sea = currentSea()
 		local triedKey = "Mastery NPC Tried " .. m.name
@@ -34166,6 +34190,18 @@ do
 		loadItem(pick.name, skip)
 	end
 
+	-- FIX: Godhuman / Sanguine Art are never bought, so they were only farmed if the inventory list showed them.
+	-- When the Melee toggle starts, tries to load every style that is still unknown (owned ones load, the rest do nothing).
+	function hud.probeStyles() -- inside hud: the script is at the limit of 200 local variables
+		for _, m in ipairs(MasteryMeleeList) do
+			if not markGet("Mastery Done", m.name) and not findTool(m.name) and not markGet("Mastery Owned", m.name) and not invItemFuzzy(m.name) then
+				pcall(function() CommF:InvokeServer("LoadItem", m.name) end)
+				task.wait(0.6)
+				if findTool(m.name) then markSet("Mastery Owned", m.name) end
+			end
+		end
+	end
+
 	-- ---------- shared controller ----------
 	local function run(kind, settingKey, scan, acquire)
 		getgenv().MasteryOwner = kind
@@ -34247,7 +34283,7 @@ do
 				SaveSettings("Select Method Farm Mastery", "Melee")
 				SaveSettings("Farm Mastery", true)
 				SaveSettings("Start Farm", true)
-				spawn(function() run("Melee", "Auto Farm Mastery 600 Melees", scanMelee, acquireMelee) end)
+				spawn(function() pcall(hud.probeStyles) run("Melee", "Auto Farm Mastery 600 Melees", scanMelee, acquireMelee) end)
 			else
 				releaseEngine("Melee")
 			end

@@ -8298,7 +8298,7 @@ local Q, d =
 		end
 	)
 SettingFarmMainSection.CreateToggle(
-	{ Title = "Use M1 + Skills Farm", Desc = "Uses the selected fruit skills while farming (use with Double Damage)", Default = Settings["Use M1 + Skills Farm"] or false },
+	{ Title = "Use Skills + M1 (Blox Fruit)", Desc = nil, Default = Settings["Use M1 + Skills Farm"] or false },
 	function(I)
 		SaveSettings("Use M1 + Skills Farm", I)
 	end
@@ -8316,7 +8316,7 @@ do
 	)
 end
 SettingFarmMainSection.CreateToggle(
-	{ Title = "Double Damage", Desc = "Uses the selected weapon together with the fruit", Default = Settings["Double Damage"] or false },
+	{ Title = "Double Damage (Blox Fruit)", Desc = nil, Default = Settings["Double Damage"] or false },
 	function(I)
 		SaveSettings("Double Damage", I)
 	end
@@ -8857,7 +8857,7 @@ getgenv().UseSkullGuitarSkillAttack = function(hitPart)
 end
 -- ==================== FIM USE SKILLS ====================
 FarmMain = Main.CreatePage({ Page_Name = "Farming", Page_Title = "Farming" })
-SettingAutoFarmSection = FarmMain.CreateSection("Farming")
+SettingAutoFarmSection = FarmMain.CreateSection("Setting Farm")
 -- Individual farm toggles. Each method keeps its own state; no Select Method Farm dropdown.
 local FarmToggleNames = {
 	"Auto Farm Level",
@@ -8883,18 +8883,6 @@ local function SetIndividualFarm(name, enabled)
 	-- Auto Quest handles quest NPC interaction; farm toggles handle target selection and combat.
 end
 
-SettingAutoFarmSection.CreateSlider(
-	{
-		Title = "Distance Farm Aura",
-		Min = 0,
-		Max = 1000,
-		Default = Settings["Distance Farm Aura"] or 300,
-		Precise = true,
-	},
-	function(o)
-		SaveSettings("Distance Farm Aura", o)
-	end
-)
 -- Select Method Farm + Start Auto Farm + Auto Quest (replaces the 4 individual toggles).
 -- The method chosen here only turns on the matching internal setting (Auto Farm Level / Bones / Katakuri / Tyrant),
 -- so the rest of the script keeps reading the same settings as before.
@@ -8954,24 +8942,37 @@ do
 			ApplyMethodFarm()
 		end
 	)
-	SettingAutoFarmSection.CreateToggle(
-		{ Title = "Start Auto Farm", Desc = nil, Default = Settings["Start Auto Farm"] or false },
-		function(V)
-			SaveSettings("Start Auto Farm", V)
-			ApplyMethodFarm()
+	SettingAutoFarmSection.CreateSlider(
+		{
+			Title = "Distance Farm Aura",
+			Min = 0,
+			Max = 1000,
+			Default = Settings["Distance Farm Aura"] or 300,
+			Precise = true,
+		},
+		function(o)
+			SaveSettings("Distance Farm Aura", o)
 		end
 	)
-	SettingAutoFarmSection.CreateToggle(
-		{ Title = "Auto Quest", Desc = nil, Default = Settings["Auto Quest [Katakuri/Bone/Tyrant]"] ~= false },
-		function(V)
-			getgenv().__AQUserWants = V
-			SaveSettings("Auto Quest [Katakuri/Bone/Tyrant]", V)
-		end
-	)
+	-- these two toggles are created later (after the "Hop Find" toggles) to keep the tab order
+	getgenv().__FarmingTabLate = function()
+		SettingAutoFarmSection.CreateToggle(
+			{ Title = "Start Auto Farm", Desc = nil, Default = Settings["Start Auto Farm"] or false },
+			function(V)
+				SaveSettings("Start Auto Farm", V)
+				ApplyMethodFarm()
+			end
+		)
+		SettingAutoFarmSection.CreateToggle(
+			{ Title = "Auto Quest", Desc = nil, Default = Settings["Auto Quest [Katakuri/Bone/Tyrant]"] ~= false },
+			function(V)
+				getgenv().__AQUserWants = V
+				SaveSettings("Auto Quest [Katakuri/Bone/Tyrant]", V)
+			end
+		)
+	end
 	ApplyMethodFarm()
 end
-SettingAutoFarmSection.CreateToggle({ Title = "Aura Farm", Desc = nil, Default = Settings["Aura Farm"] or false }, function(v) SetIndividualFarm("Aura Farm", v) end)
-SettingAutoFarmSection = FarmMain.CreateSection("Setting")
 SettingAutoFarmSection.CreateSlider(
 	{ Title = "Max Missing Tyrant Eyes", Min = 0, Max = 4, Default = math.clamp(tonumber(Settings["Max Missing Tyrant Eyes"]) or 0, 0, 4) },
 	function(o)
@@ -8999,13 +9000,15 @@ SettingAutoFarmSection.CreateToggle(
 SettingAutoFarmSection.CreateToggle(
 	{
 		Title = "Hop Find Less Eyes for Tyrant",
-		Desc = "Random hop until the Tyrant eyes still missing are at or below the slider.",
+		Desc = nil,
 		Default = Settings["Hop Find Less Eyes for Tyrant"] or false,
 	},
 	function(o)
 		SaveSettings("Hop Find Less Eyes for Tyrant", o)
 	end
 )
+pcall(getgenv().__FarmingTabLate)
+SettingAutoFarmSection.CreateToggle({ Title = "Aura Farm", Desc = nil, Default = Settings["Aura Farm"] or false }, function(v) SetIndividualFarm("Aura Farm", v) end)
 -- Auto Quest cycle: 10s on and 75s off, only on the selected farm's island.
 -- Outside the matching island, the cycle is paused and does not change the toggle.
 if false then -- DISABLED: old 10s/75s Auto Quest cycle (Auto Quest is now controlled only by the toggle)
@@ -34292,7 +34295,7 @@ do
 	end
 
 	MasteryWeaponSection.CreateToggle(
-		{ Title = "Auto Farm Mastery 600 Melees", Desc = "Checks which fighting style is missing 600 mastery, goes to its NPC, buys it and farms it until 600. Then checks again.", Default = Settings["Auto Farm Mastery 600 Melees"] or false },
+		{ Title = "Auto Farm Mastery 600 Melees", Desc = nil, Default = Settings["Auto Farm Mastery 600 Melees"] or false },
 		function(g)
 			SaveSettings("Auto Farm Mastery 600 Melees", g)
 			if g then
@@ -34306,7 +34309,7 @@ do
 		end
 	)
 	MasteryWeaponSection.CreateToggle(
-		{ Title = "Auto Farm Mastery 600 Sword In Inventory", Desc = "Checks which inventory sword is missing 600 mastery, equips it (Sword in hand, never Melee) and farms it until 600. Then the next one.", Default = Settings["Auto Farm Mastery 600 Sword In Inventory"] or false },
+		{ Title = "Auto Farm Mastery 600 Sword In Inventory", Desc = nil, Default = Settings["Auto Farm Mastery 600 Sword In Inventory"] or false },
 		function(g)
 			SaveSettings("Auto Farm Mastery 600 Sword In Inventory", g)
 			if g then
@@ -34320,7 +34323,7 @@ do
 		end
 	)
 	MasteryWeaponSection.CreateToggle(
-		{ Title = "Auto Farm Mastery 600 Gun In Inventory", Desc = "Checks which inventory gun is missing 600 mastery, equips it (Gun in hand, never Melee) and farms it until 600. Then the next one.", Default = Settings["Auto Farm Mastery 600 Gun In Inventory"] or false },
+		{ Title = "Auto Farm Mastery 600 Gun In Inventory", Desc = nil, Default = Settings["Auto Farm Mastery 600 Gun In Inventory"] or false },
 		function(g)
 			SaveSettings("Auto Farm Mastery 600 Gun In Inventory", g)
 			if g then
@@ -34334,7 +34337,7 @@ do
 		end
 	)
 	MasteryWeaponSection.CreateToggle(
-		{ Title = "Auto Accept Quest", Desc = "Accepts the Bones quest (Haunted Castle) while farming Mastery 600 (Melees / Sword / Gun).", Default = Settings["Auto Accept Quest Mastery 600"] or false },
+		{ Title = "Auto Accept Quest", Desc = nil, Default = Settings["Auto Accept Quest Mastery 600"] or false },
 		function(g)
 			SaveSettings("Auto Accept Quest Mastery 600", g)
 		end

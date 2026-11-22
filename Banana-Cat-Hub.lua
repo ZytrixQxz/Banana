@@ -8858,6 +8858,8 @@ end
 -- ==================== FIM USE SKILLS ====================
 FarmMain = Main.CreatePage({ Page_Name = "Farming", Page_Title = "Farming" })
 SettingAutoFarmSection = FarmMain.CreateSection("Setting Farm")
+-- "Farming" section right below "Setting Farm": Select Method Farm + Start Auto Farm + Auto Quest + Aura Farm
+FarmingStartSection = FarmMain.CreateSection("Farming")
 -- Individual farm toggles. Each method keeps its own state; no Select Method Farm dropdown.
 local FarmToggleNames = {
 	"Auto Farm Level",
@@ -8929,7 +8931,7 @@ do
 	if Settings["Auto Quest [Katakuri/Bone/Tyrant]"] == nil then
 		SaveSettings("Auto Quest [Katakuri/Bone/Tyrant]", true)
 	end
-	SettingAutoFarmSection.CreateDropdown(
+	FarmingStartSection.CreateDropdown(
 		{
 			Title = "Select Method Farm",
 			List = { "Level Farm", "Farm Bones", "Farm Katakuri", "Farm Tyrant of the Skies" },
@@ -9007,8 +9009,6 @@ SettingAutoFarmSection.CreateToggle(
 		SaveSettings("Hop Find Less Eyes for Tyrant", o)
 	end
 )
--- New "Farming" section right below "Setting Farm": Start Auto Farm + Auto Quest + Aura Farm
-FarmingStartSection = FarmMain.CreateSection("Farming")
 pcall(getgenv().__FarmingTabLate)
 FarmingStartSection.CreateToggle({ Title = "Aura Farm", Desc = nil, Default = Settings["Aura Farm"] or false }, function(v) SetIndividualFarm("Aura Farm", v) end)
 -- Auto Quest cycle: 10s on and 75s off, only on the selected farm's island.
@@ -24849,11 +24849,20 @@ do
 							cam.CameraType = Enum.CameraType.Custom
 							cam.CameraSubject = hum
 						end
-						for _, e in ipairs(Lighting:GetChildren()) do
-							if e:IsA("BlurEffect") and e.Enabled and match(e.Name) then
-								e.Enabled = false
+						-- removes the blur / depth-of-field the spin leaves on the screen (any name, Lighting or Camera).
+						-- Lighting.Blur is skipped while an Observation farm is on, since those read it as a signal.
+						local obsOn = Settings["Farm Observation"] or Settings["Auto UP Observation V2"]
+						local function clearFx(parent)
+							for _, e in ipairs(parent:GetChildren()) do
+								if (e:IsA("BlurEffect") or e:IsA("DepthOfFieldEffect")) and e.Enabled then
+									if not (obsOn and e.Name == "Blur" and parent == Lighting) then
+										e.Enabled = false
+									end
+								end
 							end
 						end
+						clearFx(Lighting)
+						if cam then clearFx(cam) end
 					end)
 				end
 			end

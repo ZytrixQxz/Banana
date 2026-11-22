@@ -7633,13 +7633,9 @@ function IsBossTarget(E)
 	return ok and r or false
 end
 -- Double Damage + Use M1 + Skills Farm (reads the Setting Farm toggles during Start Farm)
--- Double Damage (v3): the fruit Tool is kept equipped TOGETHER with the Select Weapon tool (both in the Character).
---   * weapon is kept as the first Tool in the Character (attackMelee uses FindFirstChildOfClass("Tool"))
---   * every tick: fruit M1 + selected skills AND the weapon attack, no swapping
 do
 	local VIM = game:GetService("VirtualInputManager")
 	local SKILL_KEYS = { "Z", "X", "C", "V", "F" }
-
 	local function skillReady(fr)
 		local ok, r = pcall(function()
 			return fr:IsA("Frame")
@@ -7651,7 +7647,6 @@ do
 		end)
 		return ok and r
 	end
-
 	local function pickSkill(tool)
 		local sel = Settings["Select Skills M1 Farm"]
 		local main = t.PlayerGui:FindFirstChild("Main")
@@ -7668,7 +7663,6 @@ do
 		end
 		return nil
 	end
-
 	local function useSkill(tool, mob)
 		if getgenv().__FarmSkillBusy then
 			return
@@ -7698,53 +7692,19 @@ do
 			getgenv().__FarmSkillBusy = false
 		end)
 	end
-
-	-- puts the weapon (first) and the fruit (second) in the Character at the same time
-	local function equipBoth(weaponName, fruitName)
-		local char = t.Character
-		local hum = char and char:FindFirstChildOfClass("Humanoid")
-		if not char or not hum or hum.Sit then
-			return nil, nil
-		end
-		local weapon = char:FindFirstChild(weaponName) or t.Backpack:FindFirstChild(weaponName)
-		local fruit = char:FindFirstChild(fruitName) or t.Backpack:FindFirstChild(fruitName)
-		if not weapon or not fruit then
-			return nil, nil
-		end
-		-- already correct: weapon is the first Tool and the fruit is in the Character too
-		if weapon.Parent == char and fruit.Parent == char and char:FindFirstChildOfClass("Tool") == weapon then
-			return weapon, fruit
-		end
-		-- (re)build the order: weapon first, fruit right after
-		pcall(function()
-			fruit.Parent = t.Backpack
-			if weapon.Parent ~= char then
-				hum:EquipTool(weapon)
-			end
-			fruit.Parent = char
-		end)
-		return char:FindFirstChild(weaponName), char:FindFirstChild(fruitName)
-	end
-
-	local function resetPhase()
-		getgenv().__FarmPhaseTool = nil
-		getgenv().__FarmDoubleDamage = false
-	end
-
 	-- returns true when this tick's attack was handled here (Double Damage / M1 + Skills)
 	getgenv().FarmExtras = function(E, wide)
 		local dd, sk = Settings["Double Damage"], Settings["Use M1 + Skills Farm"]
 		if not Settings["Start Farm"] or not (dd or sk) then
-			resetPhase()
+			getgenv().__FarmPhaseTool = nil
 			return false
 		end
 		local char = t.Character
 		local fruit = NameWeapon("Blox Fruit")
 		if not char or not fruit then
-			resetPhase()
+			getgenv().__FarmPhaseTool = nil
 			return false
 		end
-
 		-- Double Damage pairs the selected weapon with the fruit (if the selected one IS the fruit, pairs it with Melee)
 		local other, otherKind
 		if dd then
@@ -7752,40 +7712,36 @@ do
 			otherKind = sel == "Blox Fruit" and "Melee" or sel
 			other = NameWeapon(otherKind)
 		end
-
-		if dd and other then
-			-- both tools equipped at once
-			getgenv().__FarmDoubleDamage = true
-			getgenv().__FarmPhaseTool = other
-			local weaponTool, fruitTool = equipBoth(other, fruit)
-			if not weaponTool or not fruitTool then
-				return true -- wait for the equip to land
-			end
-			if FruitHasM1(fruit) then
-				pcall(getgenv().UseFruitM1, E)
-			end
-			if sk then
-				useSkill(fruitTool, E)
-			end
-			if otherKind == "Gun" and ShootM1 then
-				pcall(ShootM1, E)
-			else
-				pcall(AttackFunction, wide and 80 or 30)
-			end
-			return true
+		local now = tick()
+		local phase = getgenv().__FarmPhase or "fruit"
+		if not other then
+			phase = "fruit"
+		elseif now - (getgenv().__FarmPhaseAt or 0) >= (phase == "fruit" and 0.6 or 0.4) then
+			phase = phase == "fruit" and "weapon" or "fruit"
+			getgenv().__FarmPhaseAt = now
 		end
-
-		-- no Double Damage (or no weapon to pair): fruit only, with M1 + Skills
-		getgenv().__FarmDoubleDamage = false
-		getgenv().__FarmPhaseTool = fruit
-		equiptool(fruit)
-		local tool = char:FindFirstChild(fruit)
-		if tool then
-			if FruitHasM1(fruit) then
-				pcall(getgenv().UseFruitM1, E)
+		getgenv().__FarmPhase = phase
+		if phase == "fruit" then
+			getgenv().__FarmPhaseTool = fruit
+			equiptool(fruit)
+			local tool = char:FindFirstChild(fruit)
+			if tool then
+				if FruitHasM1(fruit) then
+					pcall(getgenv().UseFruitM1, E)
+				end
+				if sk then
+					useSkill(tool, E)
+				end
 			end
-			if sk then
-				useSkill(tool, E)
+		else
+			getgenv().__FarmPhaseTool = other
+			equiptool(other)
+			if char:FindFirstChild(other) then
+				if otherKind == "Gun" and ShootM1 then
+					pcall(ShootM1, E)
+				else
+					pcall(AttackFunction, wide and 80 or 30)
+				end
 			end
 		end
 		return true
@@ -8335,7 +8291,7 @@ local Q, d =
 		end
 	)
 SettingFarmMainSection.CreateToggle(
-	{ Title = "Use M1 + Skills Farm", Desc = "Uses the selected fruit skills while farming (use with Double Damage)", Default = Settings["Use M1 + Skills Farm"] or false },
+	{ Title = "Use Skills + M1 (Blox Fruit)", Desc = "Uses the selected fruit skills while farming (use with Double Damage)", Default = Settings["Use M1 + Skills Farm"] or false },
 	function(I)
 		SaveSettings("Use M1 + Skills Farm", I)
 	end
@@ -8353,7 +8309,7 @@ do
 	)
 end
 SettingFarmMainSection.CreateToggle(
-	{ Title = "Double Damage", Desc = "Keeps the fruit equipped together with the selected weapon", Default = Settings["Double Damage"] or false },
+	{ Title = "Double Damage (Blox Fruit)", Desc = "Uses the selected weapon together with the fruit", Default = Settings["Double Damage"] or false },
 	function(I)
 		SaveSettings("Double Damage", I)
 	end
@@ -8366,7 +8322,7 @@ SettingFarmMainSection.CreateToggle(
 )
 SettingFarmMainSection.CreateToggle(
 	{
-		Title = "Kill Aura Only Raid And Volcano",
+		Title = "Kill Aura Only Volcano",
 		Desc = nil,
 		Default = Settings["Kill Aura Only Raid And Volcano"] or false,
 	},
@@ -9143,6 +9099,7 @@ function SyncMasteryToggle(title, v)
 		getgenv().__MasterySyncing = false
 	end)
 end
+__SQFarmSection = FarmMain.CreateSection("Secret Quest") -- filled later by the Secret Quest code (Auto Secret Quest)
 MasteryFarmSection = FarmMain.CreateSection("Mastery Farm")
 MasteryFarmSection.CreateDropdown(
 	{
@@ -9547,9 +9504,6 @@ function UsedualFlock()
 		end
 	end
 	if getgenv().__FarmPhaseTool and Settings["Start Farm"] and (Settings["Double Damage"] or Settings["Use M1 + Skills Farm"]) then
-		if getgenv().__FarmDoubleDamage then
-			return -- FarmExtras keeps weapon + fruit equipped together; EquipTool here would drop the fruit
-		end
 		equiptool(getgenv().__FarmPhaseTool)
 		return
 	end
@@ -12526,7 +12480,7 @@ end)
 FarmotherMain = Main.CreatePage({ Page_Name = "Farming Other", Page_Title = "Farming Other" })
 
 -- ===== Secret Quest + Halloween (Zyrox) =====
-__NXSQPageSync = Main.CreatePage({ Page_Name = "Secret Quest", Page_Title = "Secret Quest" })
+__NXSQPageSync = FarmMain -- Secret Quest now lives inside the Farming page (no separate Secret Quest tab)
 task.spawn(function() local __sqOk, __sqErr = pcall(function()
 local plr = game:GetService("Players").LocalPlayer
 local replicated = game:GetService("ReplicatedStorage")
@@ -12812,7 +12766,7 @@ task.spawn(function() pcall(function()
 		end
 end) end)
 local FarmotherMain = NXSQPage
-	HiddenEventSection = FarmotherMain.CreateSection("Secret Quest")
+	HiddenEventSection = __SQFarmSection or FarmotherMain.CreateSection("Secret Quest")
 	StatusHiddenProgress = HiddenEventSection.CreateLabel({ Title = "Secret Quest : 0/39 Quests" })
 	StatusHiddenQuest = HiddenEventSection.CreateLabel({ Title = "Title Quest : ..." })
 	StatusHiddenStep = HiddenEventSection.CreateLabel({ Title = "Doing Quest : None" })
@@ -34055,8 +34009,7 @@ do
 			local lvTool = toolMastery(tool)
 			local lvInv = it and tonumber(it.Mastery) or 0
 			-- remembers what was seen: 600 reached / style owned
-			-- FIX: the inventory value of a style that is not loaded can be wrong; a loaded tool's level always wins
-			if lvTool >= 600 or (not tool and lvInv >= 600) then markSet("Mastery Done", m.name) end
+			if lvTool >= 600 or lvInv >= 600 then markSet("Mastery Done", m.name) end
 			if tool or it then markSet("Mastery Owned", m.name) end
 			if markGet("Mastery Done", m.name) then
 				-- already has 600 mastery: never farmed, loaded or bought again
@@ -34071,17 +34024,6 @@ do
 				table.insert(textParts, m.name .. " (not owned)")
 			end
 		end
-		-- FIX: styles you already own (Godhuman / Sanguine Art included) are farmed first; styles that still need
-		-- buying go last. Before, one style that could not be bought (money / requirement / far NPC) blocked the others.
-		local ownedFirst, toBuy = {}, {}
-		for _, m in ipairs(missing) do table.insert(m.owned and ownedFirst or toBuy, m) end
-		missing = ownedFirst
-		for _, m in ipairs(toBuy) do table.insert(missing, m) end
-		sigParts, textParts = {}, {}
-		for _, m in ipairs(missing) do
-			table.insert(sigParts, m.name .. (m.owned and "+" or "-"))
-			table.insert(textParts, m.name .. (m.owned and (" (" .. (m.mastery or 0) .. "/600)") or " (not owned)"))
-		end
 		return missing, table.concat(sigParts, ","), table.concat(textParts, "\n")
 	end
 	local npcWait, buyTry = {}, {}
@@ -34091,18 +34033,6 @@ do
 			-- owns it, but it is not equipped / loaded: loads it from the inventory
 			loadItem(m.name, skip)
 			return
-		end
-		-- FIX: tries to load it first (already owned but not listed in the inventory) before traveling / buying
-		getgenv().__MasteryLoadProbe = getgenv().__MasteryLoadProbe or {}
-		if os.clock() - (getgenv().__MasteryLoadProbe[m.name] or -100) > 60 then
-			getgenv().__MasteryLoadProbe[m.name] = os.clock()
-			pcall(function() CommF:InvokeServer("LoadItem", m.name) end)
-			task.wait(1)
-			if findTool(m.name) then
-				markSet("Mastery Owned", m.name)
-				hud.done(m.name)
-				return
-			end
 		end
 		local sea = currentSea()
 		local triedKey = "Mastery NPC Tried " .. m.name
@@ -34236,18 +34166,6 @@ do
 		loadItem(pick.name, skip)
 	end
 
-	-- FIX: Godhuman / Sanguine Art are never bought, so they were only farmed if the inventory list showed them.
-	-- When the Melee toggle starts, tries to load every style that is still unknown (owned ones load, the rest do nothing).
-	function hud.probeStyles() -- inside hud: the script is at the limit of 200 local variables
-		for _, m in ipairs(MasteryMeleeList) do
-			if not markGet("Mastery Done", m.name) and not findTool(m.name) and not markGet("Mastery Owned", m.name) and not invItemFuzzy(m.name) then
-				pcall(function() CommF:InvokeServer("LoadItem", m.name) end)
-				task.wait(0.6)
-				if findTool(m.name) then markSet("Mastery Owned", m.name) end
-			end
-		end
-	end
-
 	-- ---------- shared controller ----------
 	local function run(kind, settingKey, scan, acquire)
 		getgenv().MasteryOwner = kind
@@ -34329,7 +34247,7 @@ do
 				SaveSettings("Select Method Farm Mastery", "Melee")
 				SaveSettings("Farm Mastery", true)
 				SaveSettings("Start Farm", true)
-				spawn(function() pcall(hud.probeStyles) run("Melee", "Auto Farm Mastery 600 Melees", scanMelee, acquireMelee) end)
+				spawn(function() run("Melee", "Auto Farm Mastery 600 Melees", scanMelee, acquireMelee) end)
 			else
 				releaseEngine("Melee")
 			end

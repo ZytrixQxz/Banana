@@ -7633,9 +7633,16 @@ function IsBossTarget(E)
 	return ok and r or false
 end
 -- Double Damage + Use M1 + Skills Farm (reads the Setting Farm toggles during Start Farm)
+-- Double Damage (v2): alternates fruit and weapon in short slices so both deal damage almost together.
+--   * fruit slice : equip fruit -> fruit M1 (if it has one) + selected skills
+--   * weapon slice: equip weapon -> melee / sword / gun attack
+--   Equip is only called when the tool is not already in the character (no spam), and a slice is
+--   never cut while a skill key is still being held.
 do
 	local VIM = game:GetService("VirtualInputManager")
 	local SKILL_KEYS = { "Z", "X", "C", "V", "F" }
+	local FRUIT_SLICE, WEAPON_SLICE = 0.28, 0.22 -- seconds each tool stays equipped
+
 	local function skillReady(fr)
 		local ok, r = pcall(function()
 			return fr:IsA("Frame")
@@ -7647,6 +7654,7 @@ do
 		end)
 		return ok and r
 	end
+
 	local function pickSkill(tool)
 		local sel = Settings["Select Skills M1 Farm"]
 		local main = t.PlayerGui:FindFirstChild("Main")
@@ -7663,6 +7671,7 @@ do
 		end
 		return nil
 	end
+
 	local function useSkill(tool, mob)
 		if getgenv().__FarmSkillBusy then
 			return
@@ -7692,19 +7701,40 @@ do
 			getgenv().__FarmSkillBusy = false
 		end)
 	end
+
+	-- equips only when needed; returns the Tool once it is in the character
+	local function ensureEquipped(name)
+		local char = t.Character
+		if not char or not name then
+			return nil
+		end
+		local tool = char:FindFirstChild(name)
+		if tool then
+			return tool
+		end
+		equiptool(name)
+		return char:FindFirstChild(name)
+	end
+
+	local function resetPhase()
+		getgenv().__FarmPhaseTool = nil
+		getgenv().__FarmPhase = nil
+	end
+
 	-- returns true when this tick's attack was handled here (Double Damage / M1 + Skills)
 	getgenv().FarmExtras = function(E, wide)
 		local dd, sk = Settings["Double Damage"], Settings["Use M1 + Skills Farm"]
 		if not Settings["Start Farm"] or not (dd or sk) then
-			getgenv().__FarmPhaseTool = nil
+			resetPhase()
 			return false
 		end
 		local char = t.Character
 		local fruit = NameWeapon("Blox Fruit")
 		if not char or not fruit then
-			getgenv().__FarmPhaseTool = nil
+			resetPhase()
 			return false
 		end
+
 		-- Double Damage pairs the selected weapon with the fruit (if the selected one IS the fruit, pairs it with Melee)
 		local other, otherKind
 		if dd then
@@ -7712,19 +7742,23 @@ do
 			otherKind = sel == "Blox Fruit" and "Melee" or sel
 			other = NameWeapon(otherKind)
 		end
+
 		local now = tick()
 		local phase = getgenv().__FarmPhase or "fruit"
 		if not other then
 			phase = "fruit"
-		elseif now - (getgenv().__FarmPhaseAt or 0) >= (phase == "fruit" and 0.6 or 0.4) then
-			phase = phase == "fruit" and "weapon" or "fruit"
-			getgenv().__FarmPhaseAt = now
+		elseif not getgenv().__FarmSkillBusy then -- never swap away while a skill key is held
+			local slice = phase == "fruit" and FRUIT_SLICE or WEAPON_SLICE
+			if now - (getgenv().__FarmPhaseAt or 0) >= slice then
+				phase = phase == "fruit" and "weapon" or "fruit"
+				getgenv().__FarmPhaseAt = now
+			end
 		end
 		getgenv().__FarmPhase = phase
+
 		if phase == "fruit" then
 			getgenv().__FarmPhaseTool = fruit
-			equiptool(fruit)
-			local tool = char:FindFirstChild(fruit)
+			local tool = ensureEquipped(fruit)
 			if tool then
 				if FruitHasM1(fruit) then
 					pcall(getgenv().UseFruitM1, E)
@@ -7735,8 +7769,7 @@ do
 			end
 		else
 			getgenv().__FarmPhaseTool = other
-			equiptool(other)
-			if char:FindFirstChild(other) then
+			if ensureEquipped(other) then
 				if otherKind == "Gun" and ShootM1 then
 					pcall(ShootM1, E)
 				else

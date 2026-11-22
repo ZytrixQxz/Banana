@@ -36625,11 +36625,9 @@ function ESPPlayer()
                     -- SEE FROM FAR: does not let the text get small when far away!
                     -- Before: far = scale 1 (small, disappeared from afar)
                     -- Now: far = scale 1.2 / 1.1 (still big enough to see from afar!)
+                    -- near players keep the normal size (1.0); only far ones get slightly bigger text
                     local scale = 1.2
-                    if dist < 30 then scale = 2.0
-                    elseif dist < 60 then scale = 1.7
-                    elseif dist < 100 then scale = 1.5
-                    elseif dist < 200 then scale = 1.3
+                    if dist < 200 then scale = 1.0
                     elseif dist < 500 then scale = 1.2
                     else scale = 1.1 end
                     -- Bigger sizes to see from afar! Name 22, others 17-18

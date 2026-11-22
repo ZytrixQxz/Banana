@@ -8956,14 +8956,14 @@ do
 	)
 	-- these two toggles are created later (after the "Hop Find" toggles) to keep the tab order
 	getgenv().__FarmingTabLate = function()
-		SettingAutoFarmSection.CreateToggle(
+		FarmingStartSection.CreateToggle(
 			{ Title = "Start Auto Farm", Desc = nil, Default = Settings["Start Auto Farm"] or false },
 			function(V)
 				SaveSettings("Start Auto Farm", V)
 				ApplyMethodFarm()
 			end
 		)
-		SettingAutoFarmSection.CreateToggle(
+		FarmingStartSection.CreateToggle(
 			{ Title = "Auto Quest", Desc = nil, Default = Settings["Auto Quest [Katakuri/Bone/Tyrant]"] ~= false },
 			function(V)
 				getgenv().__AQUserWants = V
@@ -9007,8 +9007,10 @@ SettingAutoFarmSection.CreateToggle(
 		SaveSettings("Hop Find Less Eyes for Tyrant", o)
 	end
 )
+-- New "Farming" section right below "Setting Farm": Start Auto Farm + Auto Quest + Aura Farm
+FarmingStartSection = FarmMain.CreateSection("Farming")
 pcall(getgenv().__FarmingTabLate)
-SettingAutoFarmSection.CreateToggle({ Title = "Aura Farm", Desc = nil, Default = Settings["Aura Farm"] or false }, function(v) SetIndividualFarm("Aura Farm", v) end)
+FarmingStartSection.CreateToggle({ Title = "Aura Farm", Desc = nil, Default = Settings["Aura Farm"] or false }, function(v) SetIndividualFarm("Aura Farm", v) end)
 -- Auto Quest cycle: 10s on and 75s off, only on the selected farm's island.
 -- Outside the matching island, the cycle is paused and does not change the toggle.
 if false then -- DISABLED: old 10s/75s Auto Quest cycle (Auto Quest is now controlled only by the toggle)
@@ -26122,6 +26124,83 @@ function CheckSeaEventBoat()
 	return nearest
 end
 
+-- Auto Repair Ur Ship (rewritten): safe reads, hammer from Backpack + equip, stands up from the seat,
+-- keeps repairing even when the ship health bar hides after leaving the seat. Returns true while busy repairing.
+function AutoRepairShip(boat)
+	if not Settings["Auto Repair Ur Ship"] or not boat then
+		return false
+	end
+	getgenv().__RepairShip = getgenv().__RepairShip or { active = false, since = 0 }
+	local st = getgenv().__RepairShip
+	local ok, busy = pcall(function()
+		local char = t.Character
+		local hum = char and char:FindFirstChildOfClass("Humanoid")
+		local root = char and char:FindFirstChild("HumanoidRootPart")
+		if not hum or not root or hum.Health <= 0 then
+			return false
+		end
+		-- read ship health ("Ship 850/1000", with or without commas)
+		local cur, max
+		local main = t.PlayerGui:FindFirstChild("Main")
+		local hud = main and main:FindFirstChild("BottomHUDList")
+		local bar = hud and hud:FindFirstChild("ShipHealthBar")
+		local label = bar and bar:FindFirstChild("TextLabel")
+		if bar and label and bar.Visible then
+			local txt = tostring(label.Text):gsub(",", "")
+			local a, b = txt:match("(%d+%.?%d*)%s*/%s*(%d+%.?%d*)")
+			cur, max = tonumber(a), tonumber(b)
+		end
+		if cur and max then
+			if cur >= max then
+				st.active = false
+				return false
+			end
+			if not st.active then
+				st.active, st.since = true, tick()
+			end
+		elseif st.active and tick() - st.since > 45 then
+			st.active = false -- bar hidden for too long: give up this repair
+		end
+		if not st.active then
+			return false
+		end
+		local pivot = boat:GetPivot()
+		local tool = char:FindFirstChild("_RepairHammer") or t.Backpack:FindFirstChild("_RepairHammer")
+		if not tool then
+			game:GetService("ReplicatedStorage").Remotes.SubclassNetwork.UseSubclass
+				:InvokeServer({ Action = "RequestHammer" })
+			task.wait(0.3)
+			return true
+		end
+		if hum.Sit then
+			hum.Sit = false
+			hum.Jump = true
+			task.wait(0.3)
+			return true
+		end
+		if tool.Parent ~= char then
+			hum:EquipTool(tool)
+			task.wait(0.2)
+		end
+		if (root.Position - pivot.Position).Magnitude > 25 then
+			toTarget(pivot * CFrame.new(0, 15, 0))
+			return true
+		end
+		if tool:FindFirstChild("M1UP") then
+			tool.M1UP:Destroy()
+		elseif not tool:GetAttribute("Repairing") and tool:FindFirstChild("M1Down") then
+			tool.M1Down:FireServer("Default")
+			task.wait(0.5)
+		end
+		return true
+	end)
+	if not ok then
+		return false
+	end
+	return busy == true
+end
+
+
 function BuyBoatAndTeleBoat(P)
 	local Y = CheckSeaEventBoat()
 	if Settings["Auto Sea Event With Friend"] and Settings["Auto Sea Event"] then
@@ -26169,6 +26248,9 @@ function BuyBoatAndTeleBoat(P)
 		task.spawn(function()
 			NoclipBoat(Y)
 		end)
+		if AutoRepairShip(Y) then
+			return
+		end
 		if Settings["Tween Until Have Sea Event"] then
 			local H = CFrame.new(-118834.515625, Y.WorldPivot.Y, 999920.0494155884)
 			if not t.Character.Humanoid.Sit then
@@ -26196,39 +26278,6 @@ function BuyBoatAndTeleBoat(P)
 					l(Y, C, 350)
 				end
 			else
-				if Settings["Auto Repair Ur Ship"] then
-					if t.PlayerGui.Main.BottomHUDList.ShipHealthBar.Visible then
-						local C = string.gsub(
-							game:GetService("Players").LocalPlayer.PlayerGui.Main.BottomHUDList.ShipHealthBar.TextLabel.Text,
-							"Ship ",
-							""
-						)
-						C = string.split(C, "/")
-						if tonumber(C[1]) < tonumber(C[2]) then
-							if t:DistanceFromCharacter(Y.PrimaryPart.Position) < 20 then
-								if not t.Character.Humanoid.Sit then
-									if t.Character:FindFirstChild("_RepairHammer") then
-										if t.Character._RepairHammer:FindFirstChild("M1UP") then
-											t.Character._RepairHammer.M1UP:Destroy()
-										elseif not t.Character._RepairHammer:GetAttribute("Repairing") then
-											t.Character._RepairHammer.M1Down:FireServer("Default")
-											task.wait(0.5)
-										end
-									else
-										game:GetService("ReplicatedStorage").Remotes.SubclassNetwork.UseSubclass
-											:InvokeServer(unpack({ [1] = { Action = "RequestHammer" } }))
-										task.wait(0.1)
-									end
-								else
-									toTarget(Y.PrimaryPart.CFrame * CFrame.new(0, 15, 0))
-								end
-							else
-								toTarget(Y.PrimaryPart.CFrame * CFrame.new(0, 15, 0))
-							end
-							return
-						end
-					end
-				end
 				if not P then
 					if not t.Character.Humanoid.Sit then
 						toTarget(Y.VehicleSeat.CFrame)

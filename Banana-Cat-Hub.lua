@@ -7126,7 +7126,14 @@ function toTarget(P, e)
 		if Y >= 3000 then
 			for o, y in pairs(Q) do
 				local Q = (P.Position - y).Magnitude
-				if Q <= 3000 and (not _ or Q < _) and tick() - (portalBad[o] or -1e9) > 90 then
+				-- FIX: the "Sky Area" portals were chosen for ANY target within 3000 studs, including targets on the ground
+				-- (they sent the character up to Sky just to tween back down). Now they are only used when the target
+				-- itself is up in the sky (Area 1/2: Y >= 600, Area 3 / Upper Skylands: Y >= 4500).
+				local skyOk = true
+				if type(o) == "string" and o:find("^Sky Area") then
+					skyOk = P.Position.Y >= (o == "Sky Area 3" and 4500 or 600)
+				end
+				if skyOk and Q <= 3000 and (not _ or Q < _) and tick() - (portalBad[o] or -1e9) > 90 then
 					_, l, d = Q, o, y
 				end
 			end
@@ -33834,9 +33841,12 @@ do
 	end
 	-- text = missing items, one per line ("Name (lv/600)"); action = "buy" | "equip" | "retry"
 	function hud.show(kind, text, pickName, action, total)
-		local key = table.concat({ tostring(kind), tostring(text), tostring(pickName), tostring(action) }, "|")
-		-- same message is only repeated every 30s (this function is called every 0.5s by the controller)
-		if hud.key == key and os.clock() - (hud.last or 0) < 30 then return end
+		-- FIX: the key no longer contains the text (the mastery numbers changed all the time and re-triggered the notice).
+		-- The same notice (same kind + item + action) is only shown again after 10 minutes.
+		local key = table.concat({ tostring(kind), tostring(pickName), tostring(action) }, "|")
+		hud.shown = hud.shown or {}
+		if hud.shown[key] and os.clock() - hud.shown[key] < 600 then return end
+		hud.shown[key] = os.clock()
 		hud.key = key
 		hud.last = os.clock()
 		local lines = {}
@@ -33877,7 +33887,8 @@ do
 		local live = hud.toolMastery(pick.tool or hud.findTool(pick.name))
 		local lv = math.max(pick.mastery or 0, live)
 		local key = tostring(kind) .. "|" .. tostring(pick.name)
-		if hud.statusKey == key and os.clock() - (hud.statusLast or 0) < 30 then return end
+		-- FIX: the "Equipped" notice is shown only once per item (until the toggle is turned off and on again)
+		if hud.statusKey == key then return end
 		hud.statusKey = key
 		hud.statusLast = os.clock()
 		local total = hud.total(missing, pick, lv)
@@ -33980,6 +33991,7 @@ do
 			getgenv().MasteryPause = false
 			hud.ready = nil
 			hud.hide()
+			hud.statusKey, hud.shown = nil, nil -- next time the toggle is turned on, the notices can show again
 			SaveSettings("Farm Mastery", false)
 			SaveSettings("Start Farm", false)
 			pcall(function() TweenManager.CancelCurrent() end)
@@ -34041,14 +34053,16 @@ do
 	local npcWait, buyTry = {}, {}
 	local function acquireMelee(pick, skip, alive)
 		local m = pick.entry
-		if pick.owned then
-			-- owns it, but it is not equipped / loaded: loads it from the inventory
+		if pick.owned and not m.npc then
+			-- Godhuman / Sanguine Art (no NPC in the list): only loading from the inventory is possible
 			loadItem(m.name, skip)
 			return
 		end
-		-- FIX: tries to load it first (already owned but not listed in the inventory) before traveling / buying
+		-- FIX: a style that is owned (shown in the notice) but not loaded in the Backpack was only tried with "LoadItem"
+		-- 3 times and then skipped for 120s, so the farm never picked it. Now: tries "LoadItem" first and, if it does not
+		-- work, goes to the style NPC and calls the same remote used to buy it (the NPC gives the owned style back).
 		getgenv().__MasteryLoadProbe = getgenv().__MasteryLoadProbe or {}
-		if os.clock() - (getgenv().__MasteryLoadProbe[m.name] or -100) > 60 then
+		if os.clock() - (getgenv().__MasteryLoadProbe[m.name] or -100) > 20 then
 			getgenv().__MasteryLoadProbe[m.name] = os.clock()
 			pcall(function() CommF:InvokeServer("LoadItem", m.name) end)
 			task.wait(1)
@@ -34083,10 +34097,12 @@ do
 			end)
 			task.wait(1)
 			invTime = -100 -- refreshes the inventory to see the new style
-			if findTool(m.name) or invItemFuzzy(m.name) then
+			-- FIX: only counts as done when the tool is really in the Backpack (before, "owned in the inventory" was enough,
+			-- the controller kept coming back to the NPC and the style was never loaded)
+			if findTool(m.name) then
 				markSet("Mastery Owned", m.name)
 				buyTry[m.name] = 0
-				hud.done(m.name) -- bought: the notice goes away
+				hud.done(m.name) -- bought / loaded: the notice goes away
 			elseif buyTry[m.name] >= 3 then
 				buyTry[m.name] = 0
 				-- the purchase may have been refused because the style is ALREADY owned: tries to load it before skipping

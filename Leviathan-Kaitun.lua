@@ -31,7 +31,7 @@ _G.ChonPhe = "Marines"
 _G.BatNoclip = true
 _G.TocDoTween = 170
 _G.TocDoTweenBoat = 250
-_G.XoaSuongMu = true
+_G.XoaSuongMu = false -- old "Remove Fog" is gone; fog is now controlled only by the No Frog toggle
 _G.NguoiMuaThuyen = LP.Name
 _G.SoNguoiCanThiet = 5
 _G.ChieuCaoBay = 20
@@ -948,12 +948,11 @@ local function CreateSingleContainer(parent, layoutOrder, keyText, defaultVal)
     KeyLbl.Position = UDim2.new(0, 12, 0, 0)
     KeyLbl.BackgroundTransparency = 1
     KeyLbl.Text = keyText .. ":"
-    KeyLbl.TextColor3 = Theme.TextDim
+    KeyLbl.TextColor3 = Color3.fromRGB(255, 224, 102)
     KeyLbl.Font = Enum.Font.GothamBold
     KeyLbl.TextSize = 12
     KeyLbl.TextXAlignment = Enum.TextXAlignment.Left
     KeyLbl.Parent = Block
-    table.insert(UI_Elements.TextDims, KeyLbl)
     
     local ValLbl = Instance.new("TextLabel")
     ValLbl.Size = UDim2.new(0.5, -15, 1, 0)
@@ -963,8 +962,12 @@ local function CreateSingleContainer(parent, layoutOrder, keyText, defaultVal)
     ValLbl.Font = Enum.Font.GothamBold
     ValLbl.TextSize = 13
     ValLbl.TextXAlignment = Enum.TextXAlignment.Right
+    ValLbl.TextColor3 = Color3.fromRGB(255, 204, 0)
     ValLbl.Parent = Block
-    ApplyTextGradient(ValLbl, false)
+    local ValShadow = Instance.new("UIStroke")
+    ValShadow.Color = Color3.fromRGB(0, 0, 0)
+    ValShadow.Thickness = 0.5
+    ValShadow.Parent = ValLbl
     
     ValueLabels[keyText] = ValLbl
     return Block
@@ -998,34 +1001,6 @@ BottomDivGrad.Transparency = NumberSequence.new({
     NumberSequenceKeypoint.new(1, 1)
 })
 BottomDivGrad.Parent = BottomDivider
-
-local CreditsBlock = Instance.new("Frame")
-CreditsBlock.Size = UDim2.new(1, 0, 0, 42)
-CreditsBlock.BackgroundTransparency = 1
-CreditsBlock.LayoutOrder = 11
-CreditsBlock.Parent = ContentWrapper
-
-local DesignerLbl = Instance.new("TextLabel")
-DesignerLbl.Size = UDim2.new(1, 0, 0, 18)
-DesignerLbl.Position = UDim2.new(0, 0, 0, 0)
-DesignerLbl.BackgroundTransparency = 1
-DesignerLbl.Text = "Designer & Logic: naa/aneex211"
-DesignerLbl.Font = Enum.Font.GothamBold
-DesignerLbl.TextSize = 11
-DesignerLbl.TextTransparency = 0.2
-DesignerLbl.Parent = CreditsBlock
-ApplyTextGradient(DesignerLbl, true)
-
-local DiscordLbl = Instance.new("TextLabel")
-DiscordLbl.Size = UDim2.new(1, 0, 0, 18)
-DiscordLbl.Position = UDim2.new(0, 0, 0, 18)
-DiscordLbl.BackgroundTransparency = 1
-DiscordLbl.Text = "Discord Meyyhub: https://discord.gg/fhJ7aYwUxC"
-DiscordLbl.Font = Enum.Font.GothamBold
-DiscordLbl.TextSize = 10
-DiscordLbl.TextTransparency = 0.2
-DiscordLbl.Parent = CreditsBlock
-ApplyTextGradient(DiscordLbl, true)
 
 local isMainVisible = true
 
@@ -1864,6 +1839,121 @@ if not game:IsLoaded() then game.Loaded:Wait() end
 A = loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/zzzz.lua"))()
 Main = A.CreateMain({ Title = "Banana Kaitun Leviathan", Desc = "- Kaitun Leviathan" })
 
+-- ============================================================================
+-- SAVE SYSTEM (same idea as the Banana Cat Hub: Settings table + SaveSettings, stored in a json file)
+-- Every toggle / slider / dropdown / box created below is saved automatically and restored on the next run.
+-- ============================================================================
+do
+    local HS = game:GetService("HttpService")
+    local FOLDER = "Banana Kaitun Leviathan"
+    local FILE = FOLDER .. "/" .. game:GetService("Players").LocalPlayer.Name .. "-Leviathan.json"
+
+    local ok, data = pcall(function()
+        if not (isfolder and isfile and readfile and makefolder) then error("no file api") end
+        if not isfolder(FOLDER) then makefolder(FOLDER) end
+        if not isfile(FILE) then error("no save yet") end
+        return HS:JSONDecode(readfile(FILE))
+    end)
+    Settings = (ok and type(data) == "table") and data or {}
+    getgenv().Settings = Settings
+
+    local pending = false
+    local function flush()
+        pcall(function()
+            if not (writefile and isfolder and makefolder) then return end
+            if not isfolder(FOLDER) then makefolder(FOLDER) end
+            writefile(FILE, HS:JSONEncode(Settings))
+        end)
+    end
+    function SaveSettings(key, value)
+        Settings[key] = value
+        if pending then return end
+        pending = true
+        task.delay(0.75, function()
+            pending = false
+            flush()
+        end)
+    end
+
+    local function copy(t)
+        local n = {}
+        for k, v in pairs(t) do n[k] = v end
+        return n
+    end
+    local function inList(list, v)
+        if type(list) ~= "table" then return false end
+        for k, x in pairs(list) do
+            if x == v or k == v then return true end
+        end
+        return false
+    end
+
+    local function wrapControl(orig, kind, pageName, sectionName)
+        return function(props, cb, ...)
+            if type(props) ~= "table" or props.NoSave then return orig(props, cb, ...) end
+            if kind == "dropdown" and props.Selected == true then return orig(props, cb, ...) end -- multi dropdowns save themselves
+            local key = pageName .. " | " .. sectionName .. " | " .. tostring(props.Title)
+            local saved = Settings[key]
+            local valid = false
+            if kind == "toggle" then
+                valid = type(saved) == "boolean"
+            elseif kind == "slider" then
+                valid = type(saved) == "number"
+                if valid then
+                    local mn, mx = tonumber(props.Min), tonumber(props.Max)
+                    if mn and saved < mn then saved = mn end
+                    if mx and saved > mx then saved = mx end
+                end
+            elseif kind == "box" then
+                valid = type(saved) == "string" or type(saved) == "number"
+            elseif kind == "dropdown" then
+                valid = type(saved) == "string" and inList(props.List, saved)
+            end
+            local p = copy(props)
+            if valid then p.Default = saved end
+            local called = false
+            local obj = orig(p, function(...)
+                called = true
+                local v = ...
+                if v ~= nil then pcall(SaveSettings, key, v) end
+                if cb then return cb(...) end
+            end, ...)
+            -- if the library did not run the callback with the restored value, run it once so the function really gets it
+            if valid and saved ~= props.Default and cb then
+                task.delay(0.6, function()
+                    if not called then pcall(cb, saved) end
+                end)
+            end
+            return obj
+        end
+    end
+
+    local function wrapSection(section, pageName, sectionName)
+        if type(section) ~= "table" then return end
+        if section.CreateToggle then section.CreateToggle = wrapControl(section.CreateToggle, "toggle", pageName, sectionName) end
+        if section.CreateSlider then section.CreateSlider = wrapControl(section.CreateSlider, "slider", pageName, sectionName) end
+        if section.CreateDropdown then section.CreateDropdown = wrapControl(section.CreateDropdown, "dropdown", pageName, sectionName) end
+        if section.CreateBox then section.CreateBox = wrapControl(section.CreateBox, "box", pageName, sectionName) end
+    end
+
+    pcall(function()
+        local origCreatePage = Main.CreatePage
+        Main.CreatePage = function(props, ...)
+            local page = origCreatePage(props, ...)
+            local pageName = tostring(type(props) == "table" and (props.Page_Name or props.Page_Title) or "Page")
+            pcall(function()
+                local origCreateSection = page.CreateSection
+                page.CreateSection = function(name, ...)
+                    local section = origCreateSection(name, ...)
+                    pcall(wrapSection, section, pageName, tostring(name))
+                    return section
+                end
+            end)
+            return page
+        end
+    end)
+end
+
 local Library = {}
 function Library:SendNotification(titleText, descText)
     pcall(function()
@@ -1873,17 +1963,34 @@ end
 
 -- Multi select dropdown: the Banana dropdown reports (name, bool); the callback receives the array of selected names.
 function BananaMultiDropdown(section, text, defaultSelections, optionsList, callback)
+    local saveKey = "multi | " .. tostring(text)
+    local savedArr = type(Settings[saveKey]) == "table" and Settings[saveKey] or nil
     local selected, map = {}, {}
-    for _, v in ipairs(defaultSelections or {}) do selected[v] = true end
+    for _, v in ipairs(savedArr or defaultSelections or {}) do selected[v] = true end
     for _, name in ipairs(optionsList) do map[name] = selected[name] == true end
-    return section.CreateDropdown({ Title = text, List = map, Search = true, Selected = true, Default = map }, function(k, v)
+    local called = false
+    local obj = section.CreateDropdown({ Title = text, List = map, Search = true, Selected = true, Default = map }, function(k, v)
+        called = true
         selected[k] = v and true or nil
         local arr = {}
         for _, name in ipairs(optionsList) do
             if selected[name] then table.insert(arr, name) end
         end
+        pcall(SaveSettings, saveKey, arr)
         if callback then callback(arr) end
     end)
+    -- restore the saved selection into the function
+    if savedArr and callback then
+        task.delay(0.6, function()
+            if called then return end
+            local arr = {}
+            for _, name in ipairs(optionsList) do
+                if selected[name] then table.insert(arr, name) end
+            end
+            pcall(callback, arr)
+        end)
+    end
+    return obj
 end
 
 -- Status text (label that can be updated): :Set({Title=, Content=}) or :Set(title, content)
@@ -4978,14 +5085,35 @@ for _, melee in ipairs(MeleeConfig) do
 end
 
 HuntPage = Main.CreatePage({ Page_Name = "Hunt Leviathan", Page_Title = "Hunt Leviathan" })
-HuntSection = HuntPage.CreateSection("Boost Fps & Remove Fog")
+HuntSection = HuntPage.CreateSection("Boost Fps & No Frog")
 repeat
     task.wait(0.5)
 until LP.Team ~= nil and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
 
-HuntSection.CreateToggle({ Title = "Remove Fog", Desc = "Clear all fog for better vision", Default = true }, function(val)
-    _G.XoaSuongMu = val
+
+-- No Frog (from the Banana Cat Hub) - saved with SaveSettings
+getgenv().__NoFrogStart = function()
+    if getgenv().__NoFrogRunning then return end
+    getgenv().__NoFrogRunning = true
+    task.spawn(function()
+        while Settings["No Frog"] do
+            pcall(function()
+                local lighting = game:GetService("Lighting")
+                lighting.FogEnd = 100000
+                for _, obj in ipairs(lighting:GetDescendants()) do
+                    if obj:IsA("Atmosphere") then obj:Destroy() end
+                end
+            end)
+            task.wait(2)
+        end
+        getgenv().__NoFrogRunning = false
+    end)
+end
+HuntSection.CreateToggle({ Title = "No Frog", Desc = nil, Default = Settings["No Frog"] or false, NoSave = true }, function(g)
+    SaveSettings("No Frog", g)
+    if g then getgenv().__NoFrogStart() end
 end)
+if Settings["No Frog"] then getgenv().__NoFrogStart() end
 _G.BoostFPS_Executed = false
 HuntSection.CreateToggle({ Title = "Boost Fps", Desc = "Extreme FPS boost & Remove Sound", Default = false }, function(val)
     if val and not _G.BoostFPS_Executed then
@@ -5481,6 +5609,118 @@ _G.NoSkillDelay = true
 SkillSection.CreateToggle({ Title = "Use Skill No Delay", Desc = "Use 0.05s ultra fast delay", Default = true }, function(val)
     _G.NoSkillDelay = val
 end)
+
+-- ============================================================================
+-- PLAYER CONFIG (WalkSpeed / JumpPower taken from the Banana Cat Hub, saved with SaveSettings)
+-- ============================================================================
+PlayerPage = Main.CreatePage({ Page_Name = "Player Config", Page_Title = "Player Config" })
+PlayerSection = PlayerPage.CreateSection("Player Config")
+
+PlayerSection.CreateSlider(
+    { Title = "Input WalkSpeed", Min = 0, Max = 220, Default = math.min(tonumber(Settings["Input WalkSpeed"]) or 16, 220), Precise = true, NoSave = true },
+    function(b)
+        SaveSettings("Input WalkSpeed", math.clamp(tonumber(b) or 16, 0, 220))
+        task.defer(function()
+            pcall(function() if ApplyMovementSettings then ApplyMovementSettings() end end)
+        end)
+    end
+)
+PlayerSection.CreateSlider(
+    { Title = "Input JumpPower", Min = 0, Max = 220, Default = math.min(tonumber(Settings["Input JumpPower"]) or 50, 220), Precise = true, NoSave = true },
+    function(b)
+        SaveSettings("Input JumpPower", math.clamp(tonumber(b) or 0, 0, 220))
+        pcall(function() if ApplyMovementSettings then ApplyMovementSettings() end end)
+    end
+)
+PlayerSection.CreateToggle(
+    { Title = "Change JumpPower", Desc = nil, Default = Settings["Change JumpPower"] or false, NoSave = true },
+    function(b)
+        SaveSettings("Change JumpPower", b)
+        pcall(function()
+            local Character = game:GetService("Players").LocalPlayer.Character
+            local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+            if Humanoid then
+                Humanoid.UseJumpPower = true
+                if b then
+                    Humanoid.JumpPower = math.clamp(tonumber(Settings["Input JumpPower"]) or 50, 0, 220)
+                else
+                    Humanoid.JumpPower = 50
+                end
+            end
+        end)
+    end
+)
+PlayerSection.CreateToggle(
+    { Title = "Change WalkSpeed", Desc = nil, Default = Settings["Change WalkSpeed"] or false, NoSave = true },
+    function(b)
+        SaveSettings("Change WalkSpeed", b)
+        pcall(function()
+            local Character = game:GetService("Players").LocalPlayer.Character
+            local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+            if Humanoid then
+                local speed = math.clamp(tonumber(Settings["Input WalkSpeed"]) or 16, 0, 220)
+                if b then
+                    Humanoid.WalkSpeed = speed
+                else
+                    Humanoid.WalkSpeed = 16
+                end
+            end
+        end)
+    end
+)
+
+-- While a toggle is on, the value is enforced every frame (also right after the game changes it or you respawn).
+do
+    getgenv().__MoveGen = (getgenv().__MoveGen or 0) + 1
+    local gen = getgenv().__MoveGen
+    for _, c in ipairs(getgenv().__MoveConns or {}) do pcall(function() c:Disconnect() end) end
+    local conns = {}
+    getgenv().__MoveConns = conns
+    local RunService = game:GetService("RunService")
+    local lp = game:GetService("Players").LocalPlayer
+    local hooked = setmetatable({}, { __mode = "k" })
+    local function enforce(hum)
+        if getgenv().__MoveGen ~= gen or not hum or not hum.Parent then return end
+        if Settings["Change WalkSpeed"] then
+            local sp = math.clamp(tonumber(Settings["Input WalkSpeed"]) or 16, 0, 220)
+            if hum.WalkSpeed ~= sp then hum.WalkSpeed = sp end
+        end
+        if Settings["Change JumpPower"] then
+            if not hum.UseJumpPower then hum.UseJumpPower = true end
+            local jp = math.clamp(tonumber(Settings["Input JumpPower"]) or 50, 0, 220)
+            if hum.JumpPower ~= jp then hum.JumpPower = jp end
+        end
+    end
+    local function hook(hum)
+        if not hum or hooked[hum] then return end
+        hooked[hum] = true
+        for _, prop in ipairs({ "WalkSpeed", "JumpPower", "UseJumpPower" }) do
+            table.insert(conns, hum:GetPropertyChangedSignal(prop):Connect(function() enforce(hum) end))
+        end
+        enforce(hum)
+    end
+    local function currentHumanoid()
+        local ch = lp.Character
+        return ch and ch:FindFirstChildOfClass("Humanoid")
+    end
+    function ApplyMovementSettings()
+        local h = currentHumanoid()
+        if h then hook(h); enforce(h) end
+    end
+    local function onStep()
+        local h = currentHumanoid()
+        if h then hook(h); enforce(h) end
+    end
+    table.insert(conns, RunService.Stepped:Connect(onStep))
+    table.insert(conns, RunService.Heartbeat:Connect(onStep))
+    pcall(function() table.insert(conns, RunService.RenderStepped:Connect(onStep)) end)
+    table.insert(conns, lp.CharacterAdded:Connect(function(ch)
+        local h = ch:WaitForChild("Humanoid", 10)
+        if h then hook(h) end
+        task.delay(0.5, ApplyMovementSettings)
+        task.delay(2, ApplyMovementSettings)
+    end))
+end
 
 task.spawn(function()
     while task.wait(0.5) do

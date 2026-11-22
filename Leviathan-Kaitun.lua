@@ -1857,134 +1857,46 @@ repeat
 until LP.Team ~= nil and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
 
 -- ============================================================================
--- BANANA KAITUN LEVIATHAN - Banana Cat Hub interface
--- The original Meyy UI library was replaced by an adapter on top of the Banana Cat Hub UI
--- (same library the Banana Cat Hub script loads). Tabs, switches, sliders, dropdowns, inputs,
--- buttons and status labels below keep the exact same calls as before.
+-- BANANA KAITUN LEVIATHAN - Banana Cat Hub interface (native calls)
+-- Same library the Banana Cat Hub loads: A.CreateMain -> Main.CreatePage -> Page.CreateSection -> Section.CreateToggle/...
 -- ============================================================================
 if not game:IsLoaded() then game.Loaded:Wait() end
-local BananaLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/zzzz.lua"))()
-local BananaMain = BananaLib.CreateMain({ Title = "Banana Kaitun Leviathan", Desc = "- Kaitun Leviathan" })
+A = loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/zzzz.lua"))()
+Main = A.CreateMain({ Title = "Banana Kaitun Leviathan", Desc = "- Kaitun Leviathan" })
 
 local Library = {}
 function Library:SendNotification(titleText, descText)
     pcall(function()
-        BananaLib.CreateNoti({ Title = "Banana Kaitun Leviathan", Desc = tostring(titleText) .. ": " .. tostring(descText), ShowTime = 4 })
+        A.CreateNoti({ Title = "Banana Kaitun Leviathan", Desc = tostring(titleText) .. ": " .. tostring(descText), ShowTime = 4 })
     end)
 end
 
-local Window = {}
-function Window:CreateTab(name, _isFirst, _icon)
-    local page = BananaMain.CreatePage({ Page_Name = name, Page_Title = name })
-    local Tab = {}
-    local section
-    local function sec()
-        if not section then section = page.CreateSection(name) end
-        return section
-    end
-
-    function Tab:CreatePageTitle(text)
-        section = page.CreateSection(tostring(text))
-    end
-
-    function Tab:CreateSwitch(text, default, desc, callback)
-        return sec().CreateToggle({ Title = text, Desc = desc, Default = default and true or false }, function(v)
-            if callback then callback(v) end
-        end)
-    end
-
-    function Tab:CreateSlider(text, min, max, default, desc, callback)
-        return sec().CreateSlider({ Title = text, Min = min, Max = max, Default = default, Precise = true }, function(v)
-            if callback then callback(v) end
-        end)
-    end
-
-    function Tab:CreateButton(text, desc, callback)
-        return sec().CreateButton({ Title = text, Desc = desc }, function()
-            if callback then callback() end
-        end)
-    end
-
-    function Tab:CreateInput(text, placeholder, default, desc, numericOnly, callback)
-        return sec().CreateBox({
-            Title = text,
-            Placeholder = placeholder or "Type here",
-            Number = numericOnly and true or false,
-            Default = (default ~= nil and default ~= "") and default or nil,
-        }, function(v)
-            if callback then callback(v) end
-        end)
-    end
-
-    function Tab:CreateDropdown(text, default, optionsList, desc, callback)
-        local raw = sec().CreateDropdown({
-            Title = text, List = optionsList, Search = true, Selected = false, Default = default,
-        }, function(v)
-            if callback then callback(v) end
-        end)
-        local obj = { Raw = raw }
-        function obj:Refresh(newList)
-            local r = raw
-            if type(r) ~= "table" then return end
-            for _, fn in ipairs({ "Refresh", "SetList", "UpdateList", "SetOptions" }) do
-                if type(r[fn]) == "function" then
-                    if pcall(r[fn], r, newList) then return end
-                    if pcall(r[fn], newList) then return end
-                end
-            end
-            local fc = r.FunctionCreate
-            if type(fc) == "table" then
-                for _, fn in ipairs({ "Refresh", "SetList", "UpdateList", "SetOptions" }) do
-                    if type(fc[fn]) == "function" then
-                        if pcall(fc[fn], fc, newList) then return end
-                        if pcall(fc[fn], newList) then return end
-                    end
-                end
-            end
+-- Multi select dropdown: the Banana dropdown reports (name, bool); the callback receives the array of selected names.
+function BananaMultiDropdown(section, text, defaultSelections, optionsList, callback)
+    local selected, map = {}, {}
+    for _, v in ipairs(defaultSelections or {}) do selected[v] = true end
+    for _, name in ipairs(optionsList) do map[name] = selected[name] == true end
+    return section.CreateDropdown({ Title = text, List = map, Search = true, Selected = true, Default = map }, function(k, v)
+        selected[k] = v and true or nil
+        local arr = {}
+        for _, name in ipairs(optionsList) do
+            if selected[name] then table.insert(arr, name) end
         end
-        return obj
-    end
+        if callback then callback(arr) end
+    end)
+end
 
-    -- multi select: the Banana dropdown reports (name, bool); the callback gets the array of selected names like before
-    function Tab:CreateMultiDropdown(text, defaultSelections, optionsList, desc, callback)
-        local selected, map = {}, {}
-        for _, v in ipairs(defaultSelections or {}) do selected[v] = true end
-        for _, name in ipairs(optionsList) do map[name] = selected[name] == true end
-        return sec().CreateDropdown({
-            Title = text, List = map, Search = true, Selected = true, Default = map,
-        }, function(k, v)
-            selected[k] = v and true or nil
-            local arr = {}
-            for _, name in ipairs(optionsList) do
-                if selected[name] then table.insert(arr, name) end
-            end
-            if callback then callback(arr) end
-        end)
+-- Status text (label that can be updated): :Set({Title=, Content=}) or :Set(title, content)
+function BananaParagraph(section, titleText, descText)
+    local label = section.CreateLabel({ Title = tostring(titleText) .. ": " .. tostring(descText) })
+    local obj = {}
+    function obj:Set(a, b)
+        local t, c
+        if type(a) == "table" then t, c = a.Title, a.Content else t, c = a, b end
+        local textOut = tostring(t or titleText) .. ": " .. tostring(c or "")
+        pcall(function() label.SetText(textOut) end)
     end
-
-    -- paragraph -> Banana label; :Set({Title=,Content=}) or :Set(title, content) updates it
-    function Tab:CreateParagraph(titleText, descText)
-        local label = sec().CreateLabel({ Title = tostring(titleText) .. ": " .. tostring(descText) })
-        local obj = {}
-        -- called as obj:Set({Title=, Content=}) or obj:Set(title, content)
-        function obj:Set(a, b)
-            local t, c
-            if type(a) == "table" then
-                t, c = a.Title, a.Content
-            else
-                t, c = a, b
-            end
-            local textOut = tostring(t or titleText) .. ": " .. tostring(c or "")
-            pcall(function() label.SetText(textOut) end)
-        end
-        return obj
-    end
-
-    function Tab:CreateLabel(a, b)
-        local label = sec().CreateLabel({ Title = b and (tostring(a) .. ": " .. tostring(b)) or tostring(a) })
-        return label
-    end
-    return Tab
+    return obj
 end
 
 local W = 0
@@ -4741,78 +4653,78 @@ task.spawn(function()
     end
 end)
 
-local SettingsTab = Window:CreateTab("Settings", true, "rbxthumb://type=Asset&id=125575515639947&w=420&h=420")
-SettingsTab:CreatePageTitle("General Config")
+SettingsPage = Main.CreatePage({ Page_Name = "Settings", Page_Title = "Settings" })
+SettingsSection = SettingsPage.CreateSection("General Config")
 
-SettingsTab:CreateDropdown("Select Team", "Marines", {"Marines", "Pirates"}, "Select your default team", function(val)
+SettingsSection.CreateDropdown({ Title = "Select Team", List = {"Marines", "Pirates"}, Search = true, Selected = false, Default = "Marines" }, function(val)
     _G.ChonPhe = val
     Library:SendNotification("Team Setup", "Auto team set to " .. val)
 end)
-SettingsTab:CreateDropdown("Select Weapon", "Melee", {"Melee", "Sword", "Blox Fruit", "Gun"}, "Select weapon for M1 sea events", function(val)
+SettingsSection.CreateDropdown({ Title = "Select Weapon", List = {"Melee", "Sword", "Blox Fruit", "Gun"}, Search = true, Selected = false, Default = "Melee" }, function(val)
     _G.SelectedWeapon = val
 end)
-SettingsTab:CreateSwitch("Spin Position", true, "Spin around sea events target", function(val)
+SettingsSection.CreateToggle({ Title = "Spin Position", Desc = "Spin around sea events target", Default = true }, function(val)
     _G.SpinPosition = val
 end)
-SettingsTab:CreateSwitch("Enable Ignore Sea Event", true, "Fly up if unselected event spawns", function(val)
+SettingsSection.CreateToggle({ Title = "Enable Ignore Sea Event", Desc = "Fly up if unselected event spawns", Default = true }, function(val)
     _G.EnableIgnoreSeaEvent = val
 end)
-SettingsTab:CreateSwitch("Enable Ignore Island", true, "Fly up when near Prehistoric or Mystic Island", function(val)
+SettingsSection.CreateToggle({ Title = "Enable Ignore Island", Desc = "Fly up when near Prehistoric or Mystic Island", Default = true }, function(val)
     _G.EnableIgnoreIsland = val
 end)
 _G.SafeFlyingBoat = true
-SettingsTab:CreateSwitch("Safe Flying Boat", true, "Auto fly and orbit to dodge when unsit", function(val)
+SettingsSection.CreateToggle({ Title = "Safe Flying Boat", Desc = "Auto fly and orbit to dodge when unsit", Default = true }, function(val)
     _G.SafeFlyingBoat = val
 end)
-SettingsTab:CreateSwitch("Enable Noclip", true, "Prevent getting stuck", function(val)
+SettingsSection.CreateToggle({ Title = "Enable Noclip", Desc = "Prevent getting stuck", Default = true }, function(val)
     _G.BatNoclip = val
     Library:SendNotification("Noclip Status", val and "Enabled" or "Disabled")
 end)
 _G.AutoBuso = true
-SettingsTab:CreateSwitch("Auto Buso Haki", true, "Auto turn on buso haki", function(val)
+SettingsSection.CreateToggle({ Title = "Auto Buso Haki", Desc = "Auto turn on buso haki", Default = true }, function(val)
     _G.AutoBuso = val
 end)
 
 _G.AutoV3 = true
-SettingsTab:CreateSwitch("Auto V3", true, "Auto turn on v3", function(val)
+SettingsSection.CreateToggle({ Title = "Auto V3", Desc = "Auto turn on v3", Default = true }, function(val)
     _G.AutoV3 = val
 end)
 
 _G.AutoKen = true
-SettingsTab:CreateSwitch("Auto Observation Haki", true, "Auto turn on Observation haki", function(val)
+SettingsSection.CreateToggle({ Title = "Auto Observation Haki", Desc = "Auto turn on Observation haki", Default = true }, function(val)
     _G.AutoKen = val
 end)
-SettingsTab:CreateSlider("Tween Speed", 50, 500, 170, "Movement speed (studs/s)", function(val)
+SettingsSection.CreateSlider({ Title = "Tween Speed", Min = 50, Max = 500, Default = 170, Precise = true }, function(val)
     _G.TocDoTween = val 
 end)
 
-SettingsTab:CreateSlider("Tween Boat Speed", 50, 500, 250, "Boat movement speed (studs/s)", function(val)
+SettingsSection.CreateSlider({ Title = "Tween Boat Speed", Min = 50, Max = 500, Default = 250, Precise = true }, function(val)
     _G.TocDoTweenBoat = val 
 end)
 
-SettingsTab:CreateSlider("Flight Height", 10, 500, 20, "Set Y axis for boat flying", function(val)
+SettingsSection.CreateSlider({ Title = "Flight Height", Min = 10, Max = 500, Default = 20, Precise = true }, function(val)
     _G.ChieuCaoBay = val
 end)
-SettingsTab:CreateSlider("Ignore Height", 50, 1500, 500, "Y axis when ignoring monsters", function(val)
+SettingsSection.CreateSlider({ Title = "Ignore Height", Min = 50, Max = 1500, Default = 500, Precise = true }, function(val)
     _G.IgnoreHeight = val
 end)
-SettingsTab:CreateSlider("Ignore Island Height", 50, 2000, 800, "Y axis when ignoring islands", function(val)
+SettingsSection.CreateSlider({ Title = "Ignore Island Height", Min = 50, Max = 2000, Default = 800, Precise = true }, function(val)
     _G.IgnoreIslandHeight = val
 end)
 _G.SafeHeightY = 400
-SettingsTab:CreateSlider("Safe Height Y", 50, 1000, 400, "Y-axis height for boat to dodge", function(val)
+SettingsSection.CreateSlider({ Title = "Safe Height Y", Min = 50, Max = 1000, Default = 400, Precise = true }, function(val)
     _G.SafeHeightY = val
 end)
 
 _G.SafeRadius = 250
-SettingsTab:CreateSlider("Safe Orbit Radius", 0, 500, 250, "Radius to orbit around sea event", function(val)
+SettingsSection.CreateSlider({ Title = "Safe Orbit Radius", Min = 0, Max = 500, Default = 250, Precise = true }, function(val)
     _G.SafeRadius = val
 end)
-local ShopTab = Window:CreateTab("Shop & Status", false, "rbxassetid://130982467998100")
-ShopTab:CreatePageTitle("Server Status")
+ShopPage = Main.CreatePage({ Page_Name = "Shop & Status", Page_Title = "Shop & Status" })
+ShopSection = ShopPage.CreateSection("Server Status")
 
-local SpyPara = ShopTab:CreateParagraph("Spy Status", "Loading...")
-local FrozenPara = ShopTab:CreateParagraph("Frozen Dimension", "Loading...")
+local SpyPara = BananaParagraph(ShopSection, "Spy Status", "Loading...")
+local FrozenPara = BananaParagraph(ShopSection, "Frozen Dimension", "Loading...")
 
 task.spawn(function()
     while task.wait(1) do
@@ -4842,15 +4754,15 @@ task.spawn(function()
     end
 end)
 ---------
-ShopTab:CreatePageTitle("Random Fruit")
+ShopSection = ShopPage.CreateSection("Random Fruit")
 
 
 
-ShopTab:CreateSwitch("Auto Random Fruit", true, "Automatically roll fruit every 60s", function(val)
+ShopSection.CreateToggle({ Title = "Auto Random Fruit", Desc = "Automatically roll fruit every 60s", Default = true }, function(val)
     _G.AutoRandomFruit = val
 end)
 
-ShopTab:CreateSwitch("Auto Store Fruit", true, "Automatically store fruits to inventory", function(val)
+ShopSection.CreateToggle({ Title = "Auto Store Fruit", Desc = "Automatically store fruits to inventory", Default = true }, function(val)
     _G.AutoStoreFruit = val
 end)
 
@@ -4934,9 +4846,9 @@ task.spawn(function()
         end
     end
 end)
-ShopTab:CreatePageTitle("Shop")
+ShopSection = ShopPage.CreateSection("Shop")
 
-ShopTab:CreateButton("Reroll Race", "change race ", function()
+ShopSection.CreateButton({ Title = "Reroll Race", Desc = "change race " }, function()
     local args1 = {
         "BlackbeardReward",
         "Reroll",
@@ -4952,7 +4864,7 @@ ShopTab:CreateButton("Reroll Race", "change race ", function()
     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args2))
 end)
 
-ShopTab:CreateButton("Reset Stats", "reset stats", function()
+ShopSection.CreateButton({ Title = "Reset Stats", Desc = "reset stats" }, function()
     local args1 = {
         "BlackbeardReward",
         "Refund",
@@ -4968,7 +4880,7 @@ ShopTab:CreateButton("Reset Stats", "reset stats", function()
     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args2))
 end)
 
-ShopTab:CreateButton("Buy Ghoul Race", "Change To Ghoul Race", function()
+ShopSection.CreateButton({ Title = "Buy Ghoul Race", Desc = "Change To Ghoul Race" }, function()
     local args = {
         "Ectoplasm",
         "Change",
@@ -4977,7 +4889,7 @@ ShopTab:CreateButton("Buy Ghoul Race", "Change To Ghoul Race", function()
     game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args))
 end)
 
-ShopTab:CreateButton("Buy Cyborg Race", "Change To Cyborg Race", function()
+ShopSection.CreateButton({ Title = "Buy Cyborg Race", Desc = "Change To Cyborg Race" }, function()
     local args = {
         "CyborgTrainer",
         "Buy"
@@ -4986,7 +4898,7 @@ ShopTab:CreateButton("Buy Cyborg Race", "Change To Cyborg Race", function()
 end)
 
 
-ShopTab:CreateButton("Buy Draco Race", "Change To Draco Race", function()
+ShopSection.CreateButton({ Title = "Buy Draco Race", Desc = "Change To Draco Race" }, function()
     task.spawn(function()
         local npcPos = GetNpcPosition("Dragon Wizard")
         if npcPos then
@@ -5015,7 +4927,7 @@ ShopTab:CreateButton("Buy Draco Race", "Change To Draco Race", function()
     end)
 end)
 
-ShopTab:CreatePageTitle("Buy Melee")
+ShopSection = ShopPage.CreateSection("Buy Melee")
 
 local MeleeConfig = {
     {Name = "Sanguine Art", NPC = "Shafi", Remote = "BuySanguineArt", Extra = nil},
@@ -5031,7 +4943,7 @@ for _, melee in ipairs(MeleeConfig) do
     local toggleVar = "AutoBuy_" .. string.gsub(melee.Name, " ", "")
     _G[toggleVar] = false
     
-    ShopTab:CreateSwitch("Buy " .. melee.Name, false, "Go To Buying Melee " .. melee.Name, function(val)
+    ShopSection.CreateToggle({ Title = "Buy " .. melee.Name, Desc = "Go To Buying Melee " .. melee.Name, Default = false }, function(val)
         _G[toggleVar] = val
         if val then
             task.spawn(function()
@@ -5065,17 +4977,17 @@ for _, melee in ipairs(MeleeConfig) do
     end)
 end
 
-local HuntTab = Window:CreateTab("Hunt Leviathan", false, "rbxassetid://110509017095259")
-HuntTab:CreatePageTitle("Boost Fps & Remove Fog")
+HuntPage = Main.CreatePage({ Page_Name = "Hunt Leviathan", Page_Title = "Hunt Leviathan" })
+HuntSection = HuntPage.CreateSection("Boost Fps & Remove Fog")
 repeat
     task.wait(0.5)
 until LP.Team ~= nil and LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
 
-HuntTab:CreateSwitch("Remove Fog", true, "Clear all fog for better vision", function(val)
+HuntSection.CreateToggle({ Title = "Remove Fog", Desc = "Clear all fog for better vision", Default = true }, function(val)
     _G.XoaSuongMu = val
 end)
 _G.BoostFPS_Executed = false
-HuntTab:CreateSwitch("Boost Fps", false, "Extreme FPS boost & Remove Sound", function(val)
+HuntSection.CreateToggle({ Title = "Boost Fps", Desc = "Extreme FPS boost & Remove Sound", Default = false }, function(val)
     if val and not _G.BoostFPS_Executed then
         _G.BoostFPS_Executed = true
         task.spawn(function()
@@ -5317,17 +5229,17 @@ HuntTab:CreateSwitch("Boost Fps", false, "Extreme FPS boost & Remove Sound", fun
         end)
     end
 end)
-HuntTab:CreatePageTitle("Sea Event & Setup")
+HuntSection = HuntPage.CreateSection("Sea Event & Setup")
 
-HuntTab:CreateSwitch("Use Gun For Sea Event", false, "Auto use Dragonstorm or Skull Guitar", function(val)
+HuntSection.CreateToggle({ Title = "Use Gun For Sea Event", Desc = "Auto use Dragonstorm or Skull Guitar", Default = false }, function(val)
     _G.UseGunEvent = val
 end)
 
-HuntTab:CreateSwitch("Use M1 Fruit For Sea Event", false, "Auto use M1 Fruit for all sea events", function(val)
+HuntSection.CreateToggle({ Title = "Use M1 Fruit For Sea Event", Desc = "Auto use M1 Fruit for all sea events", Default = false }, function(val)
     _G.UseM1FruitEvent = val
 end)
 
-HuntTab:CreateMultiDropdown("Select Sea Events", {"Leviathan"}, {"Piranha", "Terrorshark", "Shark", "PirateBrigade", "PirateGrandBrigade", "FishBoat", "Sea Beast", "Leviathan"}, "Select events to hunt", function(val)
+BananaMultiDropdown(HuntSection, "Select Sea Events", {"Leviathan"}, {"Piranha", "Terrorshark", "Shark", "PirateBrigade", "PirateGrandBrigade", "FishBoat", "Sea Beast", "Leviathan"}, function(val)
     _G.SelectedEvents = val
 end)
 local danhSachNguoiChoi = {}
@@ -5362,7 +5274,7 @@ end
 local CurrentBoatDisplay = "Beast Hunter"
 _G.TenThuyen = FormatBoatForRemote(CurrentBoatDisplay)
 
-local BoatDropdown = HuntTab:CreateDropdown("Select Boat", CurrentBoatDisplay, GetBoatDisplayList(), "Select boat to buy", function(val)
+local BoatDropdown = HuntSection.CreateDropdown({ Title = "Select Boat", List = GetBoatDisplayList(), Search = true, Selected = false, Default = CurrentBoatDisplay }, function(val)
     CurrentBoatDisplay = val
     _G.TenThuyen = FormatBoatForRemote(val)
 end)
@@ -5383,7 +5295,7 @@ task.spawn(function()
 end)
 ---------
 
-local BoatBuyerDropdown = HuntTab:CreateDropdown("Account Buy Boat", LP.Name, danhSachNguoiChoi, "Select the boat buyer account", function(val)
+local BoatBuyerDropdown = HuntSection.CreateDropdown({ Title = "Account Buy Boat", List = danhSachNguoiChoi, Search = true, Selected = false, Default = LP.Name }, function(val)
     _G.NguoiMuaThuyen = val
     if val == LP.Name then
         Library:SendNotification("Role Update", "You are the boat buyer")
@@ -5392,7 +5304,7 @@ local BoatBuyerDropdown = HuntTab:CreateDropdown("Account Buy Boat", LP.Name, da
     end
 end)
 
-HuntTab:CreateButton("Refresh Player List", "Update players in server", function()
+HuntSection.CreateButton({ Title = "Refresh Player List", Desc = "Update players in server" }, function()
     local newList = {}
     for _, p in ipairs(Players:GetPlayers()) do
         table.insert(newList, p.Name)
@@ -5404,46 +5316,44 @@ HuntTab:CreateButton("Refresh Player List", "Update players in server", function
 end)
 
 
-HuntTab:CreateDropdown("Required Players", "5", {"1", "2", "3", "4", "5", "6"}, "Players needed on boat to start", function(val)
+HuntSection.CreateDropdown({ Title = "Required Players", List = {"1", "2", "3", "4", "5", "6"}, Search = true, Selected = false, Default = "5" }, function(val)
     _G.SoNguoiCanThiet = tonumber(val)
     Library:SendNotification("Hunt Config", "Required players set to " .. val)
 end)
-HuntTab:CreatePageTitle("Drive Boat & Shoot Heart")
+HuntSection = HuntPage.CreateSection("Drive Boat & Shoot Heart")
 
-HuntTab:CreateSwitch("Drive Boat To Tiki", false, "Auto Shoot & drive to Tiki with heart", function(val)
+HuntSection.CreateToggle({ Title = "Drive Boat To Tiki", Desc = "Auto Shoot & drive to Tiki with heart", Default = false }, function(val)
     _G.DriveToTiki = val
     if val then 
         _G.DriveToHydra = false 
     end
 end)
 
-HuntTab:CreateSwitch("Drive Boat To Hydra", false, "Auto Shoot & drive to Hydra with heart", function(val)
+HuntSection.CreateToggle({ Title = "Drive Boat To Hydra", Desc = "Auto Shoot & drive to Hydra with heart", Default = false }, function(val)
     _G.DriveToHydra = val
     if val then 
         _G.DriveToTiki = false 
     end
 end)
-HuntTab:CreateSlider("Pull Y Height", 0, 100, 35, "Set flight height for dragging heart", function(val)
+HuntSection.CreateSlider({ Title = "Pull Y Height", Min = 0, Max = 100, Default = 35, Precise = true }, function(val)
     _G.PullYHeight = val
 end)
-HuntTab:CreateSwitch("Shoot Heart", false, "Enable shooting and dragging heart", function(val)
+HuntSection.CreateToggle({ Title = "Shoot Heart", Desc = "Enable shooting and dragging heart", Default = false }, function(val)
     _G.ShootHeart = val
 end)
-HuntTab:CreatePageTitle("Hunt Leviathan")
-HuntTab:CreateSwitch("Destroy IDK", false, "Destroy IDK to hunt Leviathan if spy says I Don't Know", function(val)
+HuntSection = HuntPage.CreateSection("Hunt Leviathan")
+HuntSection.CreateToggle({ Title = "Destroy IDK", Desc = "Destroy IDK to hunt Leviathan if spy says I Don't Know", Default = false }, function(val)
     _G.DestroyIDK = val
 end)
 
-HuntTab:CreateParagraph("Destroy IDK Explanation", 
-    "🇻🇳 [VIETNAMESE]\n" ..
+BananaParagraph(HuntSection, "Destroy IDK Explanation", "🇻🇳 [VIETNAMESE]\n" ..
     "• Khi BẬT: Bỏ qua Sea Event, tập trung 100% tìm/đánh Leviathan. Đánh xong nếu bị IDK sẽ tự đi phá IDK.\n" ..
     "• Khi TẮT: Chạy đa nhiệm (Multi-task), vừa đi tìm Leviathan vừa tự động đánh sạch các Sea Event xuất hiện trên đường.\n\n" ..
     "🇬🇧 [ENGLISH]\n" ..
     "• When ON: Ignores minor Sea Events, focuses 100% on finding/killing Leviathan. Destroy IDK if stuck after killing.\n" ..
-    "• When OFF: Multi-tasks by hunting all nearby Sea Events while simultaneously searching for Leviathan."
-)
+    "• When OFF: Multi-tasks by hunting all nearby Sea Events while simultaneously searching for Leviathan.")
 
-HuntTab:CreateSwitch("Start Hunt", false, "Start hunting Leviathan process", function(val)
+HuntSection.CreateToggle({ Title = "Start Hunt", Desc = "Start hunting Leviathan process", Default = false }, function(val)
     _G.DangSan = val
     if val then
         Library:SendNotification("Hunt Status", "Hunting Started")
@@ -5452,14 +5362,14 @@ HuntTab:CreateSwitch("Start Hunt", false, "Start hunting Leviathan process", fun
     end
 end)
 
-local CraftTab = Window:CreateTab("Craft Scrolls", false, "rbxassetid://92082782484537")
-CraftTab:CreatePageTitle("Auto Craft Config")
+CraftPage = Main.CreatePage({ Page_Name = "Craft Scrolls", Page_Title = "Craft Scrolls" })
+CraftSection = CraftPage.CreateSection("Auto Craft Config")
 
-CraftTab:CreateMultiDropdown("Select Scrolls", {}, {"Common Scroll", "Rare Scroll", "Legendary Scroll", "Mythical Scroll"}, "Select which scrolls to auto craft", function(val)
+BananaMultiDropdown(CraftSection, "Select Scrolls", {}, {"Common Scroll", "Rare Scroll", "Legendary Scroll", "Mythical Scroll"}, function(val)
     _G.SelectedScrolls = val
 end)
 
-CraftTab:CreateSwitch("Enable Auto Craft", false, "Toggle auto craft for selected scrolls", function(val)
+CraftSection.CreateToggle({ Title = "Enable Auto Craft", Desc = "Toggle auto craft for selected scrolls", Default = false }, function(val)
     _G.AutoCraftScrollSwitch = val
 end)
 
@@ -5475,100 +5385,100 @@ task.spawn(function()
     end
 end)
 
-CraftTab:CreateSlider("Common Scroll Cap", 0, 50, 0, "Max limit for Common Scrolls", function(val)
+CraftSection.CreateSlider({ Title = "Common Scroll Cap", Min = 0, Max = 50, Default = 0, Precise = true }, function(val)
     ScrollCaps.CommonScroll = val
 end)
 
-CraftTab:CreateSlider("Rare Scroll Cap", 0, 50, 0, "Max limit for Rare Scrolls", function(val)
+CraftSection.CreateSlider({ Title = "Rare Scroll Cap", Min = 0, Max = 50, Default = 0, Precise = true }, function(val)
     ScrollCaps.RareScroll = val
 end)
 
-CraftTab:CreateSlider("Legendary Scroll Cap", 0, 15, 15, "Max limit for Legendary Scrolls", function(val)
+CraftSection.CreateSlider({ Title = "Legendary Scroll Cap", Min = 0, Max = 15, Default = 15, Precise = true }, function(val)
     ScrollCaps.LegendaryScroll = val
 end)
 
-CraftTab:CreateSlider("Mythical Scroll Cap", 0, 10, 10, "Max limit for Mythical Scrolls", function(val)
+CraftSection.CreateSlider({ Title = "Mythical Scroll Cap", Min = 0, Max = 10, Default = 10, Precise = true }, function(val)
     ScrollCaps.MythicalScroll = val
 end)
 
-local WebhookTab = Window:CreateTab("Webhook Config", false, "rbxassetid://7733779610")
-WebhookTab:CreatePageTitle("Discord Webhook")
+WebhookPage = Main.CreatePage({ Page_Name = "Webhook Config", Page_Title = "Webhook Config" })
+WebhookSection = WebhookPage.CreateSection("Discord Webhook")
 
-WebhookTab:CreateSwitch("Enable Webhook", false, "Turn on/off webhook notifications", function(val)
+WebhookSection.CreateToggle({ Title = "Enable Webhook", Desc = "Turn on/off webhook notifications", Default = false }, function(val)
     _G.WebhookLevi.Enabled = val
 end)
 
-WebhookTab:CreateInput("Webhook URL", "Paste your webhook link here...", "", "URL to send discord messages", false, function(val)
+WebhookSection.CreateBox({ Title = "Webhook URL", Placeholder = "Paste your webhook link here...", Number = false, Default = nil }, function(val)
     _G.WebhookLevi.Url = val
 end)
 
-WebhookTab:CreateInput("Discord User ID", "E.g: 123456789012345678", "", "Leave blank to ping everyone", true, function(val)
+WebhookSection.CreateBox({ Title = "Discord User ID", Placeholder = "E.g: 123456789012345678", Number = true, Default = nil }, function(val)
     _G.WebhookLevi.DiscordID = val
 end)
 
-WebhookTab:CreateSwitch("Enable Ping", false, "Ping everyone or specific user ID", function(val)
+WebhookSection.CreateToggle({ Title = "Enable Ping", Desc = "Ping everyone or specific user ID", Default = false }, function(val)
     _G.WebhookLevi.PingEnabled = val
 end)
 
-WebhookTab:CreatePageTitle("Notification Events")
+WebhookSection = WebhookPage.CreateSection("Notification Events")
 
-WebhookTab:CreateSwitch("Notify Found Dimension", false, "Send alert when Frozen dimension is found", function(val)
+WebhookSection.CreateToggle({ Title = "Notify Found Dimension", Desc = "Send alert when Frozen dimension is found", Default = false }, function(val)
     _G.WebhookLevi.NotifyWatcher = val
 end)
 
-WebhookTab:CreateSwitch("Notify Shoot Heart", false, "Send alert when successfully shooted heart", function(val)
+WebhookSection.CreateToggle({ Title = "Notify Shoot Heart", Desc = "Send alert when successfully shooted heart", Default = false }, function(val)
     _G.WebhookLevi.NotifyShoot = val
 end)
 
-WebhookTab:CreateSwitch("Notify Heart Delivered", false, "Send alert when boat dragged heart to island", function(val)
+WebhookSection.CreateToggle({ Title = "Notify Heart Delivered", Desc = "Send alert when boat dragged heart to island", Default = false }, function(val)
     _G.WebhookLevi.NotifyDelivered = val
 end)
 
-WebhookTab:CreateSwitch("Notify Material Stats", false, "Send material summary after heart claimed", function(val)
+WebhookSection.CreateToggle({ Title = "Notify Material Stats", Desc = "Send material summary after heart claimed", Default = false }, function(val)
     _G.WebhookLevi.NotifyInventory = val
 end)
 
-local SkillTab = Window:CreateTab("Selection Skill", false, "rbxassetid://88966134653623")
-SkillTab:CreatePageTitle("Auto Skill Config")
+SkillPage = Main.CreatePage({ Page_Name = "Selection Skill", Page_Title = "Selection Skill" })
+SkillSection = SkillPage.CreateSection("Auto Skill Config")
 
-SkillTab:CreateMultiDropdown("Melee Skills", {"Z", "X", "C"}, {"Z", "X", "C"}, "Select Melee Skills", function(val)
+BananaMultiDropdown(SkillSection, "Melee Skills", {"Z", "X", "C"}, {"Z", "X", "C"}, function(val)
     _G.SelectedMelee = val
 end)
 
-SkillTab:CreateMultiDropdown("Blox Fruit Skills", {"Z", "X", "C", "F"}, {"Z", "X", "C", "V", "F"}, "Select Blox Fruit Skills", function(val)
+BananaMultiDropdown(SkillSection, "Blox Fruit Skills", {"Z", "X", "C", "F"}, {"Z", "X", "C", "V", "F"}, function(val)
     _G.SelectedFruit = val
 end)
 
-SkillTab:CreateMultiDropdown("Gun Skills", {"Z", "X"}, {"Z", "X"}, "Select Gun Skills", function(val)
+BananaMultiDropdown(SkillSection, "Gun Skills", {"Z", "X"}, {"Z", "X"}, function(val)
     _G.SelectedGun = val
 end)
 
-SkillTab:CreateMultiDropdown("Sword Skills", {"Z", "X"}, {"Z", "X"}, "Select Sword Skills", function(val)
+BananaMultiDropdown(SkillSection, "Sword Skills", {"Z", "X"}, {"Z", "X"}, function(val)
     _G.SelectedSword = val
 end)
-SkillTab:CreatePageTitle("Delay Skill Config")
+SkillSection = SkillPage.CreateSection("Delay Skill Config")
 _G.SkillDelayMelee = 100
-SkillTab:CreateSlider("Melee Delay (ms)", 0, 1000, 100, "Delay for Melee Skills (ms)", function(val)
+SkillSection.CreateSlider({ Title = "Melee Delay (ms)", Min = 0, Max = 1000, Default = 100, Precise = true }, function(val)
     _G.SkillDelayMelee = val
 end)
 
 _G.SkillDelayFruit = 100
-SkillTab:CreateSlider("Fruit Delay (ms)", 0, 1000, 100, "Delay for Fruit Skills (ms)", function(val)
+SkillSection.CreateSlider({ Title = "Fruit Delay (ms)", Min = 0, Max = 1000, Default = 100, Precise = true }, function(val)
     _G.SkillDelayFruit = val
 end)
 
 _G.SkillDelayGun = 100
-SkillTab:CreateSlider("Gun Delay (ms)", 0, 1000, 100, "Delay for Gun Skills (ms)", function(val)
+SkillSection.CreateSlider({ Title = "Gun Delay (ms)", Min = 0, Max = 1000, Default = 100, Precise = true }, function(val)
     _G.SkillDelayGun = val
 end)
 
 _G.SkillDelaySword = 100
-SkillTab:CreateSlider("Sword Delay (ms)", 0, 1000, 100, "Delay for Sword Skills (ms)", function(val)
+SkillSection.CreateSlider({ Title = "Sword Delay (ms)", Min = 0, Max = 1000, Default = 100, Precise = true }, function(val)
     _G.SkillDelaySword = val
 end)
 
 _G.NoSkillDelay = true
-SkillTab:CreateSwitch("Use Skill No Delay", true, "Use 0.05s ultra fast delay", function(val)
+SkillSection.CreateToggle({ Title = "Use Skill No Delay", Desc = "Use 0.05s ultra fast delay", Default = true }, function(val)
     _G.NoSkillDelay = val
 end)
 

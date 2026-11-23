@@ -8,13 +8,6 @@
     - Funciones: Hunt Leviathan, Craft Scrolls, Shop & Status, Webhook Config, Selection Skill
     - Para usarlo: pega/ejecuta este archivo completo en tu executor.
 ]]
--- Anti-duplicate: a second execution while this one is running is ignored (this is what showed two Leviathan Trackers)
-if getgenv().__BananaKaitunAlive and tick() - getgenv().__BananaKaitunAlive < 6 then
-    warn("[Banana Kaitun Leviathan] already running - second execution ignored")
-    return
-end
-getgenv().__BananaKaitunAlive = tick()
-
 -- ===== Banana Loading UI Progress (same screen as the Banana Cat Hub) =====
 -- While the script loads it shows the loading bar; when everything is ready the SAME box (same position)
 -- turns into the "Banana Kaitun Leviathan" status card with a blinking green light (script is active).
@@ -209,7 +202,6 @@ do
         local t0 = os.clock()
         while not L.done do
             task.wait(0.1)
-            getgenv().__BananaKaitunAlive = tick()
             local el = os.clock() - t0
             L.Set(3 + 92 * (1 - math.exp(-el / 6)))
             if el > 120 then L.Done() end
@@ -907,12 +899,6 @@ local function ChangeTheme(themeName)
     for _, grad in pairs(UI_Elements.MainStrokeGrads) do applySpatialWave(grad, nil, {Color = newT.StrokeGrad}) end
 end
 
-pcall(function()
-    for _, root in ipairs({ (gethui and gethui()) or game:GetService("CoreGui"), LP:FindFirstChild("PlayerGui") }) do
-        local old = root and root:FindFirstChild("Meyy6RaceV3")
-        if old then old:Destroy() end
-    end
-end)
 local KaitunGui = Instance.new("ScreenGui")
 KaitunGui.Name = "Meyy6RaceV3"
 KaitunGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -5740,9 +5726,6 @@ HuntSection = HuntPage.CreateSection("Hunt Leviathan")
 HuntSection.CreateToggle({ Title = "Destroy IDK", Desc = "Destroy IDK to hunt Leviathan if spy says I Don't Know", Default = false }, function(val)
     _G.DestroyIDK = val
 end)
-HuntSection.CreateToggle({ Title = "Pay Leviathan Spy", Desc = "Pays Fragments to the Spy for the Leviathan info. OFF = never spends Fragments", Default = false }, function(val)
-    _G.PayLeviathanSpy = val and true or false
-end)
 HuntSection.CreateToggle({ Title = "Start Hunt", Desc = "Start hunting Leviathan process", Default = false }, function(val)
     _G.DangSan = val
     if val then
@@ -5758,6 +5741,10 @@ BananaParagraph(HuntSection, "Destroy IDK Explanation", "🇻🇳 [VIETNAMESE]\n
     "🇬🇧 [ENGLISH]\n" ..
     "• When ON: Ignores minor Sea Events, focuses 100% on finding/killing Leviathan. Destroy IDK if stuck after killing.\n" ..
     "• When OFF: Multi-tasks by hunting all nearby Sea Events while simultaneously searching for Leviathan.")
+
+HuntSection.CreateToggle({ Title = "Pay Leviathan Spy", Desc = "Pays Fragments to the Spy for the Leviathan info. OFF = never spends Fragments", Default = false }, function(val)
+    _G.PayLeviathanSpy = val and true or false
+end)
 
 
 CraftPage = Main.CreatePage({ Page_Name = "Craft Scrolls", Page_Title = "Craft Scrolls" })
@@ -6266,13 +6253,6 @@ task.spawn(function()
                 end
             end)
         end
-    end
-end)
-
-task.spawn(function()
-    while true do
-        getgenv().__BananaKaitunAlive = tick()
-        task.wait(2)
     end
 end)
 

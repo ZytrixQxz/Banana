@@ -8,6 +8,13 @@
     - Funciones: Hunt Leviathan, Craft Scrolls, Shop & Status, Webhook Config, Selection Skill
     - Para usarlo: pega/ejecuta este archivo completo en tu executor.
 ]]
+-- Anti-duplicate: a second execution while this one is running is ignored (this is what showed two Leviathan Trackers)
+if getgenv().__BananaKaitunAlive and tick() - getgenv().__BananaKaitunAlive < 6 then
+    warn("[Banana Kaitun Leviathan] already running - second execution ignored")
+    return
+end
+getgenv().__BananaKaitunAlive = tick()
+
 -- ===== Banana Loading UI Progress (same screen as the Banana Cat Hub) =====
 -- While the script loads it shows the loading bar; when everything is ready the SAME box (same position)
 -- turns into the "Banana Kaitun Leviathan" status card with a blinking green light (script is active).
@@ -116,15 +123,28 @@ do
         stroke.Thickness = 1
         stroke.Transparency = 0.55
         stroke.Parent = box
-        TweenService_:Create(box, TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Size = UDim2.new(0, 340, 0, 56) }):Play()
+        TweenService_:Create(box, TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Size = UDim2.new(0, 320, 0, 52), Position = UDim2.new(0.5, 0, 0, 10) }):Play()
 
         -- blinking green light
+        local content = Instance.new("Frame")
+        content.BackgroundTransparency = 1
+        content.AnchorPoint = Vector2.new(0.5, 0.5)
+        content.Position = UDim2.new(0.5, 0, 0.5, 0)
+        content.Size = UDim2.new(0, 0, 0, 32)
+        content.AutomaticSize = Enum.AutomaticSize.X
+        content.Parent = box
+        local contentLayout = Instance.new("UIListLayout")
+        contentLayout.FillDirection = Enum.FillDirection.Horizontal
+        contentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        contentLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+        contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        contentLayout.Padding = UDim.new(0, 12)
+        contentLayout.Parent = content
         local holder = Instance.new("Frame")
         holder.BackgroundTransparency = 1
-        holder.AnchorPoint = Vector2.new(0, 0.5)
-        holder.Position = UDim2.new(0, 24, 0.5, 0)
+        holder.LayoutOrder = 1
         holder.Size = UDim2.new(0, 32, 0, 32)
-        holder.Parent = box
+        holder.Parent = content
         local ring = Instance.new("Frame")
         ring.AnchorPoint = Vector2.new(0.5, 0.5)
         ring.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -147,16 +167,16 @@ do
 
         local name = Instance.new("TextLabel")
         name.BackgroundTransparency = 1
-        name.AnchorPoint = Vector2.new(0, 0.5)
-        name.Position = UDim2.new(0, 68, 0.5, 0)
-        name.Size = UDim2.new(1, -84, 0, 26)
+        name.LayoutOrder = 2
+        name.AutomaticSize = Enum.AutomaticSize.X
+        name.Size = UDim2.new(0, 0, 0, 26)
         name.Font = Enum.Font.GothamBold
         name.TextSize = 18
         name.TextXAlignment = Enum.TextXAlignment.Left
         name.TextColor3 = Color3.fromRGB(255, 255, 255)
         name.Text = "Banana Kaitun Leviathan"
         name.TextTransparency = 1
-        name.Parent = box
+        name.Parent = content
         TweenService_:Create(name, TweenInfo.new(0.35), { TextTransparency = 0 }):Play()
 
         -- dot blinks, ring pulses outwards (loops forever while the script is alive)
@@ -189,6 +209,7 @@ do
         local t0 = os.clock()
         while not L.done do
             task.wait(0.1)
+            getgenv().__BananaKaitunAlive = tick()
             local el = os.clock() - t0
             L.Set(3 + 92 * (1 - math.exp(-el / 6)))
             if el > 120 then L.Done() end
@@ -886,6 +907,12 @@ local function ChangeTheme(themeName)
     for _, grad in pairs(UI_Elements.MainStrokeGrads) do applySpatialWave(grad, nil, {Color = newT.StrokeGrad}) end
 end
 
+pcall(function()
+    for _, root in ipairs({ (gethui and gethui()) or game:GetService("CoreGui"), LP:FindFirstChild("PlayerGui") }) do
+        local old = root and root:FindFirstChild("Meyy6RaceV3")
+        if old then old:Destroy() end
+    end
+end)
 local KaitunGui = Instance.new("ScreenGui")
 KaitunGui.Name = "Meyy6RaceV3"
 KaitunGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -5713,6 +5740,9 @@ HuntSection = HuntPage.CreateSection("Hunt Leviathan")
 HuntSection.CreateToggle({ Title = "Destroy IDK", Desc = "Destroy IDK to hunt Leviathan if spy says I Don't Know", Default = false }, function(val)
     _G.DestroyIDK = val
 end)
+HuntSection.CreateToggle({ Title = "Pay Leviathan Spy", Desc = "Pays Fragments to the Spy for the Leviathan info. OFF = never spends Fragments", Default = false }, function(val)
+    _G.PayLeviathanSpy = val and true or false
+end)
 HuntSection.CreateToggle({ Title = "Start Hunt", Desc = "Start hunting Leviathan process", Default = false }, function(val)
     _G.DangSan = val
     if val then
@@ -5728,10 +5758,6 @@ BananaParagraph(HuntSection, "Destroy IDK Explanation", "🇻🇳 [VIETNAMESE]\n
     "🇬🇧 [ENGLISH]\n" ..
     "• When ON: Ignores minor Sea Events, focuses 100% on finding/killing Leviathan. Destroy IDK if stuck after killing.\n" ..
     "• When OFF: Multi-tasks by hunting all nearby Sea Events while simultaneously searching for Leviathan.")
-
-HuntSection.CreateToggle({ Title = "Pay Leviathan Spy", Desc = "Pays Fragments to the Spy for the Leviathan info. OFF = never spends Fragments", Default = false }, function(val)
-    _G.PayLeviathanSpy = val and true or false
-end)
 
 
 CraftPage = Main.CreatePage({ Page_Name = "Craft Scrolls", Page_Title = "Craft Scrolls" })
@@ -6240,6 +6266,13 @@ task.spawn(function()
                 end
             end)
         end
+    end
+end)
+
+task.spawn(function()
+    while true do
+        getgenv().__BananaKaitunAlive = tick()
+        task.wait(2)
     end
 end)
 

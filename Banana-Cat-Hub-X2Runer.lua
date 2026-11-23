@@ -4940,4 +4940,10223 @@ return ebgzqifrwa, lebidlyjyf
                                 getgenv().limit_type("clearAll")
                             end)
                             wait(4)
-         
+                        end
+                        numberValue = numberValue2
+                    end
+                end
+            end
+
+            while wait() do
+                HopServerLess()
+            end
+        end
+
+        SectionServer.CreateButton({Title = "Hop Server Less People"}, function()
+            HopLessAll()
+        end)
+
+        function MoonTextureId()
+            if game.PlaceId ~= getgenv().CheckPlaceId3 then
+                if game.PlaceId ~= getgenv().CheckPlaceId2 then
+                    if game.PlaceId ~= getgenv().CheckPlaceId then
+                        return
+                    end
+                    return game:GetService("Lighting").Sky.MoonTextureId
+                end
+                return game:GetService("Lighting").FantasySky.MoonTextureId
+            end
+            return game:GetService("Lighting").Sky.MoonTextureId
+        end
+
+        function CheckMoon()
+            local value = MoonTextureId()
+            if value ~= "http://www.roblox.com/asset/?id=9709149431" then
+                if value ~= "http://www.roblox.com/asset/?id=9709149052" then
+                    return "Bad Moon"
+                end
+                return "Next Night"
+            end
+            return "Full Moon"
+        end
+
+        function function6()
+            return math.floor(game.Lighting.ClockTime)
+        end
+
+        local handler = function()
+            RealTime = tostring(math.floor(game.Lighting.ClockTime * 100) / 100)
+            RealTime = tostring(game.Lighting.ClockTime)
+            RealTimeTable = RealTime:split(".")
+            local value = RealTimeTable[1]
+            local numberValue = tonumber(0 + tonumber(RealTimeTable[2] / 100)) * 60
+            Minute = RealTimeTable[1]
+            Second = numberValue
+            return Minute, Second
+        end
+
+        getServerTime = handler
+
+        function function8()
+            local numberValue = 910603417
+            local numberValue2 = 913039940
+            local clockTime = game.Lighting.ClockTime
+            if CheckMoon() == "Full Moon" and clockTime <= 5 then
+                return tostring(function6()) .. " ( Will End Moon In " .. math.floor(5 - clockTime) .. " Minutes )"
+            end
+            if CheckMoon() == "Full Moon" and (clockTime > 5 and clockTime < 12) then
+                return tostring(function6()) .. " ( Fake Moon )"
+            end
+            if CheckMoon() == "Full Moon" and (clockTime > 12 and clockTime < 18) then
+                return tostring(function6()) .. " ( Will Full Moon In " .. math.floor(18 - clockTime) .. " Minutes )"
+            end
+            if CheckMoon() == "Full Moon" and (clockTime > 18 and clockTime <= 24) then
+                return tostring(function6()) .. " ( Will End Moon In " .. math.floor(30 - clockTime) .. " Minutes )"
+            end
+            if CheckMoon() == "Next Night" and clockTime < 12 then
+                return tostring(function6()) .. " ( Will Full Moon In " .. math.floor(18 - clockTime) .. " Minutes )"
+            end
+            if CheckMoon() == "Next Night" and clockTime > 12 then
+                return tostring(function6()) .. " ( Will Full Moon In " .. math.floor(30 - clockTime) .. " Minutes )"
+            end
+            return tostring(function6())
+        end
+
+        function CheckAcientOneDracoStatus()
+            if game.Players.LocalPlayer.Character:FindFirstChild("RaceTransformed") then
+                local response, value, value2 = game.ReplicatedStorage.Remotes.CommF_:InvokeServer("UpgradeRace", "Check", 2)
+                if response ~= 1 then
+                    if response ~= 2 then
+                        if response ~= 4 then
+                            if response ~= 7 then
+                                if response ~= 3 then
+                                    if response ~= 5 then
+                                        if response ~= 6 then
+                                            if response ~= 8 then
+                                                if response ~= 0 then
+                                                    return "You have yet to achieve greatness"
+                                                end
+                                                return "Ready For Trial"
+                                            end
+                                            return "Remaining " .. 10 - value .. " training sessions."
+                                        end
+                                        return "Upgrades completed: " .. value - 2 .. "/3, Need Trains More"
+                                    end
+                                    return "You Are Done Your Race."
+                                end
+                                return "Required Train More"
+                            end
+                            return "Can Buy Gear With " .. value2 .. " Fragments"
+                        end
+                        return "Can Buy Gear With " .. value2 .. " Fragments"
+                    end
+                    return "Can Buy Gear With " .. value2 .. " Fragments"
+                end
+                return "Required Train More"
+            end
+            if game.PlaceId ~= getgenv().CheckPlaceId then
+                return "You have yet to achieve greatness"
+            end
+            local response = game.workspace.HydraIslandClient.RemoteFunction:InvokeServer("Interacted")
+            if response ~= 1 then
+                if response ~= 2 then
+                    if response ~= 3 then
+                        if response ~= 4 then
+                            return "You have yet to achieve greatness"
+                        end
+                        return "Ready For Trial"
+                    end
+                    return "Ready For Trial"
+                end
+                return "Ready For Trial"
+            end
+            return "Ready For Trial"
+        end
+
+        local handler2 = function()
+            if game.Players.LocalPlayer.Character:FindFirstChild("RaceTransformed") then
+                local response, value, value2 = game.ReplicatedStorage.Remotes.CommF_:InvokeServer("UpgradeRace", "Check")
+                if response ~= 1 then
+                    if response ~= 2 then
+                        if response ~= 4 then
+                            if response ~= 7 then
+                                if response ~= 3 then
+                                    if response ~= 5 then
+                                        if response ~= 6 then
+                                            if response ~= 8 then
+                                                if response ~= 0 then
+                                                    return "You have yet to achieve greatness"
+                                                end
+                                                return "Ready For Trial"
+                                            end
+                                            return "Remaining " .. 10 - value .. " training sessions."
+                                        end
+                                        return "Upgrades completed: " .. value - 2 .. "/3, Need Trains More"
+                                    end
+                                    return "You Are Done Your Race."
+                                end
+                                return "Required Train More"
+                            end
+                            return "Can Buy Gear With " .. value2 .. " Fragments"
+                        end
+                        return "Can Buy Gear With " .. value2 .. " Fragments"
+                    end
+                    return "Can Buy Gear With " .. value2 .. " Fragments"
+                end
+                return "Required Train More"
+            end
+            return "You have yet to achieve greatness"
+        end
+
+        local sharedState2 = {}
+        sharedState2.value = nil
+        local sharedState3 = {}
+        sharedState3.value = 0
+
+        function CheckAcientOneStatus()
+            if sharedState2.value and tick() - sharedState3.value < 1 then
+                return sharedState2.value
+            end
+            sharedState2.value = handler2()
+            sharedState3.value = tick()
+            return sharedState2.value
+        end
+
+        function ResetRaceStatus()
+            sharedState2.value = nil
+        end
+
+        local handler3 = function()
+            local value = CheckAcientOneStatus()
+            if string.find(value, "Upgrades completed") then
+                return true
+            end
+            if value ~= "Required Train More" then
+                if string.find(value, "training sessions.") then
+                    return true
+                end
+                if string.find(value, "Can Buy Gear") then
+                    return true
+                end
+                return
+            end
+            return true
+        end
+
+        CheckGoTrain = handler3
+
+        local handler4 = function()
+            if game.Lighting.ClockTime >= 18 then
+                return "Night"
+            end
+            if game.Lighting.ClockTime < 5 then
+                return "Night"
+            end
+            return "Day"
+        end
+
+        Runtime.guardKey4 = sharedState.value + 3715591874
+        CheckClockTime = handler4
+
+        function StatusCheckLeviathan()
+            if game.PlaceId ~= getgenv().CheckPlaceId then
+                return "..."
+            end
+            if game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(
+                "InfoLeviathan",
+                "1"
+            ) ~= -1 then
+                if game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(
+                    "InfoLeviathan",
+                    "1"
+                ) ~= 5 then
+                    return "Buy Find leviathan"
+                end
+                return "You can find leviathan now"
+            end
+            return "I DONT KNOW"
+        end
+
+        function IsMobAlive(inputValue)
+            if not inputValue then
+                return
+            end
+            if not inputValue.Parent then
+                return
+            end
+            if not inputValue:FindFirstChild("HumanoidRootPart") then
+                return
+            end
+            if not inputValue:FindFirstChildWhichIsA("Humanoid") then
+                return
+            end
+            if not (inputValue.Humanoid.Health > 0) then
+                return
+            end
+            do
+                return true
+            end
+        end
+
+        local data2 = {"Deandre", "Urban", "Diablo"}
+
+        function DetectEliteHunter()
+            local value = next
+            local children, value2 = game:GetService("ReplicatedStorage"):GetChildren()
+            local b_1 = 2
+            local nextEntry4 = createIterator(value, children, value2)
+            while true do
+                local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                if not hasEntry16 then
+                    break
+                end
+                do
+                    local value3 = entryValue12
+                    if value3:IsA("Model") and (table.find(data2, value3.Name) and IsMobAlive(value3)) then
+                        return value3
+                    end
+                end
+            end
+            local value3
+            nextEntry4 = value3
+            local value4
+            local value5 = value4
+            local value6
+            local value7 = value6
+            local b_0
+            b_1 = b_0
+            local value8 = next
+            local children2, value9 = game:GetService("Workspace").Enemies:GetChildren()
+            b_1 = 2
+            nextEntry4 = createIterator(value8, children2, value9)
+            while true do
+                local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                if not hasEntry16 then
+                    break
+                end
+                do
+                    local value10 = entryValue12
+                    if value10:IsA("Model") and (table.find(data2, value10.Name) and IsMobAlive(value10)) then
+                        return value10
+                    end
+                end
+            end
+        end
+
+        blackScreen2 = 0
+        lastCheckTime = tick()
+
+        function GetOldestLocation()
+            local value, value2, value3 = ipairs(workspace._WorldOrigin.Locations:GetChildren())
+            local huge = math.huge
+            local value4 = nil
+            local M_1 = 2
+            local X_1 = createIterator(value, value2, value3)
+            while true do
+                local value5, value6, value7 = X_1()
+                if value5 then
+                    local value8 = value7
+                    local exitReason = nil
+                    while true do
+                        local attribute = value8:GetAttribute("TimeIn")
+                        if attribute then
+                            if not (attribute < huge) then
+                                exitReason = 1
+                                break
+                            end
+                            do
+                                huge = attribute
+                                value4 = value8
+                                local value9, value10, value11 = X_1()
+                                if value9 then
+                                    value8 = value11
+                                    continue
+                                end
+                            end
+                        else
+                            exitReason = 1
+                        end
+                        break
+                    end
+                    if exitReason == 1 then
+                        continue
+                    end
+                end
+                break
+            end
+            return value4
+        end
+
+        spawn(function()
+            while wait(0.25) do
+                local ok, result3 = pcall(function()
+                    local numberValue = 2240586139
+                    local numberValue2 = 191845188
+                    local distributedGameTime = game.workspace.DistributedGameTime
+                    local numberValue3 = 168050
+                    local numberValue4 = math.floor(game.workspace.DistributedGameTime / 60 % 60)
+                    TimerLabel.SetText(string.format(
+                        "Timer: %.0fh %.0fm %.0fs",
+                        math.floor(distributedGameTime / 3600),
+                        numberValue4,
+                        distributedGameTime % 60
+                    ))
+                    local value = GetOldestLocation()
+                    if value then
+                        local getAttribute = value.GetAttribute
+                        local value2 = value.GetAttribute(value, "TimeIn")
+                        local numberValue5 = tick() - 25200 - value2
+                        math.floor(numberValue5 / 14400)
+                        local numberValue6 = 14400 - numberValue5 % 14400
+                        local numberValue7 = math.floor((14400 - numberValue5 % 14400) / 3600)
+                        local numberValue8 = math.floor((14400 - numberValue5 % 14400) % 3600 / 60)
+                        local numberValue9 = math.floor((14400 - numberValue5 % 14400) % 60)
+                        local numberValue10 = math.floor(numberValue5 / 3600)
+                        local numberValue11 = math.floor(numberValue5 % 3600 / 60)
+                        local numberValue12 = math.floor(numberValue5 % 60)
+                        local numberValue13 = (numberValue - 6666966) // 6666966
+                        TimerServerLabel.SetText(string.format(
+                            "Server Timer: %.0fh %.0fm %.0fs",
+                            numberValue10,
+                            numberValue11,
+                            numberValue12
+                        ))
+                        NextTimerServerLabel.SetText(string.format(
+                            "Next Time Spawn Fist of Darkness or God's Chalice: %.0fh %.0fm %.0fs",
+                            numberValue7,
+                            numberValue8,
+                            numberValue9
+                        ))
+                        if tonumber(numberValue7) == 0 and (tonumber(numberValue8) == 0 and tonumber(numberValue9) <= 5) then
+                            getgenv().GoCollectChest = true
+                        end
+                        numberValue = numberValue13 + 2240585804
+                    end
+                    if DetectEliteHunter() then
+                        StatusEliteHunter.SetText("Elite Hunter: ✅")
+                    else
+                        StatusEliteHunter.SetText("Elite Hunter: ❌")
+                    end
+                    if game.PlaceId == getgenv().CheckPlaceId then
+                        blackScreen2 = 0
+                        if workspace.Map:FindFirstChild("TikiOutpost") then
+                            local islandModel = workspace.Map.TikiOutpost.IslandModel
+                            if workspace.Map.TikiOutpost.IslandModel then
+                                local data3 = {}
+                                local numberValue5 = 1
+                                local numberValue6 = 4
+                                local numberValue7 = 0
+                                local exitReason = nil
+                                local value2, exitReason2, findFirstChild, findFirstChild2, value3
+                                while true do
+                                    numberValue7 += numberValue5
+                                    if numberValue5 <= 0 then
+                                        exitReason = 1
+                                    else
+                                        if numberValue7 <= numberValue6 then
+                                            value2 = numberValue7
+                                            exitReason2 = nil
+                                            while true do
+                                                findFirstChild = islandModel.FindFirstChild
+                                                findFirstChild2 = islandModel.FindFirstChild
+                                                value3 = findFirstChild(islandModel, "Eye" .. value2, true)
+                                                if value3 then
+                                                    table.insert(data3, value3)
+                                                    numberValue7 += numberValue5
+                                                    if numberValue5 <= 0 then
+                                                        if numberValue7 >= numberValue6 then
+                                                            value2 = numberValue7
+                                                            continue
+                                                        end
+                                                    elseif numberValue7 <= numberValue6 then
+                                                        value2 = numberValue7
+                                                        continue
+                                                    end
+                                                else
+                                                    exitReason2 = 1
+                                                end
+                                                break
+                                            end
+                                            if exitReason2 == 1 then
+                                                continue
+                                            end
+                                        end
+                                    end
+                                    break
+                                end
+                                if exitReason == 1 and numberValue7 >= numberValue6 then
+                                    value2 = numberValue7
+                                    while true do
+                                        exitReason2 = nil
+                                        while true do
+                                            findFirstChild = islandModel.FindFirstChild
+                                            findFirstChild2 = islandModel.FindFirstChild
+                                            value3 = findFirstChild(islandModel, "Eye" .. value2, true)
+                                            if value3 then
+                                                table.insert(data3, value3)
+                                                numberValue7 += numberValue5
+                                                if numberValue5 <= 0 then
+                                                    if numberValue7 >= numberValue6 then
+                                                        value2 = numberValue7
+                                                        continue
+                                                    end
+                                                elseif numberValue7 <= numberValue6 then
+                                                    value2 = numberValue7
+                                                    continue
+                                                end
+                                            else
+                                                exitReason2 = 1
+                                            end
+                                            break
+                                        end
+                                        if exitReason2 == 1 then
+                                            local exitReason3 = nil
+                                            while true do
+                                                numberValue7 += numberValue5
+                                                if numberValue5 <= 0 then
+                                                    exitReason3 = 1
+                                                else
+                                                    if numberValue7 <= numberValue6 then
+                                                        value2 = numberValue7
+                                                        exitReason2 = nil
+                                                        while true do
+                                                            findFirstChild = islandModel.FindFirstChild
+                                                            findFirstChild2 = islandModel.FindFirstChild
+                                                            value3 = findFirstChild(islandModel, "Eye" .. value2, true)
+                                                            if value3 then
+                                                                table.insert(data3, value3)
+                                                                numberValue7 += numberValue5
+                                                                if numberValue5 <= 0 then
+                                                                    if numberValue7 >= numberValue6 then
+                                                                        value2 = numberValue7
+                                                                        continue
+                                                                    end
+                                                                elseif numberValue7 <= numberValue6 then
+                                                                    value2 = numberValue7
+                                                                    continue
+                                                                end
+                                                            else
+                                                                exitReason2 = 1
+                                                            end
+                                                            break
+                                                        end
+                                                        if exitReason2 == 1 then
+                                                            continue
+                                                        end
+                                                    end
+                                                end
+                                                break
+                                            end
+                                            if exitReason3 == 1 and numberValue7 >= numberValue6 then
+                                                value2 = numberValue7
+                                                continue
+                                            end
+                                        end
+                                        break
+                                    end
+                                end
+                                local value4
+                                numberValue7 = value4
+                                local value5
+                                numberValue6 = value5
+                                local value6
+                                numberValue5 = value6
+                                local b_0
+                                local b_1 = b_0
+                                local value7, value8, value9 = ipairs(data3)
+                                b_1 = 2
+                                numberValue7 = createIterator(value7, value8, value9)
+                                local hasEntry16, entryKey16, entryValue12 = numberValue7()
+                                if hasEntry16 then
+                                    local value10 = entryValue12
+                                    while true do
+                                        if value10.Transparency == 1 and blackScreen2 < 4 then
+                                            blackScreen2 += 1
+                                        end
+                                        local hasEntry17, entryKey17, entryValue13 = numberValue7()
+                                        if hasEntry17 then
+                                            value10 = entryValue13
+                                            continue
+                                        end
+                                        break
+                                    end
+                                end
+                                numberValue7 = value4
+                                numberValue6 = value5
+                                numberValue5 = value6
+                                b_1 = b_0
+                            end
+                        end
+                        numberValue2 = 191845188
+                    end
+                    StatusTyrant.SetText("Tyrant Eyes: " .. tostring(blackScreen2) .. " Eyes")
+                    local commF = game.ReplicatedStorage.Remotes.CommF_
+                    local invokeServer = game.ReplicatedStorage.Remotes.CommF_.InvokeServer
+                    local text = game.ReplicatedStorage.Remotes.CommF_.InvokeServer(commF, "CakePrinceSpawner", true)
+                    text = text or ""
+                    if text:find("open the portal now") then
+                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer("CakePrinceSpawner")
+                        numberValue3 = numberValue3 + numberValue2 - 191845188
+                    end
+                    StatusKatakuri.SetText("Cake Prince: " .. string.gsub(text, "%D", "") .. " Mobs")
+                    Statusspy.SetText("Leviathan: " .. StatusCheckLeviathan())
+                    local map = workspace.Map
+                    local numberValue5 = 2397303519
+                    if workspace.Map.FindFirstChild(map, "MysticIsland") then
+                        StatusMirage.SetText("Mirage Island: ✅")
+                    else
+                        StatusMirage.SetText("Mirage Island: ❌")
+                    end
+                    if workspace.Map:FindFirstChild("PrehistoricIsland") then
+                        StatusPrehistoricIsland.SetText("Prehistoric Island: ✅")
+                    else
+                        StatusPrehistoricIsland.SetText("Prehistoric Island: ❌")
+                    end
+                    if workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension") then
+                        StatusFrozenDimension.SetText("Frozen Dimension: ✅")
+                    else
+                        StatusFrozenDimension.SetText("Frozen Dimension: ❌")
+                    end
+                    StatusGear.SetText("Ancient One: " .. CheckAcientOneStatus())
+                    if getgenv().StatusGearDraco then
+                        getgenv().StatusGearDraco.SetText("Draco: " .. CheckAcientOneDracoStatus())
+                    end
+                    StatusMoon.SetText("Moon Phase: " .. CheckMoon() .. " | " .. function8())
+                end)
+                if result3 then
+                    print(result3)
+                end
+            end
+        end)
+        print("[Banana Cat Hub] Loading 03_local_player.lua (24%)")
+        LocalPlayerMain = Main.CreatePage({Page_Name = "LocalPlayer", Page_Title = "LocalPlayer"})
+        SectionLocalPlayerMain = LocalPlayerMain.CreateSection("Local Player")
+        createToggle2 = SectionLocalPlayerMain.CreateToggle
+        Runtime.data3 = {Title = "Auto Translate", Desc = "It may take a bit longer to translate the first time."}
+        Runtime.guardState4 = bit32.lshift(Runtime.guardState25, 27)
+        Runtime.autoTranslate = Settings["Auto Translate"]
+        return sharedState, createButton, data, handler, handler2, sharedState2, sharedState3, handler3, handler4, data2, Settings["Auto Translate"]
+    end
+
+    -- Initialize configuration interface
+    function Features.initializeConfigurationInterface()
+        local sharedState, sharedState2 = {}, {}
+        Runtime.data3.Default = Runtime.autoTranslate
+        createToggle2(Runtime.data3, function(inputValue)
+            SaveSettings("Auto Translate", inputValue)
+        end)
+
+        local handler = function()
+            getgenv().noclip = false
+            if TweenManager.ForceRelease then
+                TweenManager.ForceRelease()
+                return
+            end
+            TweenManager.CancelCurrent()
+        end
+
+        SectionLocalPlayerMain.CreateButton({Title = "Stop Tween"}, handler)
+        local createButton = SectionLocalPlayerMain.CreateButton
+
+        local handler2 = function()
+            local numberValue = 2872740322
+            local numberValue2 = 3621019817
+            local bfStopTweenGui = getgenv().__BF_StopTweenGui
+            if bfStopTweenGui and bfStopTweenGui.Parent then
+                bfStopTweenGui:Destroy()
+                getgenv().__BF_StopTweenGui = nil
+                return
+            end
+            local screenGui = Instance.new("ScreenGui")
+            local coreGui = game.CoreGui
+            screenGui.Name = "BF_StopTween"
+            screenGui.ResetOnSpawn = false
+            screenGui.Parent = coreGui
+            getgenv().__BF_StopTweenGui = screenGui
+            local textButton = Instance.new("TextButton")
+            local value = bit32.band(numberValue, numberValue2)
+            textButton.Name = "StopTween"
+            textButton.Size = UDim2.new(0, 110, 0, 38)
+            textButton.Position = UDim2.new(0.5, -55, 0.30000001192092896, 0)
+            textButton.BackgroundColor3 = Color3.new(0.13725490868091583, 0.13725490868091583, 0.13725490868091583)
+            textButton.TextColor3 = Color3.new(1, 1, 1)
+            textButton.Text = "Stop Tween"
+            textButton.Parent = screenGui
+            local UserInputService = game:GetService("UserInputService")
+            local position = nil
+            local position2 = nil
+            local value2 = nil
+            local condition = nil
+            local inputBegan = textButton.InputBegan
+            local numberValue3 = 56163241
+
+            local handler3 = function(targetRoot)
+                if targetRoot.UserInputType ~= Enum.UserInputType.MouseButton1 and targetRoot.UserInputType ~= Enum.UserInputType.Touch then
+                    return
+                end
+                position = targetRoot.Position
+                position2 = textButton.Position
+                value2 = targetRoot
+                condition = false
+            end
+
+            numberValue3 = 522656079
+            textButton.InputBegan.Connect(inputBegan, handler3)
+            local inputChanged = textButton.InputChanged
+            local numberValue4 = 5080200
+
+            local handler4 = function(inputValue)
+                if inputValue.UserInputType ~= Enum.UserInputType.MouseMovement then
+                    return
+                end
+                value2 = inputValue
+            end
+
+            numberValue4 = 369082119
+            textButton.InputChanged.Connect(inputChanged, handler4)
+            local inputChanged2 = UserInputService.InputChanged
+
+            local handler5 = function(targetRoot)
+                if not position then
+                    return
+                end
+                if not (targetRoot == value2) then
+                    return
+                end
+                do
+                    local numberValue5 = targetRoot.Position - position
+                    if not ((targetRoot.Position - position).Magnitude > 5) then
+                        return
+                    end
+                    do
+                        condition = true
+                        textButton.Position = UDim2.new(
+                            position2.X.Scale,
+                            position2.X.Offset + numberValue5.X,
+                            position2.Y.Scale,
+                            position2.Y.Offset + numberValue5.Y
+                        )
+                        return
+                    end
+                end
+            end
+
+            local value3 = UserInputService.InputChanged.Connect(inputChanged2, handler5)
+            local numberValue5 = 47849197
+
+            local handler6 = function(input)
+                if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+                    if input ~= value2 then
+                        return
+                    end
+                    position = nil
+                    return
+                end
+                position = nil
+            end
+
+            numberValue5 = 29065283
+            local connection = UserInputService.InputEnded:Connect(handler6)
+            local activated = textButton.Activated
+            local numberValue6 = 455357953
+
+            local handler7 = function()
+                if condition then
+                    return
+                end
+                handler()
+            end
+
+            numberValue6 = 401144095
+            textButton.Activated.Connect(activated, handler7)
+            screenGui.Destroying:Connect(function()
+                value3:Disconnect()
+                connection:Disconnect()
+            end)
+        end
+
+        sharedState.value = bit32.bor(Runtime.guardKey4, Runtime.guardState4)
+        createButton({Title = "Show/Hide Floating Stop Tween"}, handler2)
+
+        local handler3 = function()
+            require(game:GetService("ReplicatedStorage").Modules.LastInput).IsMobile = function()
+                return true
+            end
+
+            wait(0.5)
+            Runtime.localPlayer2.Character.Humanoid.Health = 0
+        end
+
+        SectionLocalPlayerMain.CreateButton({Title = "Fix UI Button Game"}, handler3)
+        SectionLocalPlayerMain.CreateButton({Title = "Load config in Web"}, function()
+            local HttpService2 = game:GetService("HttpService")
+            game:GetService("RunService")
+            local text = "https://cfg.banana-hub.xyz"
+            local key = getgenv().Key
+            local name = game.Players.LocalPlayer.Name
+
+            function ApplyConfigFromWeb(y)
+                for k, value in pairs(y) do
+                    if not value.name then
+                        continue
+                    end
+                    k = Options[value.name]
+                    if Options[value.name] and value then
+                        if value.value ~= nil and (Options[value.name].type ~= "slider_dropdown" and Options[value.name].type ~= "priority_dropdown") then
+                            if Options[value.name].FunctionCreate and Options[value.name].FunctionCreate.SetValue then
+                                if Options[value.name].type == "box" then
+                                    k.FunctionCreate.SetValue(tostring(value.value))
+                                elseif Options[value.name].type == "dropdown" then
+                                    k.FunctionCreate.SetValue(value.value)
+                                elseif Options[value.name].type == "slider" then
+                                    k.FunctionCreate.SetValue(value.value)
+                                else
+                                    k.FunctionCreate:SetValue(value.value)
+                                end
+                            elseif Options[value.name].FunctionCreate and Options[value.name].FunctionCreate.SetStage then
+                                k.FunctionCreate.SetStage(value.value)
+                            end
+                        end
+                        if k.type == "priority_dropdown" and (value.selected and (k.FunctionCreate and k.FunctionCreate.SetValue)) then
+                            k.FunctionCreate.SetValue(value.selected)
+                        end
+                        if k.type == "slider_dropdown" and value.values then
+                            for y, value2 in pairs(value.values) do
+                                if k.FunctionCreate and k.FunctionCreate.SetSubValue then
+                                    k.FunctionCreate:SetSubValue(y, value2)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+
+            local ok, result3 = pcall(function()
+                return request({
+                    Url = string.format(
+                        "%s/config/get?authId=%s&userId=%s&roblox=true",
+                        text,
+                        HttpService2:UrlEncode(key),
+                        HttpService2:UrlEncode(name)
+                    ),
+                    Method = "GET",
+                })
+            end)
+            if not ok then
+                return
+            end
+            if not (result3.StatusCode == 200) then
+                return
+            end
+            do
+                local data = HttpService2:JSONDecode(result3.Body)
+                ApplyConfigFromWeb(data)
+                return
+            end
+        end)
+        SectionLocalPlayerMain.CreateButton({Title = "Push Data To Web ( just push when join game,if push again plz rejoin )"}, function()
+            local HttpService2 = game:GetService("HttpService")
+            local text = "https://cfg.banana-hub.xyz"
+
+            function BuildSchema()
+                local nextEntry4, nextEntry22, hasEntry17, entryKey17, entryValue12, hasEntry24
+                local entryKey24, entryValue23, hasEntry18, entryKey25, entryValue13, entryKey18
+                local list, min, max, step, min2, color, size, bold, list2, min3, max2, step2, min4
+                local clone, list3, clone2, clone3, clone4, list4, clone5, list5, list6, pageName
+                local sectionName, value21, value23, value32, value42, value52, value62, value72
+                local value82, value92, value102, value112, value122, value132, value142, value152
+                local value162, value172, value182, value192, value202, value212, value222, value232
+                local value24, value25, value26, value27, data11, numberValue14, value28, data22
+                local data32, value29, numberValue22, guardState8, value30, value31, value210
+                local value33, data42, value43, value53, value63, numberValue32, numberValue42
+                local data52, data62, numberValue52, guardKey8, value35, data72, value36, value37
+                local data82, textValue, data92, value38, data102, value312, value322, value332
+                local value34
+                local State2 = {}
+                State2.iterationResults = {}
+                State2.features = {}
+                do
+                    guardState8 = 3867064384
+                    guardKey8 = 4121129759
+                    data102 = {}
+                    local value, value2, value3 = pairs(Options)
+                    numberValue14 = 1
+                    numberValue42 = 2
+                    nextEntry22 = createIterator(value, value2, value3)
+                    numberValue22 = 333172421
+                    hasEntry17, entryKey17, entryValue12 = nextEntry22()
+                    value21, value23, value32, hasEntry18 = value, value2, value3, hasEntry17
+                end
+                if hasEntry18 then
+                    entryKey25 = entryKey17
+                    entryValue13 = entryValue12
+                    pageName = entryValue12.Page_Name
+                    if entryValue12.Page_Name then
+                        sectionName = entryValue13.Section_Name
+                        if not entryValue13.Section_Name then
+                            sectionName = "Default Section"
+                        end
+                        textValue = tostring(numberValue14)
+                        if entryValue13.type ~= "toggle" then
+                            if entryValue13.type ~= "button" then
+                                if entryValue13.type ~= "textlabel" then
+                                    if entryValue13.type ~= "box" then
+                                        numberValue52 = numberValue22 + guardState8
+                                        if entryValue13.type == "slider" then
+                                            while true do
+                                                local value
+                                                data11 = {name = entryKey25, type = "slider"}
+                                                min = entryValue13.min
+                                                if not entryValue13.min then
+                                                    min = 0
+                                                end
+                                                local value2
+                                                data11.min = min
+                                                max = entryValue13.max
+                                                if not entryValue13.max then
+                                                    max = 100
+                                                end
+                                                local value3
+                                                data11.max = max
+                                                step = entryValue13.step
+                                                if not entryValue13.step then
+                                                    step = 1
+                                                end
+                                                local value4
+                                                data11.step = step
+                                                min2 = entryValue13.value
+                                                if not entryValue13.value then
+                                                    local value5
+                                                    min2 = entryValue13.min
+                                                    if not entryValue13.min then
+                                                        min2 = 0
+                                                    end
+                                                end
+                                                data11.value = min2
+                                                data11.page = pageName
+                                                data11.section = sectionName
+                                                data102[textValue] = data11
+                                                value38 = nil
+                                                while true do
+                                                    numberValue22 = numberValue52 + 427902912
+                                                    value29 = nil
+                                                    while true do
+                                                        local value5
+                                                        numberValue14 += 1
+                                                        hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                        if hasEntry24 then
+                                                            local value6
+                                                            entryKey25 = entryKey24
+                                                            entryValue13 = entryValue23
+                                                            pageName = entryValue23.Page_Name
+                                                            if not entryValue23.Page_Name then
+                                                                pageName = "Default Page"
+                                                            end
+                                                            local value7
+                                                            sectionName = entryValue13.Section_Name
+                                                            if not entryValue13.Section_Name then
+                                                                sectionName = "Default Section"
+                                                            end
+                                                            local value8
+                                                            textValue = tostring(numberValue14)
+                                                            if entryValue13.type ~= "toggle" then
+                                                                local value9
+                                                                if entryValue13.type ~= "button" then
+                                                                    local value10
+                                                                    if entryValue13.type ~= "textlabel" then
+                                                                        local value11
+                                                                        if entryValue13.type ~= "box" then
+                                                                            value29 = 1
+                                                                            break
+                                                                        else
+                                                                            local value12
+                                                                            data22 = {
+                                                                                name = entryKey25,
+                                                                                type = "box",
+                                                                            }
+                                                                            value28 = entryValue13.value
+                                                                            if not entryValue13.value then
+                                                                                value28 = ""
+                                                                            end
+                                                                            data22.value = value28
+                                                                            data22.page = pageName
+                                                                            data22.section = sectionName
+                                                                            data102[textValue] = data22
+                                                                            continue
+                                                                        end
+                                                                    else
+                                                                        local value11
+                                                                        if entryValue13.FunctionCreate then
+                                                                            local value12
+                                                                            if entryValue13.FunctionCreate.GetText then
+                                                                                local value13
+                                                                                entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                if not entryKey18 then
+                                                                                    local value14
+                                                                                    entryKey18 = entryValue13.text
+                                                                                    if not entryValue13.text then
+                                                                                        entryKey18 = entryKey25
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                local value13
+                                                                                entryKey18 = entryValue13.text
+                                                                                if not entryValue13.text then
+                                                                                    entryKey18 = entryKey25
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            local value12
+                                                                            entryKey18 = entryValue13.text
+                                                                            if not entryValue13.text then
+                                                                                entryKey18 = entryKey25
+                                                                            end
+                                                                        end
+                                                                        local value12
+                                                                        data32 = {
+                                                                            name = entryKey25,
+                                                                            type = "label",
+                                                                            value = entryKey18,
+                                                                            text = entryKey18,
+                                                                        }
+                                                                        color = entryValue13.color
+                                                                        if not entryValue13.color then
+                                                                            color = "#B8B8B8"
+                                                                        end
+                                                                        local value13
+                                                                        data32.color = color
+                                                                        size = entryValue13.size
+                                                                        if not entryValue13.size then
+                                                                            size = "14px"
+                                                                        end
+                                                                        local value14
+                                                                        data32.size = size
+                                                                        bold = entryValue13.bold
+                                                                        if not entryValue13.bold then
+                                                                            bold = false
+                                                                        end
+                                                                        data32.bold = bold
+                                                                        data32.page = pageName
+                                                                        data32.section = sectionName
+                                                                        data102[textValue] = data32
+                                                                        numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                        continue
+                                                                    end
+                                                                else
+                                                                    data102[textValue] = {
+                                                                        name = entryKey25,
+                                                                        type = "button",
+                                                                        value = entryKey25,
+                                                                        text = entryKey25,
+                                                                        page = pageName,
+                                                                        section = sectionName,
+                                                                    }
+                                                                    continue
+                                                                end
+                                                            else
+                                                                data102[textValue] = {
+                                                                    name = entryKey25,
+                                                                    type = "toggle",
+                                                                    value = entryValue13.value,
+                                                                    page = pageName,
+                                                                    section = sectionName,
+                                                                }
+                                                                continue
+                                                            end
+                                                        else
+                                                            break
+                                                        end
+                                                    end
+                                                    if value29 == 1 then
+                                                        local value5
+                                                        numberValue52 = numberValue22 + guardState8
+                                                        if entryValue13.type == "slider" then
+                                                            value38 = 1
+                                                            break
+                                                        else
+                                                            local value6
+                                                            if entryValue13.type ~= "dropdown" then
+                                                                local value7
+                                                                if entryValue13.type ~= "priority_dropdown" then
+                                                                    local value8
+                                                                    if entryValue13.type ~= "multi_toggle" then
+                                                                        local value9
+                                                                        if not (entryValue13.type ~= "slider_dropdown") then
+                                                                            local value10
+                                                                            data52 = {}
+                                                                            data62 = {}
+                                                                            value30 = pairs
+                                                                            list2 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list2 = {}
+                                                                            end
+                                                                            local value11, value12
+                                                                            local value13
+                                                                            local value14
+                                                                            do
+                                                                                local value15, value16, value17 = value30(list2)
+                                                                                numberValue32 = 2
+                                                                                nextEntry4 = createIterator(
+                                                                                    value15,
+                                                                                    value16,
+                                                                                    value17
+                                                                                )
+                                                                                value31, value210, value33 = nextEntry4()
+                                                                                value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                            end
+                                                                            if value14 then
+                                                                                value312 = value210
+                                                                                value322 = value33
+                                                                                while true do
+                                                                                    local value15
+                                                                                    data42 = {}
+                                                                                    min3 = value322.min
+                                                                                    if not value322.min then
+                                                                                        min3 = 0
+                                                                                    end
+                                                                                    local value16
+                                                                                    data42.min = min3
+                                                                                    max2 = value322.max
+                                                                                    if not value322.max then
+                                                                                        max2 = 100
+                                                                                    end
+                                                                                    local value17
+                                                                                    data42.max = max2
+                                                                                    step2 = value322.step
+                                                                                    if not value322.step then
+                                                                                        step2 = 1
+                                                                                    end
+                                                                                    local value18
+                                                                                    data42.step = step2
+                                                                                    data52[value312] = data42
+                                                                                    if entryValue13.value then
+                                                                                        local value19
+                                                                                        min4 = entryValue13.value[value312]
+                                                                                        if not entryValue13.value[value312] then
+                                                                                            local value20
+                                                                                            min4 = value322.Default
+                                                                                            if not value322.Default then
+                                                                                                local value22
+                                                                                                min4 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min4 = 0
+                                                                                                end
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value19
+                                                                                        min4 = value322.Default
+                                                                                        if not value322.Default then
+                                                                                            local value20
+                                                                                            min4 = value322.min
+                                                                                            if not value322.min then
+                                                                                                min4 = 0
+                                                                                            end
+                                                                                        end
+                                                                                    end
+                                                                                    local value19
+                                                                                    data62[value312] = min4
+                                                                                    value43, value53, value63 = nextEntry4()
+                                                                                    if value43 then
+                                                                                        value312 = value53
+                                                                                        value322 = value63
+                                                                                        continue
+                                                                                    end
+                                                                                    break
+                                                                                end
+                                                                            end
+                                                                            local value15, value16
+                                                                            do
+                                                                                nextEntry4 = nextEntry22
+                                                                                local q_2Result = value332
+                                                                                local __2Result = value34
+                                                                                numberValue32 = numberValue42
+                                                                                data102[textValue] = {
+                                                                                    name = entryKey25,
+                                                                                    type = "slider_dropdown",
+                                                                                    sliders = data52,
+                                                                                    values = data62,
+                                                                                    page = pageName,
+                                                                                    section = sectionName,
+                                                                                }
+                                                                                numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                value15, value16 = q_2Result, __2Result
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        local value9
+                                                                        data72 = {
+                                                                            name = entryKey25,
+                                                                            type = "multi_toggle",
+                                                                        }
+                                                                        clone = table.clone
+                                                                        list3 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list3 = {}
+                                                                        end
+                                                                        local value10
+                                                                        data72.options = clone(list3)
+                                                                        clone2 = table.clone
+                                                                        value35 = entryValue13.value
+                                                                        if not entryValue13.value then
+                                                                            value35 = {}
+                                                                        end
+                                                                        data72.value = clone2(value35)
+                                                                        data72.page = pageName
+                                                                        data72.section = sectionName
+                                                                        data102[textValue] = data72
+                                                                    end
+                                                                else
+                                                                    local value8
+                                                                    clone3 = table.clone
+                                                                    value36 = entryValue13.value
+                                                                    if not entryValue13.value then
+                                                                        value36 = {}
+                                                                    end
+                                                                    local value9
+                                                                    value37 = clone3(value36)
+                                                                    data82 = {
+                                                                        name = entryKey25,
+                                                                        type = "priority_dropdown",
+                                                                    }
+                                                                    clone4 = table.clone
+                                                                    list4 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list4 = {}
+                                                                    end
+                                                                    data82.options = clone4(list4)
+                                                                    data82.selected = value37
+                                                                    data82.value = value37
+                                                                    data82.page = pageName
+                                                                    data82.section = sectionName
+                                                                    data102[textValue] = data82
+                                                                end
+                                                            else
+                                                                local value7
+                                                                data92 = {
+                                                                    name = entryKey25,
+                                                                    type = "dropdown",
+                                                                }
+                                                                clone5 = table.clone
+                                                                list5 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list5 = {}
+                                                                end
+                                                                local value8
+                                                                data92.options = clone5(list5)
+                                                                list6 = entryValue13.value
+                                                                if entryValue13.value then
+                                                                    local value9
+                                                                    if not list6 then
+                                                                        list6 = ""
+                                                                    end
+                                                                else
+                                                                    local value9
+                                                                    list6 = entryValue13.list
+                                                                    if entryValue13.list then
+                                                                        local value10
+                                                                        list6 = entryValue13.list[1]
+                                                                        if not entryValue13.list[1] then
+                                                                            list6 = ""
+                                                                        end
+                                                                    else
+                                                                        local value10
+                                                                        if not list6 then
+                                                                            list6 = ""
+                                                                        end
+                                                                    end
+                                                                end
+                                                                data92.value = list6
+                                                                data92.page = pageName
+                                                                data92.section = sectionName
+                                                                data102[textValue] = data92
+                                                            end
+                                                            continue
+                                                        end
+                                                    end
+                                                    break
+                                                end
+                                                if value38 == 1 then
+                                                    continue
+                                                end
+                                                break
+                                            end
+                                        else
+                                            if entryValue13.type ~= "dropdown" then
+                                                value62 = nil
+                                                while true do
+                                                    local value
+                                                    if entryValue13.type ~= "priority_dropdown" then
+                                                        local value2
+                                                        if entryValue13.type ~= "multi_toggle" then
+                                                            local value3
+                                                            if not (entryValue13.type ~= "slider_dropdown") then
+                                                                local value4
+                                                                data52 = {}
+                                                                data62 = {}
+                                                                value30 = pairs
+                                                                list2 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list2 = {}
+                                                                end
+                                                                local value5, value6, value7
+                                                                local value8
+                                                                do
+                                                                    local value9, value10, value11 = value30(list2)
+                                                                    numberValue32 = 2
+                                                                    nextEntry4 = createIterator(value9, value10, value11)
+                                                                    value31, value210, value33 = nextEntry4()
+                                                                    value5, value6, value7, value8 = value9, value10, value11, value31
+                                                                end
+                                                                if value8 then
+                                                                    value312 = value210
+                                                                    value322 = value33
+                                                                    while true do
+                                                                        local value9
+                                                                        data42 = {}
+                                                                        min3 = value322.min
+                                                                        if not value322.min then
+                                                                            min3 = 0
+                                                                        end
+                                                                        local value10
+                                                                        data42.min = min3
+                                                                        max2 = value322.max
+                                                                        if not value322.max then
+                                                                            max2 = 100
+                                                                        end
+                                                                        local value11
+                                                                        data42.max = max2
+                                                                        step2 = value322.step
+                                                                        if not value322.step then
+                                                                            step2 = 1
+                                                                        end
+                                                                        local value12
+                                                                        data42.step = step2
+                                                                        data52[value312] = data42
+                                                                        if entryValue13.value then
+                                                                            local value13
+                                                                            min4 = entryValue13.value[value312]
+                                                                            if not entryValue13.value[value312] then
+                                                                                local value14
+                                                                                min4 = value322.Default
+                                                                                if not value322.Default then
+                                                                                    local value15
+                                                                                    min4 = value322.min
+                                                                                    if not value322.min then
+                                                                                        min4 = 0
+                                                                                    end
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            local value13
+                                                                            min4 = value322.Default
+                                                                            if not value322.Default then
+                                                                                local value14
+                                                                                min4 = value322.min
+                                                                                if not value322.min then
+                                                                                    min4 = 0
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                        local value13
+                                                                        data62[value312] = min4
+                                                                        value43, value53, value63 = nextEntry4()
+                                                                        if value43 then
+                                                                            value312 = value53
+                                                                            value322 = value63
+                                                                            continue
+                                                                        end
+                                                                        break
+                                                                    end
+                                                                end
+                                                                local value9, value10
+                                                                do
+                                                                    nextEntry4 = nextEntry22
+                                                                    local q_2Result = value332
+                                                                    local __2Result = value34
+                                                                    numberValue32 = numberValue42
+                                                                    data102[textValue] = {
+                                                                        name = entryKey25,
+                                                                        type = "slider_dropdown",
+                                                                        sliders = data52,
+                                                                        values = data62,
+                                                                        page = pageName,
+                                                                        section = sectionName,
+                                                                    }
+                                                                    numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                    value9, value10 = q_2Result, __2Result
+                                                                end
+                                                            end
+                                                        else
+                                                            local value3
+                                                            data72 = {
+                                                                name = entryKey25,
+                                                                type = "multi_toggle",
+                                                            }
+                                                            clone = table.clone
+                                                            list3 = entryValue13.list
+                                                            if not entryValue13.list then
+                                                                list3 = {}
+                                                            end
+                                                            local value4
+                                                            data72.options = clone(list3)
+                                                            clone2 = table.clone
+                                                            value35 = entryValue13.value
+                                                            if not entryValue13.value then
+                                                                value35 = {}
+                                                            end
+                                                            data72.value = clone2(value35)
+                                                            data72.page = pageName
+                                                            data72.section = sectionName
+                                                            data102[textValue] = data72
+                                                        end
+                                                    else
+                                                        local value2
+                                                        clone3 = table.clone
+                                                        value36 = entryValue13.value
+                                                        if not entryValue13.value then
+                                                            value36 = {}
+                                                        end
+                                                        local value3
+                                                        value37 = clone3(value36)
+                                                        data82 = {
+                                                            name = entryKey25,
+                                                            type = "priority_dropdown",
+                                                        }
+                                                        clone4 = table.clone
+                                                        list4 = entryValue13.list
+                                                        if not entryValue13.list then
+                                                            list4 = {}
+                                                        end
+                                                        data82.options = clone4(list4)
+                                                        data82.selected = value37
+                                                        data82.value = value37
+                                                        data82.page = pageName
+                                                        data82.section = sectionName
+                                                        data102[textValue] = data82
+                                                    end
+                                                    value52 = nil
+                                                    while true do
+                                                        numberValue22 = numberValue52 + 427902912
+                                                        value42 = nil
+                                                        while true do
+                                                            local value2
+                                                            numberValue14 += 1
+                                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                            if hasEntry24 then
+                                                                local value3
+                                                                entryKey25 = entryKey24
+                                                                entryValue13 = entryValue23
+                                                                pageName = entryValue23.Page_Name
+                                                                if not entryValue23.Page_Name then
+                                                                    pageName = "Default Page"
+                                                                end
+                                                                local value4
+                                                                sectionName = entryValue13.Section_Name
+                                                                if not entryValue13.Section_Name then
+                                                                    sectionName = "Default Section"
+                                                                end
+                                                                local value5
+                                                                textValue = tostring(numberValue14)
+                                                                if entryValue13.type ~= "toggle" then
+                                                                    local value6
+                                                                    if entryValue13.type ~= "button" then
+                                                                        local value7
+                                                                        if entryValue13.type ~= "textlabel" then
+                                                                            local value8
+                                                                            if entryValue13.type ~= "box" then
+                                                                                value42 = 1
+                                                                                break
+                                                                            else
+                                                                                local value9
+                                                                                data22 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "box",
+                                                                                }
+                                                                                value28 = entryValue13.value
+                                                                                if not entryValue13.value then
+                                                                                    value28 = ""
+                                                                                end
+                                                                                data22.value = value28
+                                                                                data22.page = pageName
+                                                                                data22.section = sectionName
+                                                                                data102[textValue] = data22
+                                                                                continue
+                                                                            end
+                                                                        else
+                                                                            local value8
+                                                                            if entryValue13.FunctionCreate then
+                                                                                local value9
+                                                                                if entryValue13.FunctionCreate.GetText then
+                                                                                    local value10
+                                                                                    entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                    if not entryKey18 then
+                                                                                        local value11
+                                                                                        entryKey18 = entryValue13.text
+                                                                                        if not entryValue13.text then
+                                                                                            entryKey18 = entryKey25
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    local value10
+                                                                                    entryKey18 = entryValue13.text
+                                                                                    if not entryValue13.text then
+                                                                                        entryKey18 = entryKey25
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                local value9
+                                                                                entryKey18 = entryValue13.text
+                                                                                if not entryValue13.text then
+                                                                                    entryKey18 = entryKey25
+                                                                                end
+                                                                            end
+                                                                            local value9
+                                                                            data32 = {
+                                                                                name = entryKey25,
+                                                                                type = "label",
+                                                                                value = entryKey18,
+                                                                                text = entryKey18,
+                                                                            }
+                                                                            color = entryValue13.color
+                                                                            if not entryValue13.color then
+                                                                                color = "#B8B8B8"
+                                                                            end
+                                                                            local value10
+                                                                            data32.color = color
+                                                                            size = entryValue13.size
+                                                                            if not entryValue13.size then
+                                                                                size = "14px"
+                                                                            end
+                                                                            local value11
+                                                                            data32.size = size
+                                                                            bold = entryValue13.bold
+                                                                            if not entryValue13.bold then
+                                                                                bold = false
+                                                                            end
+                                                                            data32.bold = bold
+                                                                            data32.page = pageName
+                                                                            data32.section = sectionName
+                                                                            data102[textValue] = data32
+                                                                            numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                            continue
+                                                                        end
+                                                                    else
+                                                                        data102[textValue] = {
+                                                                            name = entryKey25,
+                                                                            type = "button",
+                                                                            value = entryKey25,
+                                                                            text = entryKey25,
+                                                                            page = pageName,
+                                                                            section = sectionName,
+                                                                        }
+                                                                        continue
+                                                                    end
+                                                                else
+                                                                    data102[textValue] = {
+                                                                        name = entryKey25,
+                                                                        type = "toggle",
+                                                                        value = entryValue13.value,
+                                                                        page = pageName,
+                                                                        section = sectionName,
+                                                                    }
+                                                                    continue
+                                                                end
+                                                            else
+                                                                break
+                                                            end
+                                                        end
+                                                        if value42 == 1 then
+                                                            local value2
+                                                            numberValue52 = numberValue22 + guardState8
+                                                            if entryValue13.type == "slider" then
+                                                                value52 = 1
+                                                                break
+                                                            else
+                                                                local value3
+                                                                if entryValue13.type ~= "dropdown" then
+                                                                    value52 = 2
+                                                                    break
+                                                                else
+                                                                    local value4
+                                                                    data92 = {
+                                                                        name = entryKey25,
+                                                                        type = "dropdown",
+                                                                    }
+                                                                    clone5 = table.clone
+                                                                    list5 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list5 = {}
+                                                                    end
+                                                                    local value5
+                                                                    data92.options = clone5(list5)
+                                                                    list6 = entryValue13.value
+                                                                    if entryValue13.value then
+                                                                        local value6
+                                                                        if not list6 then
+                                                                            list6 = ""
+                                                                        end
+                                                                    else
+                                                                        local value6
+                                                                        list6 = entryValue13.list
+                                                                        if entryValue13.list then
+                                                                            local value7
+                                                                            list6 = entryValue13.list[1]
+                                                                            if not entryValue13.list[1] then
+                                                                                list6 = ""
+                                                                            end
+                                                                        else
+                                                                            local value7
+                                                                            if not list6 then
+                                                                                list6 = ""
+                                                                            end
+                                                                        end
+                                                                    end
+                                                                    data92.value = list6
+                                                                    data92.page = pageName
+                                                                    data92.section = sectionName
+                                                                    data102[textValue] = data92
+                                                                    continue
+                                                                end
+                                                            end
+                                                        end
+                                                        break
+                                                    end
+                                                    if value52 == 1 then
+                                                        value62 = 1
+                                                        break
+                                                    elseif value52 == 2 then
+                                                        continue
+                                                    end
+                                                    break
+                                                end
+                                                if value62 == 1 then
+                                                    while true do
+                                                        local value
+                                                        data11 = {name = entryKey25, type = "slider"}
+                                                        min = entryValue13.min
+                                                        if not entryValue13.min then
+                                                            min = 0
+                                                        end
+                                                        local value2
+                                                        data11.min = min
+                                                        max = entryValue13.max
+                                                        if not entryValue13.max then
+                                                            max = 100
+                                                        end
+                                                        local value3
+                                                        data11.max = max
+                                                        step = entryValue13.step
+                                                        if not entryValue13.step then
+                                                            step = 1
+                                                        end
+                                                        local value4
+                                                        data11.step = step
+                                                        min2 = entryValue13.value
+                                                        if not entryValue13.value then
+                                                            local value5
+                                                            min2 = entryValue13.min
+                                                            if not entryValue13.min then
+                                                                min2 = 0
+                                                            end
+                                                        end
+                                                        data11.value = min2
+                                                        data11.page = pageName
+                                                        data11.section = sectionName
+                                                        data102[textValue] = data11
+                                                        value38 = nil
+                                                        while true do
+                                                            numberValue22 = numberValue52 + 427902912
+                                                            value29 = nil
+                                                            while true do
+                                                                local value5
+                                                                numberValue14 += 1
+                                                                hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                if hasEntry24 then
+                                                                    local value6
+                                                                    entryKey25 = entryKey24
+                                                                    entryValue13 = entryValue23
+                                                                    pageName = entryValue23.Page_Name
+                                                                    if not entryValue23.Page_Name then
+                                                                        pageName = "Default Page"
+                                                                    end
+                                                                    local value7
+                                                                    sectionName = entryValue13.Section_Name
+                                                                    if not entryValue13.Section_Name then
+                                                                        sectionName = "Default Section"
+                                                                    end
+                                                                    local value8
+                                                                    textValue = tostring(numberValue14)
+                                                                    if entryValue13.type ~= "toggle" then
+                                                                        local value9
+                                                                        if entryValue13.type ~= "button" then
+                                                                            local value10
+                                                                            if entryValue13.type ~= "textlabel" then
+                                                                                local value11
+                                                                                if entryValue13.type ~= "box" then
+                                                                                    value29 = 1
+                                                                                    break
+                                                                                else
+                                                                                    local value12
+                                                                                    data22 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "box",
+                                                                                    }
+                                                                                    value28 = entryValue13.value
+                                                                                    if not entryValue13.value then
+                                                                                        value28 = ""
+                                                                                    end
+                                                                                    data22.value = value28
+                                                                                    data22.page = pageName
+                                                                                    data22.section = sectionName
+                                                                                    data102[textValue] = data22
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                local value11
+                                                                                if entryValue13.FunctionCreate then
+                                                                                    local value12
+                                                                                    if entryValue13.FunctionCreate.GetText then
+                                                                                        local value13
+                                                                                        entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                        if not entryKey18 then
+                                                                                            local value14
+                                                                                            entryKey18 = entryValue13.text
+                                                                                            if not entryValue13.text then
+                                                                                                entryKey18 = entryKey25
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value13
+                                                                                        entryKey18 = entryValue13.text
+                                                                                        if not entryValue13.text then
+                                                                                            entryKey18 = entryKey25
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    local value12
+                                                                                    entryKey18 = entryValue13.text
+                                                                                    if not entryValue13.text then
+                                                                                        entryKey18 = entryKey25
+                                                                                    end
+                                                                                end
+                                                                                local value12
+                                                                                data32 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "label",
+                                                                                    value = entryKey18,
+                                                                                    text = entryKey18,
+                                                                                }
+                                                                                color = entryValue13.color
+                                                                                if not entryValue13.color then
+                                                                                    color = "#B8B8B8"
+                                                                                end
+                                                                                local value13
+                                                                                data32.color = color
+                                                                                size = entryValue13.size
+                                                                                if not entryValue13.size then
+                                                                                    size = "14px"
+                                                                                end
+                                                                                local value14
+                                                                                data32.size = size
+                                                                                bold = entryValue13.bold
+                                                                                if not entryValue13.bold then
+                                                                                    bold = false
+                                                                                end
+                                                                                data32.bold = bold
+                                                                                data32.page = pageName
+                                                                                data32.section = sectionName
+                                                                                data102[textValue] = data32
+                                                                                numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                continue
+                                                                            end
+                                                                        else
+                                                                            data102[textValue] = {
+                                                                                name = entryKey25,
+                                                                                type = "button",
+                                                                                value = entryKey25,
+                                                                                text = entryKey25,
+                                                                                page = pageName,
+                                                                                section = sectionName,
+                                                                            }
+                                                                            continue
+                                                                        end
+                                                                    else
+                                                                        data102[textValue] = {
+                                                                            name = entryKey25,
+                                                                            type = "toggle",
+                                                                            value = entryValue13.value,
+                                                                            page = pageName,
+                                                                            section = sectionName,
+                                                                        }
+                                                                        continue
+                                                                    end
+                                                                else
+                                                                    break
+                                                                end
+                                                            end
+                                                            if value29 == 1 then
+                                                                local value5
+                                                                numberValue52 = numberValue22 + guardState8
+                                                                if entryValue13.type == "slider" then
+                                                                    value38 = 1
+                                                                    break
+                                                                else
+                                                                    local value6
+                                                                    if entryValue13.type ~= "dropdown" then
+                                                                        local value7
+                                                                        if entryValue13.type ~= "priority_dropdown" then
+                                                                            local value8
+                                                                            if entryValue13.type ~= "multi_toggle" then
+                                                                                local value9
+                                                                                if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                    local value10
+                                                                                    data52 = {}
+                                                                                    data62 = {}
+                                                                                    value30 = pairs
+                                                                                    list2 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list2 = {}
+                                                                                    end
+                                                                                    local value11
+                                                                                    local value12
+                                                                                    local value13
+                                                                                    local value14
+                                                                                    do
+                                                                                        local value15, value16, value17 = value30(list2)
+                                                                                        numberValue32 = 2
+                                                                                        nextEntry4 = createIterator(
+                                                                                            value15,
+                                                                                            value16,
+                                                                                            value17
+                                                                                        )
+                                                                                        value31, value210, value33 = nextEntry4()
+                                                                                        value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                                    end
+                                                                                    if value14 then
+                                                                                        value312 = value210
+                                                                                        value322 = value33
+                                                                                        while true do
+                                                                                            local value15
+                                                                                            data42 = {}
+                                                                                            min3 = value322.min
+                                                                                            if not value322.min then
+                                                                                                min3 = 0
+                                                                                            end
+                                                                                            local value16
+                                                                                            data42.min = min3
+                                                                                            max2 = value322.max
+                                                                                            if not value322.max then
+                                                                                                max2 = 100
+                                                                                            end
+                                                                                            local value17
+                                                                                            data42.max = max2
+                                                                                            step2 = value322.step
+                                                                                            if not value322.step then
+                                                                                                step2 = 1
+                                                                                            end
+                                                                                            local value18
+                                                                                            data42.step = step2
+                                                                                            data52[value312] = data42
+                                                                                            if entryValue13.value then
+                                                                                                local value19
+                                                                                                min4 = entryValue13.value[value312]
+                                                                                                if not entryValue13.value[value312] then
+                                                                                                    local value20
+                                                                                                    min4 = value322.Default
+                                                                                                    if not value322.Default then
+                                                                                                        local value22
+                                                                                                        min4 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min4 = 0
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                            else
+                                                                                                local value19
+                                                                                                min4 = value322.Default
+                                                                                                if not value322.Default then
+                                                                                                    local value20
+                                                                                                    min4 = value322.min
+                                                                                                    if not value322.min then
+                                                                                                        min4 = 0
+                                                                                                    end
+                                                                                                end
+                                                                                            end
+                                                                                            local value19
+                                                                                            data62[value312] = min4
+                                                                                            value43, value53, value63 = nextEntry4()
+                                                                                            if value43 then
+                                                                                                value312 = value53
+                                                                                                value322 = value63
+                                                                                                continue
+                                                                                            end
+                                                                                            break
+                                                                                        end
+                                                                                    end
+                                                                                    local value15
+                                                                                    local value16
+                                                                                    do
+                                                                                        nextEntry4 = nextEntry22
+                                                                                        local q_2Result = value332
+                                                                                        local __2Result = value34
+                                                                                        numberValue32 = numberValue42
+                                                                                        data102[textValue] = {
+                                                                                            name = entryKey25,
+                                                                                            type = "slider_dropdown",
+                                                                                            sliders = data52,
+                                                                                            values = data62,
+                                                                                            page = pageName,
+                                                                                            section = sectionName,
+                                                                                        }
+                                                                                        numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                        value15, value16 = q_2Result, __2Result
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                local value9
+                                                                                data72 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "multi_toggle",
+                                                                                }
+                                                                                clone = table.clone
+                                                                                list3 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list3 = {}
+                                                                                end
+                                                                                local value10
+                                                                                data72.options = clone(list3)
+                                                                                clone2 = table.clone
+                                                                                value35 = entryValue13.value
+                                                                                if not entryValue13.value then
+                                                                                    value35 = {}
+                                                                                end
+                                                                                data72.value = clone2(value35)
+                                                                                data72.page = pageName
+                                                                                data72.section = sectionName
+                                                                                data102[textValue] = data72
+                                                                            end
+                                                                        else
+                                                                            local value8
+                                                                            clone3 = table.clone
+                                                                            value36 = entryValue13.value
+                                                                            if not entryValue13.value then
+                                                                                value36 = {}
+                                                                            end
+                                                                            local value9
+                                                                            value37 = clone3(value36)
+                                                                            data82 = {
+                                                                                name = entryKey25,
+                                                                                type = "priority_dropdown",
+                                                                            }
+                                                                            clone4 = table.clone
+                                                                            list4 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list4 = {}
+                                                                            end
+                                                                            data82.options = clone4(list4)
+                                                                            data82.selected = value37
+                                                                            data82.value = value37
+                                                                            data82.page = pageName
+                                                                            data82.section = sectionName
+                                                                            data102[textValue] = data82
+                                                                        end
+                                                                    else
+                                                                        local value7
+                                                                        data92 = {
+                                                                            name = entryKey25,
+                                                                            type = "dropdown",
+                                                                        }
+                                                                        clone5 = table.clone
+                                                                        list5 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list5 = {}
+                                                                        end
+                                                                        local value8
+                                                                        data92.options = clone5(list5)
+                                                                        list6 = entryValue13.value
+                                                                        if entryValue13.value then
+                                                                            local value9
+                                                                            if not list6 then
+                                                                                list6 = ""
+                                                                            end
+                                                                        else
+                                                                            local value9
+                                                                            list6 = entryValue13.list
+                                                                            if entryValue13.list then
+                                                                                local value10
+                                                                                list6 = entryValue13.list[1]
+                                                                                if not entryValue13.list[1] then
+                                                                                    list6 = ""
+                                                                                end
+                                                                            else
+                                                                                local value10
+                                                                                if not list6 then
+                                                                                    list6 = ""
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                        data92.value = list6
+                                                                        data92.page = pageName
+                                                                        data92.section = sectionName
+                                                                        data102[textValue] = data92
+                                                                    end
+                                                                    continue
+                                                                end
+                                                            end
+                                                            break
+                                                        end
+                                                        if value38 == 1 then
+                                                            continue
+                                                        end
+                                                        break
+                                                    end
+                                                end
+                                            else
+                                                data92 = {name = entryKey25, type = "dropdown"}
+                                                clone5 = table.clone
+                                                list = entryValue13.list
+                                                if entryValue13.list then
+                                                    data92.options = clone5(list)
+                                                    list6 = entryValue13.value
+                                                    if entryValue13.value then
+                                                        value92 = nil
+                                                        while true do
+                                                            data92.value = list6
+                                                            data92.page = pageName
+                                                            data92.section = sectionName
+                                                            data102[textValue] = data92
+                                                            value82 = nil
+                                                            while true do
+                                                                numberValue22 = numberValue52 + 427902912
+                                                                value72 = nil
+                                                                while true do
+                                                                    local value
+                                                                    numberValue14 += 1
+                                                                    hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                    if hasEntry24 then
+                                                                        local value2
+                                                                        entryKey25 = entryKey24
+                                                                        entryValue13 = entryValue23
+                                                                        pageName = entryValue23.Page_Name
+                                                                        if not entryValue23.Page_Name then
+                                                                            pageName = "Default Page"
+                                                                        end
+                                                                        local value3
+                                                                        sectionName = entryValue13.Section_Name
+                                                                        if not entryValue13.Section_Name then
+                                                                            sectionName = "Default Section"
+                                                                        end
+                                                                        local value4
+                                                                        textValue = tostring(numberValue14)
+                                                                        if entryValue13.type ~= "toggle" then
+                                                                            local value5
+                                                                            if entryValue13.type ~= "button" then
+                                                                                local value6
+                                                                                if entryValue13.type ~= "textlabel" then
+                                                                                    local value7
+                                                                                    if entryValue13.type ~= "box" then
+                                                                                        value72 = 1
+                                                                                        break
+                                                                                    else
+                                                                                        local value8
+                                                                                        data22 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "box",
+                                                                                        }
+                                                                                        value28 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value28 = ""
+                                                                                        end
+                                                                                        data22.value = value28
+                                                                                        data22.page = pageName
+                                                                                        data22.section = sectionName
+                                                                                        data102[textValue] = data22
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    local value7
+                                                                                    if entryValue13.FunctionCreate then
+                                                                                        local value8
+                                                                                        if entryValue13.FunctionCreate.GetText then
+                                                                                            local value9
+                                                                                            entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                            if not entryKey18 then
+                                                                                                local value10
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value9
+                                                                                            entryKey18 = entryValue13.text
+                                                                                            if not entryValue13.text then
+                                                                                                entryKey18 = entryKey25
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value8
+                                                                                        entryKey18 = entryValue13.text
+                                                                                        if not entryValue13.text then
+                                                                                            entryKey18 = entryKey25
+                                                                                        end
+                                                                                    end
+                                                                                    local value8
+                                                                                    data32 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "label",
+                                                                                        value = entryKey18,
+                                                                                        text = entryKey18,
+                                                                                    }
+                                                                                    color = entryValue13.color
+                                                                                    if not entryValue13.color then
+                                                                                        color = "#B8B8B8"
+                                                                                    end
+                                                                                    local value9
+                                                                                    data32.color = color
+                                                                                    size = entryValue13.size
+                                                                                    if not entryValue13.size then
+                                                                                        size = "14px"
+                                                                                    end
+                                                                                    local value10
+                                                                                    data32.size = size
+                                                                                    bold = entryValue13.bold
+                                                                                    if not entryValue13.bold then
+                                                                                        bold = false
+                                                                                    end
+                                                                                    data32.bold = bold
+                                                                                    data32.page = pageName
+                                                                                    data32.section = sectionName
+                                                                                    data102[textValue] = data32
+                                                                                    numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                data102[textValue] = {
+                                                                                    name = entryKey25,
+                                                                                    type = "button",
+                                                                                    value = entryKey25,
+                                                                                    text = entryKey25,
+                                                                                    page = pageName,
+                                                                                    section = sectionName,
+                                                                                }
+                                                                                continue
+                                                                            end
+                                                                        else
+                                                                            data102[textValue] = {
+                                                                                name = entryKey25,
+                                                                                type = "toggle",
+                                                                                value = entryValue13.value,
+                                                                                page = pageName,
+                                                                                section = sectionName,
+                                                                            }
+                                                                            continue
+                                                                        end
+                                                                    else
+                                                                        break
+                                                                    end
+                                                                end
+                                                                if value72 == 1 then
+                                                                    local value
+                                                                    numberValue52 = numberValue22 + guardState8
+                                                                    if entryValue13.type == "slider" then
+                                                                        value82 = 1
+                                                                        break
+                                                                    else
+                                                                        local value2
+                                                                        if entryValue13.type ~= "dropdown" then
+                                                                            local value3
+                                                                            if entryValue13.type ~= "priority_dropdown" then
+                                                                                local value4
+                                                                                if entryValue13.type ~= "multi_toggle" then
+                                                                                    local value5
+                                                                                    if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                        local value6
+                                                                                        data52 = {}
+                                                                                        data62 = {}
+                                                                                        value30 = pairs
+                                                                                        list2 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list2 = {}
+                                                                                        end
+                                                                                        local value7
+                                                                                        local value8
+                                                                                        local value9
+                                                                                        local value10
+                                                                                        do
+                                                                                            local value11, value12, value13 = value30(list2)
+                                                                                            numberValue32 = 2
+                                                                                            nextEntry4 = createIterator(
+                                                                                                value11,
+                                                                                                value12,
+                                                                                                value13
+                                                                                            )
+                                                                                            value31, value210, value33 = nextEntry4()
+                                                                                            value7, value8, value9, value10 = value11, value12, value13, value31
+                                                                                        end
+                                                                                        if value10 then
+                                                                                            value312 = value210
+                                                                                            value322 = value33
+                                                                                            while true do
+                                                                                                local value11
+                                                                                                data42 = {}
+                                                                                                min3 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min3 = 0
+                                                                                                end
+                                                                                                local value12
+                                                                                                data42.min = min3
+                                                                                                max2 = value322.max
+                                                                                                if not value322.max then
+                                                                                                    max2 = 100
+                                                                                                end
+                                                                                                local value13
+                                                                                                data42.max = max2
+                                                                                                step2 = value322.step
+                                                                                                if not value322.step then
+                                                                                                    step2 = 1
+                                                                                                end
+                                                                                                local value14
+                                                                                                data42.step = step2
+                                                                                                data52[value312] = data42
+                                                                                                if entryValue13.value then
+                                                                                                    local value15
+                                                                                                    min4 = entryValue13.value[value312]
+                                                                                                    if not entryValue13.value[value312] then
+                                                                                                        local value16
+                                                                                                        min4 = value322.Default
+                                                                                                        if not value322.Default then
+                                                                                                            local value17
+                                                                                                            min4 = value322.min
+                                                                                                            if not value322.min then
+                                                                                                                min4 = 0
+                                                                                                            end
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value15
+                                                                                                    min4 = value322.Default
+                                                                                                    if not value322.Default then
+                                                                                                        local value16
+                                                                                                        min4 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min4 = 0
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                                local value15
+                                                                                                data62[value312] = min4
+                                                                                                value43, value53, value63 = nextEntry4()
+                                                                                                if value43 then
+                                                                                                    value312 = value53
+                                                                                                    value322 = value63
+                                                                                                    continue
+                                                                                                end
+                                                                                                break
+                                                                                            end
+                                                                                        end
+                                                                                        local value11
+                                                                                        local value12
+                                                                                        do
+                                                                                            nextEntry4 = nextEntry22
+                                                                                            local q_2Result = value332
+                                                                                            local __2Result = value34
+                                                                                            numberValue32 = numberValue42
+                                                                                            data102[textValue] = {
+                                                                                                name = entryKey25,
+                                                                                                type = "slider_dropdown",
+                                                                                                sliders = data52,
+                                                                                                values = data62,
+                                                                                                page = pageName,
+                                                                                                section = sectionName,
+                                                                                            }
+                                                                                            numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                            value11, value12 = q_2Result, __2Result
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    local value5
+                                                                                    data72 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "multi_toggle",
+                                                                                    }
+                                                                                    clone = table.clone
+                                                                                    list3 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list3 = {}
+                                                                                    end
+                                                                                    local value6
+                                                                                    data72.options = clone(list3)
+                                                                                    clone2 = table.clone
+                                                                                    value35 = entryValue13.value
+                                                                                    if not entryValue13.value then
+                                                                                        value35 = {}
+                                                                                    end
+                                                                                    data72.value = clone2(value35)
+                                                                                    data72.page = pageName
+                                                                                    data72.section = sectionName
+                                                                                    data102[textValue] = data72
+                                                                                end
+                                                                            else
+                                                                                local value4
+                                                                                clone3 = table.clone
+                                                                                value36 = entryValue13.value
+                                                                                if not entryValue13.value then
+                                                                                    value36 = {}
+                                                                                end
+                                                                                local value5
+                                                                                value37 = clone3(value36)
+                                                                                data82 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "priority_dropdown",
+                                                                                }
+                                                                                clone4 = table.clone
+                                                                                list4 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list4 = {}
+                                                                                end
+                                                                                data82.options = clone4(list4)
+                                                                                data82.selected = value37
+                                                                                data82.value = value37
+                                                                                data82.page = pageName
+                                                                                data82.section = sectionName
+                                                                                data102[textValue] = data82
+                                                                            end
+                                                                            continue
+                                                                        else
+                                                                            value82 = 2
+                                                                            break
+                                                                        end
+                                                                    end
+                                                                end
+                                                                break
+                                                            end
+                                                            if value82 == 1 then
+                                                                value92 = 1
+                                                                break
+                                                            elseif value82 == 2 then
+                                                                local value
+                                                                data92 = {
+                                                                    name = entryKey25,
+                                                                    type = "dropdown",
+                                                                }
+                                                                clone5 = table.clone
+                                                                list5 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list5 = {}
+                                                                end
+                                                                local value2
+                                                                data92.options = clone5(list5)
+                                                                list6 = entryValue13.value
+                                                                if not entryValue13.value then
+                                                                    local value3
+                                                                    list6 = entryValue13.list
+                                                                    if entryValue13.list then
+                                                                        local value4
+                                                                        list6 = entryValue13.list[1]
+                                                                        if not entryValue13.list[1] then
+                                                                            list6 = ""
+                                                                        end
+                                                                    else
+                                                                        local value4
+                                                                        if not list6 then
+                                                                            list6 = ""
+                                                                        end
+                                                                    end
+                                                                    continue
+                                                                end
+                                                                local value3
+                                                                if not list6 then
+                                                                    list6 = ""
+                                                                end
+                                                                continue
+                                                            end
+                                                            break
+                                                        end
+                                                        if value92 == 1 then
+                                                            while true do
+                                                                local value
+                                                                data11 = {
+                                                                    name = entryKey25,
+                                                                    type = "slider",
+                                                                }
+                                                                min = entryValue13.min
+                                                                if not entryValue13.min then
+                                                                    min = 0
+                                                                end
+                                                                local value2
+                                                                data11.min = min
+                                                                max = entryValue13.max
+                                                                if not entryValue13.max then
+                                                                    max = 100
+                                                                end
+                                                                local value3
+                                                                data11.max = max
+                                                                step = entryValue13.step
+                                                                if not entryValue13.step then
+                                                                    step = 1
+                                                                end
+                                                                local value4
+                                                                data11.step = step
+                                                                min2 = entryValue13.value
+                                                                if not entryValue13.value then
+                                                                    local value5
+                                                                    min2 = entryValue13.min
+                                                                    if not entryValue13.min then
+                                                                        min2 = 0
+                                                                    end
+                                                                end
+                                                                data11.value = min2
+                                                                data11.page = pageName
+                                                                data11.section = sectionName
+                                                                data102[textValue] = data11
+                                                                value38 = nil
+                                                                while true do
+                                                                    numberValue22 = numberValue52 + 427902912
+                                                                    value29 = nil
+                                                                    while true do
+                                                                        local value5
+                                                                        numberValue14 += 1
+                                                                        hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                        if hasEntry24 then
+                                                                            local value6
+                                                                            entryKey25 = entryKey24
+                                                                            entryValue13 = entryValue23
+                                                                            pageName = entryValue23.Page_Name
+                                                                            if not entryValue23.Page_Name then
+                                                                                pageName = "Default Page"
+                                                                            end
+                                                                            local value7
+                                                                            sectionName = entryValue13.Section_Name
+                                                                            if not entryValue13.Section_Name then
+                                                                                sectionName = "Default Section"
+                                                                            end
+                                                                            local value8
+                                                                            textValue = tostring(numberValue14)
+                                                                            if entryValue13.type ~= "toggle" then
+                                                                                local value9
+                                                                                if entryValue13.type ~= "button" then
+                                                                                    local value10
+                                                                                    if entryValue13.type ~= "textlabel" then
+                                                                                        local value11
+                                                                                        if entryValue13.type ~= "box" then
+                                                                                            value29 = 1
+                                                                                            break
+                                                                                        else
+                                                                                            local value12
+                                                                                            data22 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "box",
+                                                                                            }
+                                                                                            value28 = entryValue13.value
+                                                                                            if not entryValue13.value then
+                                                                                                value28 = ""
+                                                                                            end
+                                                                                            data22.value = value28
+                                                                                            data22.page = pageName
+                                                                                            data22.section = sectionName
+                                                                                            data102[textValue] = data22
+                                                                                            continue
+                                                                                        end
+                                                                                    else
+                                                                                        local value11
+                                                                                        if entryValue13.FunctionCreate then
+                                                                                            local value12
+                                                                                            if entryValue13.FunctionCreate.GetText then
+                                                                                                local value13
+                                                                                                entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                                if not entryKey18 then
+                                                                                                    local value14
+                                                                                                    entryKey18 = entryValue13.text
+                                                                                                    if not entryValue13.text then
+                                                                                                        entryKey18 = entryKey25
+                                                                                                    end
+                                                                                                end
+                                                                                            else
+                                                                                                local value13
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value12
+                                                                                            entryKey18 = entryValue13.text
+                                                                                            if not entryValue13.text then
+                                                                                                entryKey18 = entryKey25
+                                                                                            end
+                                                                                        end
+                                                                                        local value12
+                                                                                        data32 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "label",
+                                                                                            value = entryKey18,
+                                                                                            text = entryKey18,
+                                                                                        }
+                                                                                        color = entryValue13.color
+                                                                                        if not entryValue13.color then
+                                                                                            color = "#B8B8B8"
+                                                                                        end
+                                                                                        local value13
+                                                                                        data32.color = color
+                                                                                        size = entryValue13.size
+                                                                                        if not entryValue13.size then
+                                                                                            size = "14px"
+                                                                                        end
+                                                                                        local value14
+                                                                                        data32.size = size
+                                                                                        bold = entryValue13.bold
+                                                                                        if not entryValue13.bold then
+                                                                                            bold = false
+                                                                                        end
+                                                                                        data32.bold = bold
+                                                                                        data32.page = pageName
+                                                                                        data32.section = sectionName
+                                                                                        data102[textValue] = data32
+                                                                                        numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    data102[textValue] = {
+                                                                                        name = entryKey25,
+                                                                                        type = "button",
+                                                                                        value = entryKey25,
+                                                                                        text = entryKey25,
+                                                                                        page = pageName,
+                                                                                        section = sectionName,
+                                                                                    }
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                data102[textValue] = {
+                                                                                    name = entryKey25,
+                                                                                    type = "toggle",
+                                                                                    value = entryValue13.value,
+                                                                                    page = pageName,
+                                                                                    section = sectionName,
+                                                                                }
+                                                                                continue
+                                                                            end
+                                                                        else
+                                                                            break
+                                                                        end
+                                                                    end
+                                                                    if value29 == 1 then
+                                                                        local value5
+                                                                        numberValue52 = numberValue22 + guardState8
+                                                                        if entryValue13.type == "slider" then
+                                                                            value38 = 1
+                                                                            break
+                                                                        else
+                                                                            local value6
+                                                                            if entryValue13.type ~= "dropdown" then
+                                                                                local value7
+                                                                                if entryValue13.type ~= "priority_dropdown" then
+                                                                                    local value8
+                                                                                    if entryValue13.type ~= "multi_toggle" then
+                                                                                        local value9
+                                                                                        if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                            local value10
+                                                                                            data52 = {}
+                                                                                            data62 = {}
+                                                                                            value30 = pairs
+                                                                                            list2 = entryValue13.list
+                                                                                            if not entryValue13.list then
+                                                                                                list2 = {}
+                                                                                            end
+                                                                                            local value11
+                                                                                            local value12
+                                                                                            local value13
+                                                                                            local value14
+                                                                                            do
+                                                                                                local value15, value16, value17 = value30(list2)
+                                                                                                numberValue32 = 2
+                                                                                                nextEntry4 = createIterator(
+                                                                                                    value15,
+                                                                                                    value16,
+                                                                                                    value17
+                                                                                                )
+                                                                                                value31, value210, value33 = nextEntry4()
+                                                                                                value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                                            end
+                                                                                            if value14 then
+                                                                                                value312 = value210
+                                                                                                value322 = value33
+                                                                                                while true do
+                                                                                                    local value15
+                                                                                                    data42 = {}
+                                                                                                    min3 = value322.min
+                                                                                                    if not value322.min then
+                                                                                                        min3 = 0
+                                                                                                    end
+                                                                                                    local value16
+                                                                                                    data42.min = min3
+                                                                                                    max2 = value322.max
+                                                                                                    if not value322.max then
+                                                                                                        max2 = 100
+                                                                                                    end
+                                                                                                    local value17
+                                                                                                    data42.max = max2
+                                                                                                    step2 = value322.step
+                                                                                                    if not value322.step then
+                                                                                                        step2 = 1
+                                                                                                    end
+                                                                                                    local value18
+                                                                                                    data42.step = step2
+                                                                                                    data52[value312] = data42
+                                                                                                    if entryValue13.value then
+                                                                                                        local value19
+                                                                                                        min4 = entryValue13.value[value312]
+                                                                                                        if not entryValue13.value[value312] then
+                                                                                                            local value20
+                                                                                                            min4 = value322.Default
+                                                                                                            if not value322.Default then
+                                                                                                                local value22
+                                                                                                                min4 = value322.min
+                                                                                                                if not value322.min then
+                                                                                                                    min4 = 0
+                                                                                                                end
+                                                                                                            end
+                                                                                                        end
+                                                                                                    else
+                                                                                                        local value19
+                                                                                                        min4 = value322.Default
+                                                                                                        if not value322.Default then
+                                                                                                            local value20
+                                                                                                            min4 = value322.min
+                                                                                                            if not value322.min then
+                                                                                                                min4 = 0
+                                                                                                            end
+                                                                                                        end
+                                                                                                    end
+                                                                                                    local value19
+                                                                                                    data62[value312] = min4
+                                                                                                    value43, value53, value63 = nextEntry4()
+                                                                                                    if value43 then
+                                                                                                        value312 = value53
+                                                                                                        value322 = value63
+                                                                                                        continue
+                                                                                                    end
+                                                                                                    break
+                                                                                                end
+                                                                                            end
+                                                                                            local value15
+                                                                                            local value16
+                                                                                            do
+                                                                                                nextEntry4 = nextEntry22
+                                                                                                local q_2Result = value332
+                                                                                                local __2Result = value34
+                                                                                                numberValue32 = numberValue42
+                                                                                                data102[textValue] = {
+                                                                                                    name = entryKey25,
+                                                                                                    type = "slider_dropdown",
+                                                                                                    sliders = data52,
+                                                                                                    values = data62,
+                                                                                                    page = pageName,
+                                                                                                    section = sectionName,
+                                                                                                }
+                                                                                                numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                                value15, value16 = q_2Result, __2Result
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value9
+                                                                                        data72 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "multi_toggle",
+                                                                                        }
+                                                                                        clone = table.clone
+                                                                                        list3 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list3 = {}
+                                                                                        end
+                                                                                        local value10
+                                                                                        data72.options = clone(list3)
+                                                                                        clone2 = table.clone
+                                                                                        value35 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value35 = {}
+                                                                                        end
+                                                                                        data72.value = clone2(value35)
+                                                                                        data72.page = pageName
+                                                                                        data72.section = sectionName
+                                                                                        data102[textValue] = data72
+                                                                                    end
+                                                                                else
+                                                                                    local value8
+                                                                                    clone3 = table.clone
+                                                                                    value36 = entryValue13.value
+                                                                                    if not entryValue13.value then
+                                                                                        value36 = {}
+                                                                                    end
+                                                                                    local value9
+                                                                                    value37 = clone3(value36)
+                                                                                    data82 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "priority_dropdown",
+                                                                                    }
+                                                                                    clone4 = table.clone
+                                                                                    list4 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list4 = {}
+                                                                                    end
+                                                                                    data82.options = clone4(list4)
+                                                                                    data82.selected = value37
+                                                                                    data82.value = value37
+                                                                                    data82.page = pageName
+                                                                                    data82.section = sectionName
+                                                                                    data102[textValue] = data82
+                                                                                end
+                                                                            else
+                                                                                local value7
+                                                                                data92 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "dropdown",
+                                                                                }
+                                                                                clone5 = table.clone
+                                                                                list5 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list5 = {}
+                                                                                end
+                                                                                local value8
+                                                                                data92.options = clone5(list5)
+                                                                                list6 = entryValue13.value
+                                                                                if entryValue13.value then
+                                                                                    local value9
+                                                                                    if not list6 then
+                                                                                        list6 = ""
+                                                                                    end
+                                                                                else
+                                                                                    local value9
+                                                                                    list6 = entryValue13.list
+                                                                                    if entryValue13.list then
+                                                                                        local value10
+                                                                                        list6 = entryValue13.list[1]
+                                                                                        if not entryValue13.list[1] then
+                                                                                            list6 = ""
+                                                                                        end
+                                                                                    else
+                                                                                        local value10
+                                                                                        if not list6 then
+                                                                                            list6 = ""
+                                                                                        end
+                                                                                    end
+                                                                                end
+                                                                                data92.value = list6
+                                                                                data92.page = pageName
+                                                                                data92.section = sectionName
+                                                                                data102[textValue] = data92
+                                                                            end
+                                                                            continue
+                                                                        end
+                                                                    end
+                                                                    break
+                                                                end
+                                                                if value38 == 1 then
+                                                                    continue
+                                                                end
+                                                                break
+                                                            end
+                                                        end
+                                                    else
+                                                        if entryValue13.list then
+                                                            value132 = nil
+                                                            while true do
+                                                                local value
+                                                                list6 = entryValue13.list[1]
+                                                                if not entryValue13.list[1] then
+                                                                    list6 = ""
+                                                                end
+                                                                value122 = nil
+                                                                while true do
+                                                                    data92.value = list6
+                                                                    data92.page = pageName
+                                                                    data92.section = sectionName
+                                                                    data102[textValue] = data92
+                                                                    value112 = nil
+                                                                    while true do
+                                                                        numberValue22 = numberValue52 + 427902912
+                                                                        value102 = nil
+                                                                        while true do
+                                                                            local value2
+                                                                            numberValue14 += 1
+                                                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                            if hasEntry24 then
+                                                                                local value3
+                                                                                entryKey25 = entryKey24
+                                                                                entryValue13 = entryValue23
+                                                                                pageName = entryValue23.Page_Name
+                                                                                if not entryValue23.Page_Name then
+                                                                                    pageName = "Default Page"
+                                                                                end
+                                                                                local value4
+                                                                                sectionName = entryValue13.Section_Name
+                                                                                if not entryValue13.Section_Name then
+                                                                                    sectionName = "Default Section"
+                                                                                end
+                                                                                local value5
+                                                                                textValue = tostring(numberValue14)
+                                                                                if entryValue13.type ~= "toggle" then
+                                                                                    local value6
+                                                                                    if entryValue13.type ~= "button" then
+                                                                                        local value7
+                                                                                        if entryValue13.type ~= "textlabel" then
+                                                                                            local value8
+                                                                                            if entryValue13.type ~= "box" then
+                                                                                                value102 = 1
+                                                                                                break
+                                                                                            else
+                                                                                                local value9
+                                                                                                data22 = {
+                                                                                                    name = entryKey25,
+                                                                                                    type = "box",
+                                                                                                }
+                                                                                                value28 = entryValue13.value
+                                                                                                if not entryValue13.value then
+                                                                                                    value28 = ""
+                                                                                                end
+                                                                                                data22.value = value28
+                                                                                                data22.page = pageName
+                                                                                                data22.section = sectionName
+                                                                                                data102[textValue] = data22
+                                                                                                continue
+                                                                                            end
+                                                                                        else
+                                                                                            local value8
+                                                                                            if entryValue13.FunctionCreate then
+                                                                                                local value9
+                                                                                                if entryValue13.FunctionCreate.GetText then
+                                                                                                    local value10
+                                                                                                    entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                                    if not entryKey18 then
+                                                                                                        local value11
+                                                                                                        entryKey18 = entryValue13.text
+                                                                                                        if not entryValue13.text then
+                                                                                                            entryKey18 = entryKey25
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value10
+                                                                                                    entryKey18 = entryValue13.text
+                                                                                                    if not entryValue13.text then
+                                                                                                        entryKey18 = entryKey25
+                                                                                                    end
+                                                                                                end
+                                                                                            else
+                                                                                                local value9
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                            local value9
+                                                                                            data32 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "label",
+                                                                                                value = entryKey18,
+                                                                                                text = entryKey18,
+                                                                                            }
+                                                                                            color = entryValue13.color
+                                                                                            if not entryValue13.color then
+                                                                                                color = "#B8B8B8"
+                                                                                            end
+                                                                                            local value10
+                                                                                            data32.color = color
+                                                                                            size = entryValue13.size
+                                                                                            if not entryValue13.size then
+                                                                                                size = "14px"
+                                                                                            end
+                                                                                            local value11
+                                                                                            data32.size = size
+                                                                                            bold = entryValue13.bold
+                                                                                            if not entryValue13.bold then
+                                                                                                bold = false
+                                                                                            end
+                                                                                            data32.bold = bold
+                                                                                            data32.page = pageName
+                                                                                            data32.section = sectionName
+                                                                                            data102[textValue] = data32
+                                                                                            numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                            continue
+                                                                                        end
+                                                                                    else
+                                                                                        data102[textValue] = {
+                                                                                            name = entryKey25,
+                                                                                            type = "button",
+                                                                                            value = entryKey25,
+                                                                                            text = entryKey25,
+                                                                                            page = pageName,
+                                                                                            section = sectionName,
+                                                                                        }
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    data102[textValue] = {
+                                                                                        name = entryKey25,
+                                                                                        type = "toggle",
+                                                                                        value = entryValue13.value,
+                                                                                        page = pageName,
+                                                                                        section = sectionName,
+                                                                                    }
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                break
+                                                                            end
+                                                                        end
+                                                                        if value102 == 1 then
+                                                                            local value2
+                                                                            numberValue52 = numberValue22 + guardState8
+                                                                            if entryValue13.type == "slider" then
+                                                                                value112 = 1
+                                                                                break
+                                                                            else
+                                                                                local value3
+                                                                                if entryValue13.type ~= "dropdown" then
+                                                                                    local value4
+                                                                                    if entryValue13.type ~= "priority_dropdown" then
+                                                                                        local value5
+                                                                                        if entryValue13.type ~= "multi_toggle" then
+                                                                                            local value6
+                                                                                            if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                                local value7
+                                                                                                data52 = {}
+                                                                                                data62 = {}
+                                                                                                value30 = pairs
+                                                                                                list2 = entryValue13.list
+                                                                                                if not entryValue13.list then
+                                                                                                    list2 = {}
+                                                                                                end
+                                                                                                local value8
+                                                                                                local value9
+                                                                                                local value10
+                                                                                                local value11
+                                                                                                do
+                                                                                                    local value12, value13, value14 = value30(list2)
+                                                                                                    numberValue32 = 2
+                                                                                                    nextEntry4 = createIterator(
+                                                                                                        value12,
+                                                                                                        value13,
+                                                                                                        value14
+                                                                                                    )
+                                                                                                    value31, value210, value33 = nextEntry4()
+                                                                                                    value8, value9, value10, value11 = value12, value13, value14, value31
+                                                                                                end
+                                                                                                if value11 then
+                                                                                                    value312 = value210
+                                                                                                    value322 = value33
+                                                                                                    while true do
+                                                                                                        local value12
+                                                                                                        data42 = {}
+                                                                                                        min3 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min3 = 0
+                                                                                                        end
+                                                                                                        local value13
+                                                                                                        data42.min = min3
+                                                                                                        max2 = value322.max
+                                                                                                        if not value322.max then
+                                                                                                            max2 = 100
+                                                                                                        end
+                                                                                                        local value14
+                                                                                                        data42.max = max2
+                                                                                                        step2 = value322.step
+                                                                                                        if not value322.step then
+                                                                                                            step2 = 1
+                                                                                                        end
+                                                                                                        local value15
+                                                                                                        data42.step = step2
+                                                                                                        data52[value312] = data42
+                                                                                                        if entryValue13.value then
+                                                                                                            local value16
+                                                                                                            min4 = entryValue13.value[value312]
+                                                                                                            if not entryValue13.value[value312] then
+                                                                                                                local value17
+                                                                                                                min4 = value322.Default
+                                                                                                                if not value322.Default then
+                                                                                                                    local value18
+                                                                                                                    min4 = value322.min
+                                                                                                                    if not value322.min then
+                                                                                                                        min4 = 0
+                                                                                                                    end
+                                                                                                                end
+                                                                                                            end
+                                                                                                        else
+                                                                                                            local value16
+                                                                                                            min4 = value322.Default
+                                                                                                            if not value322.Default then
+                                                                                                                local value17
+                                                                                                                min4 = value322.min
+                                                                                                                if not value322.min then
+                                                                                                                    min4 = 0
+                                                                                                                end
+                                                                                                            end
+                                                                                                        end
+                                                                                                        local value16
+                                                                                                        data62[value312] = min4
+                                                                                                        value43, value53, value63 = nextEntry4()
+                                                                                                        if value43 then
+                                                                                                            value312 = value53
+                                                                                                            value322 = value63
+                                                                                                            continue
+                                                                                                        end
+                                                                                                        break
+                                                                                                    end
+                                                                                                end
+                                                                                                local value12
+                                                                                                local value13
+                                                                                                do
+                                                                                                    nextEntry4 = nextEntry22
+                                                                                                    local q_2Result = value332
+                                                                                                    local __2Result = value34
+                                                                                                    numberValue32 = numberValue42
+                                                                                                    data102[textValue] = {
+                                                                                                        name = entryKey25,
+                                                                                                        type = "slider_dropdown",
+                                                                                                        sliders = data52,
+                                                                                                        values = data62,
+                                                                                                        page = pageName,
+                                                                                                        section = sectionName,
+                                                                                                    }
+                                                                                                    numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                                    value12, value13 = q_2Result, __2Result
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value6
+                                                                                            data72 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "multi_toggle",
+                                                                                            }
+                                                                                            clone = table.clone
+                                                                                            list3 = entryValue13.list
+                                                                                            if not entryValue13.list then
+                                                                                                list3 = {}
+                                                                                            end
+                                                                                            local value7
+                                                                                            data72.options = clone(list3)
+                                                                                            clone2 = table.clone
+                                                                                            value35 = entryValue13.value
+                                                                                            if not entryValue13.value then
+                                                                                                value35 = {}
+                                                                                            end
+                                                                                            data72.value = clone2(value35)
+                                                                                            data72.page = pageName
+                                                                                            data72.section = sectionName
+                                                                                            data102[textValue] = data72
+                                                                                        end
+                                                                                    else
+                                                                                        local value5
+                                                                                        clone3 = table.clone
+                                                                                        value36 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value36 = {}
+                                                                                        end
+                                                                                        local value6
+                                                                                        value37 = clone3(value36)
+                                                                                        data82 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "priority_dropdown",
+                                                                                        }
+                                                                                        clone4 = table.clone
+                                                                                        list4 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list4 = {}
+                                                                                        end
+                                                                                        data82.options = clone4(list4)
+                                                                                        data82.selected = value37
+                                                                                        data82.value = value37
+                                                                                        data82.page = pageName
+                                                                                        data82.section = sectionName
+                                                                                        data102[textValue] = data82
+                                                                                    end
+                                                                                    continue
+                                                                                else
+                                                                                    value112 = 2
+                                                                                    break
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                        break
+                                                                    end
+                                                                    if value112 == 1 then
+                                                                        value122 = 1
+                                                                        break
+                                                                    elseif value112 == 2 then
+                                                                        local value2
+                                                                        data92 = {
+                                                                            name = entryKey25,
+                                                                            type = "dropdown",
+                                                                        }
+                                                                        clone5 = table.clone
+                                                                        list5 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list5 = {}
+                                                                        end
+                                                                        local value3
+                                                                        data92.options = clone5(list5)
+                                                                        list6 = entryValue13.value
+                                                                        if entryValue13.value then
+                                                                            local value4
+                                                                            if not list6 then
+                                                                                list6 = ""
+                                                                            end
+                                                                            continue
+                                                                        else
+                                                                            local value4
+                                                                            list6 = entryValue13.list
+                                                                            if entryValue13.list then
+                                                                                value122 = 2
+                                                                                break
+                                                                            else
+                                                                                local value5
+                                                                                if not list6 then
+                                                                                    list6 = ""
+                                                                                end
+                                                                                continue
+                                                                            end
+                                                                        end
+                                                                    end
+                                                                    break
+                                                                end
+                                                                if value122 == 1 then
+                                                                    value132 = 1
+                                                                    break
+                                                                elseif value122 == 2 then
+                                                                    continue
+                                                                end
+                                                                break
+                                                            end
+                                                            if value132 == 1 then
+                                                                while true do
+                                                                    local value
+                                                                    data11 = {
+                                                                        name = entryKey25,
+                                                                        type = "slider",
+                                                                    }
+                                                                    min = entryValue13.min
+                                                                    if not entryValue13.min then
+                                                                        min = 0
+                                                                    end
+                                                                    local value2
+                                                                    data11.min = min
+                                                                    max = entryValue13.max
+                                                                    if not entryValue13.max then
+                                                                        max = 100
+                                                                    end
+                                                                    local value3
+                                                                    data11.max = max
+                                                                    step = entryValue13.step
+                                                                    if not entryValue13.step then
+                                                                        step = 1
+                                                                    end
+                                                                    local value4
+                                                                    data11.step = step
+                                                                    min2 = entryValue13.value
+                                                                    if not entryValue13.value then
+                                                                        local value5
+                                                                        min2 = entryValue13.min
+                                                                        if not entryValue13.min then
+                                                                            min2 = 0
+                                                                        end
+                                                                    end
+                                                                    data11.value = min2
+                                                                    data11.page = pageName
+                                                                    data11.section = sectionName
+                                                                    data102[textValue] = data11
+                                                                    value38 = nil
+                                                                    while true do
+                                                                        numberValue22 = numberValue52 + 427902912
+                                                                        value29 = nil
+                                                                        while true do
+                                                                            local value5
+                                                                            numberValue14 += 1
+                                                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                            if hasEntry24 then
+                                                                                local value6
+                                                                                entryKey25 = entryKey24
+                                                                                entryValue13 = entryValue23
+                                                                                pageName = entryValue23.Page_Name
+                                                                                if not entryValue23.Page_Name then
+                                                                                    pageName = "Default Page"
+                                                                                end
+                                                                                local value7
+                                                                                sectionName = entryValue13.Section_Name
+                                                                                if not entryValue13.Section_Name then
+                                                                                    sectionName = "Default Section"
+                                                                                end
+                                                                                local value8
+                                                                                textValue = tostring(numberValue14)
+                                                                                if entryValue13.type ~= "toggle" then
+                                                                                    local value9
+                                                                                    if entryValue13.type ~= "button" then
+                                                                                        local value10
+                                                                                        if entryValue13.type ~= "textlabel" then
+                                                                                            local value11
+                                                                                            if entryValue13.type ~= "box" then
+                                                                                                value29 = 1
+                                                                                                break
+                                                                                            else
+                                                                                                local value12
+                                                                                                data22 = {
+                                                                                                    name = entryKey25,
+                                                                                                    type = "box",
+                                                                                                }
+                                                                                                value28 = entryValue13.value
+                                                                                                if not entryValue13.value then
+                                                                                                    value28 = ""
+                                                                                                end
+                                                                                                data22.value = value28
+                                                                                                data22.page = pageName
+                                                                                                data22.section = sectionName
+                                                                                                data102[textValue] = data22
+                                                                                                continue
+                                                                                            end
+                                                                                        else
+                                                                                            local value11
+                                                                                            if entryValue13.FunctionCreate then
+                                                                                                local value12
+                                                                                                if entryValue13.FunctionCreate.GetText then
+                                                                                                    local value13
+                                                                                                    entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                                    if not entryKey18 then
+                                                                                                        local value14
+                                                                                                        entryKey18 = entryValue13.text
+                                                                                                        if not entryValue13.text then
+                                                                                                            entryKey18 = entryKey25
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value13
+                                                                                                    entryKey18 = entryValue13.text
+                                                                                                    if not entryValue13.text then
+                                                                                                        entryKey18 = entryKey25
+                                                                                                    end
+                                                                                                end
+                                                                                            else
+                                                                                                local value12
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                            local value12
+                                                                                            data32 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "label",
+                                                                                                value = entryKey18,
+                                                                                                text = entryKey18,
+                                                                                            }
+                                                                                            color = entryValue13.color
+                                                                                            if not entryValue13.color then
+                                                                                                color = "#B8B8B8"
+                                                                                            end
+                                                                                            local value13
+                                                                                            data32.color = color
+                                                                                            size = entryValue13.size
+                                                                                            if not entryValue13.size then
+                                                                                                size = "14px"
+                                                                                            end
+                                                                                            local value14
+                                                                                            data32.size = size
+                                                                                            bold = entryValue13.bold
+                                                                                            if not entryValue13.bold then
+                                                                                                bold = false
+                                                                                            end
+                                                                                            data32.bold = bold
+                                                                                            data32.page = pageName
+                                                                                            data32.section = sectionName
+                                                                                            data102[textValue] = data32
+                                                                                            numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                            continue
+                                                                                        end
+                                                                                    else
+                                                                                        data102[textValue] = {
+                                                                                            name = entryKey25,
+                                                                                            type = "button",
+                                                                                            value = entryKey25,
+                                                                                            text = entryKey25,
+                                                                                            page = pageName,
+                                                                                            section = sectionName,
+                                                                                        }
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    data102[textValue] = {
+                                                                                        name = entryKey25,
+                                                                                        type = "toggle",
+                                                                                        value = entryValue13.value,
+                                                                                        page = pageName,
+                                                                                        section = sectionName,
+                                                                                    }
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                break
+                                                                            end
+                                                                        end
+                                                                        if value29 == 1 then
+                                                                            local value5
+                                                                            numberValue52 = numberValue22 + guardState8
+                                                                            if entryValue13.type == "slider" then
+                                                                                value38 = 1
+                                                                                break
+                                                                            else
+                                                                                local value6
+                                                                                if entryValue13.type ~= "dropdown" then
+                                                                                    local value7
+                                                                                    if entryValue13.type ~= "priority_dropdown" then
+                                                                                        local value8
+                                                                                        if entryValue13.type ~= "multi_toggle" then
+                                                                                            local value9
+                                                                                            if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                                local value10
+                                                                                                data52 = {}
+                                                                                                data62 = {}
+                                                                                                value30 = pairs
+                                                                                                list2 = entryValue13.list
+                                                                                                if not entryValue13.list then
+                                                                                                    list2 = {}
+                                                                                                end
+                                                                                                local value11
+                                                                                                local value12
+                                                                                                local value13
+                                                                                                local value14
+                                                                                                do
+                                                                                                    local value15, value16, value17 = value30(list2)
+                                                                                                    numberValue32 = 2
+                                                                                                    nextEntry4 = createIterator(
+                                                                                                        value15,
+                                                                                                        value16,
+                                                                                                        value17
+                                                                                                    )
+                                                                                                    value31, value210, value33 = nextEntry4()
+                                                                                                    value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                                                end
+                                                                                                if value14 then
+                                                                                                    value312 = value210
+                                                                                                    value322 = value33
+                                                                                                    while true do
+                                                                                                        local value15
+                                                                                                        data42 = {}
+                                                                                                        min3 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min3 = 0
+                                                                                                        end
+                                                                                                        local value16
+                                                                                                        data42.min = min3
+                                                                                                        max2 = value322.max
+                                                                                                        if not value322.max then
+                                                                                                            max2 = 100
+                                                                                                        end
+                                                                                                        local value17
+                                                                                                        data42.max = max2
+                                                                                                        step2 = value322.step
+                                                                                                        if not value322.step then
+                                                                                                            step2 = 1
+                                                                                                        end
+                                                                                                        local value18
+                                                                                                        data42.step = step2
+                                                                                                        data52[value312] = data42
+                                                                                                        if entryValue13.value then
+                                                                                                            local value19
+                                                                                                            min4 = entryValue13.value[value312]
+                                                                                                            if not entryValue13.value[value312] then
+                                                                                                                local value20
+                                                                                                                min4 = value322.Default
+                                                                                                                if not value322.Default then
+                                                                                                                    local value22
+                                                                                                                    min4 = value322.min
+                                                                                                                    if not value322.min then
+                                                                                                                        min4 = 0
+                                                                                                                    end
+                                                                                                                end
+                                                                                                            end
+                                                                                                        else
+                                                                                                            local value19
+                                                                                                            min4 = value322.Default
+                                                                                                            if not value322.Default then
+                                                                                                                local value20
+                                                                                                                min4 = value322.min
+                                                                                                                if not value322.min then
+                                                                                                                    min4 = 0
+                                                                                                                end
+                                                                                                            end
+                                                                                                        end
+                                                                                                        local value19
+                                                                                                        data62[value312] = min4
+                                                                                                        value43, value53, value63 = nextEntry4()
+                                                                                                        if value43 then
+                                                                                                            value312 = value53
+                                                                                                            value322 = value63
+                                                                                                            continue
+                                                                                                        end
+                                                                                                        break
+                                                                                                    end
+                                                                                                end
+                                                                                                local value15
+                                                                                                local value16
+                                                                                                do
+                                                                                                    nextEntry4 = nextEntry22
+                                                                                                    local q_2Result = value332
+                                                                                                    local __2Result = value34
+                                                                                                    numberValue32 = numberValue42
+                                                                                                    data102[textValue] = {
+                                                                                                        name = entryKey25,
+                                                                                                        type = "slider_dropdown",
+                                                                                                        sliders = data52,
+                                                                                                        values = data62,
+                                                                                                        page = pageName,
+                                                                                                        section = sectionName,
+                                                                                                    }
+                                                                                                    numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                                    value15, value16 = q_2Result, __2Result
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value9
+                                                                                            data72 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "multi_toggle",
+                                                                                            }
+                                                                                            clone = table.clone
+                                                                                            list3 = entryValue13.list
+                                                                                            if not entryValue13.list then
+                                                                                                list3 = {}
+                                                                                            end
+                                                                                            local value10
+                                                                                            data72.options = clone(list3)
+                                                                                            clone2 = table.clone
+                                                                                            value35 = entryValue13.value
+                                                                                            if not entryValue13.value then
+                                                                                                value35 = {}
+                                                                                            end
+                                                                                            data72.value = clone2(value35)
+                                                                                            data72.page = pageName
+                                                                                            data72.section = sectionName
+                                                                                            data102[textValue] = data72
+                                                                                        end
+                                                                                    else
+                                                                                        local value8
+                                                                                        clone3 = table.clone
+                                                                                        value36 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value36 = {}
+                                                                                        end
+                                                                                        local value9
+                                                                                        value37 = clone3(value36)
+                                                                                        data82 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "priority_dropdown",
+                                                                                        }
+                                                                                        clone4 = table.clone
+                                                                                        list4 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list4 = {}
+                                                                                        end
+                                                                                        data82.options = clone4(list4)
+                                                                                        data82.selected = value37
+                                                                                        data82.value = value37
+                                                                                        data82.page = pageName
+                                                                                        data82.section = sectionName
+                                                                                        data102[textValue] = data82
+                                                                                    end
+                                                                                else
+                                                                                    local value7
+                                                                                    data92 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "dropdown",
+                                                                                    }
+                                                                                    clone5 = table.clone
+                                                                                    list5 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list5 = {}
+                                                                                    end
+                                                                                    local value8
+                                                                                    data92.options = clone5(list5)
+                                                                                    list6 = entryValue13.value
+                                                                                    if entryValue13.value then
+                                                                                        local value9
+                                                                                        if not list6 then
+                                                                                            list6 = ""
+                                                                                        end
+                                                                                    else
+                                                                                        local value9
+                                                                                        list6 = entryValue13.list
+                                                                                        if entryValue13.list then
+                                                                                            local value10
+                                                                                            list6 = entryValue13.list[1]
+                                                                                            if not entryValue13.list[1] then
+                                                                                                list6 = ""
+                                                                                            end
+                                                                                        else
+                                                                                            local value10
+                                                                                            if not list6 then
+                                                                                                list6 = ""
+                                                                                            end
+                                                                                        end
+                                                                                    end
+                                                                                    data92.value = list6
+                                                                                    data92.page = pageName
+                                                                                    data92.section = sectionName
+                                                                                    data102[textValue] = data92
+                                                                                end
+                                                                                continue
+                                                                            end
+                                                                        end
+                                                                        break
+                                                                    end
+                                                                    if value38 == 1 then
+                                                                        continue
+                                                                    end
+                                                                    break
+                                                                end
+                                                            end
+                                                        else
+                                                            value172 = nil
+                                                            while true do
+                                                                list6 = ""
+                                                                value162 = nil
+                                                                while true do
+                                                                    data92.value = list6
+                                                                    data92.page = pageName
+                                                                    data92.section = sectionName
+                                                                    data102[textValue] = data92
+                                                                    value152 = nil
+                                                                    while true do
+                                                                        numberValue22 = numberValue52 + 427902912
+                                                                        value142 = nil
+                                                                        while true do
+                                                                            local value
+                                                                            numberValue14 += 1
+                                                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                            if hasEntry24 then
+                                                                                local value2
+                                                                                entryKey25 = entryKey24
+                                                                                entryValue13 = entryValue23
+                                                                                pageName = entryValue23.Page_Name
+                                                                                if not entryValue23.Page_Name then
+                                                                                    pageName = "Default Page"
+                                                                                end
+                                                                                local value3
+                                                                                sectionName = entryValue13.Section_Name
+                                                                                if not entryValue13.Section_Name then
+                                                                                    sectionName = "Default Section"
+                                                                                end
+                                                                                local value4
+                                                                                textValue = tostring(numberValue14)
+                                                                                if entryValue13.type ~= "toggle" then
+                                                                                    local value5
+                                                                                    if entryValue13.type ~= "button" then
+                                                                                        local value6
+                                                                                        if entryValue13.type ~= "textlabel" then
+                                                                                            local value7
+                                                                                            if entryValue13.type ~= "box" then
+                                                                                                value142 = 1
+                                                                                                break
+                                                                                            else
+                                                                                                local value8
+                                                                                                data22 = {
+                                                                                                    name = entryKey25,
+                                                                                                    type = "box",
+                                                                                                }
+                                                                                                value28 = entryValue13.value
+                                                                                                if not entryValue13.value then
+                                                                                                    value28 = ""
+                                                                                                end
+                                                                                                data22.value = value28
+                                                                                                data22.page = pageName
+                                                                                                data22.section = sectionName
+                                                                                                data102[textValue] = data22
+                                                                                                continue
+                                                                                            end
+                                                                                        else
+                                                                                            local value7
+                                                                                            if entryValue13.FunctionCreate then
+                                                                                                local value8
+                                                                                                if entryValue13.FunctionCreate.GetText then
+                                                                                                    local value9
+                                                                                                    entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                                    if not entryKey18 then
+                                                                                                        local value10
+                                                                                                        entryKey18 = entryValue13.text
+                                                                                                        if not entryValue13.text then
+                                                                                                            entryKey18 = entryKey25
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value9
+                                                                                                    entryKey18 = entryValue13.text
+                                                                                                    if not entryValue13.text then
+                                                                                                        entryKey18 = entryKey25
+                                                                                                    end
+                                                                                                end
+                                                                                            else
+                                                                                                local value8
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                            local value8
+                                                                                            data32 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "label",
+                                                                                                value = entryKey18,
+                                                                                                text = entryKey18,
+                                                                                            }
+                                                                                            color = entryValue13.color
+                                                                                            if not entryValue13.color then
+                                                                                                color = "#B8B8B8"
+                                                                                            end
+                                                                                            local value9
+                                                                                            data32.color = color
+                                                                                            size = entryValue13.size
+                                                                                            if not entryValue13.size then
+                                                                                                size = "14px"
+                                                                                            end
+                                                                                            local value10
+                                                                                            data32.size = size
+                                                                                            bold = entryValue13.bold
+                                                                                            if not entryValue13.bold then
+                                                                                                bold = false
+                                                                                            end
+                                                                                            data32.bold = bold
+                                                                                            data32.page = pageName
+                                                                                            data32.section = sectionName
+                                                                                            data102[textValue] = data32
+                                                                                            numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                            continue
+                                                                                        end
+                                                                                    else
+                                                                                        data102[textValue] = {
+                                                                                            name = entryKey25,
+                                                                                            type = "button",
+                                                                                            value = entryKey25,
+                                                                                            text = entryKey25,
+                                                                                            page = pageName,
+                                                                                            section = sectionName,
+                                                                                        }
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    data102[textValue] = {
+                                                                                        name = entryKey25,
+                                                                                        type = "toggle",
+                                                                                        value = entryValue13.value,
+                                                                                        page = pageName,
+                                                                                        section = sectionName,
+                                                                                    }
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                break
+                                                                            end
+                                                                        end
+                                                                        if value142 == 1 then
+                                                                            local value
+                                                                            numberValue52 = numberValue22 + guardState8
+                                                                            if entryValue13.type == "slider" then
+                                                                                value152 = 1
+                                                                                break
+                                                                            else
+                                                                                local value2
+                                                                                if entryValue13.type ~= "dropdown" then
+                                                                                    local value3
+                                                                                    if entryValue13.type ~= "priority_dropdown" then
+                                                                                        local value4
+                                                                                        if entryValue13.type ~= "multi_toggle" then
+                                                                                            local value5
+                                                                                            if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                                local value6
+                                                                                                data52 = {}
+                                                                                                data62 = {}
+                                                                                                value30 = pairs
+                                                                                                list2 = entryValue13.list
+                                                                                                if not entryValue13.list then
+                                                                                                    list2 = {}
+                                                                                                end
+                                                                                                local value7
+                                                                                                local value8
+                                                                                                local value9
+                                                                                                local value10
+                                                                                                do
+                                                                                                    local value11, value12, value13 = value30(list2)
+                                                                                                    numberValue32 = 2
+                                                                                                    nextEntry4 = createIterator(
+                                                                                                        value11,
+                                                                                                        value12,
+                                                                                                        value13
+                                                                                                    )
+                                                                                                    value31, value210, value33 = nextEntry4()
+                                                                                                    value7, value8, value9, value10 = value11, value12, value13, value31
+                                                                                                end
+                                                                                                if value10 then
+                                                                                                    value312 = value210
+                                                                                                    value322 = value33
+                                                                                                    while true do
+                                                                                                        local value11
+                                                                                                        data42 = {}
+                                                                                                        min3 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min3 = 0
+                                                                                                        end
+                                                                                                        local value12
+                                                                                                        data42.min = min3
+                                                                                                        max2 = value322.max
+                                                                                                        if not value322.max then
+                                                                                                            max2 = 100
+                                                                                                        end
+                                                                                                        local value13
+                                                                                                        data42.max = max2
+                                                                                                        step2 = value322.step
+                                                                                                        if not value322.step then
+                                                                                                            step2 = 1
+                                                                                                        end
+                                                                                                        local value14
+                                                                                                        data42.step = step2
+                                                                                                        data52[value312] = data42
+                                                                                                        if entryValue13.value then
+                                                                                                            local value15
+                                                                                                            min4 = entryValue13.value[value312]
+                                                                                                            if not entryValue13.value[value312] then
+                                                                                                                local value16
+                                                                                                                min4 = value322.Default
+                                                                                                                if not value322.Default then
+                                                                                                                    local value17
+                                                                                                                    min4 = value322.min
+                                                                                                                    if not value322.min then
+                                                                                                                        min4 = 0
+                                                                                                                    end
+                                                                                                                end
+                                                                                                            end
+                                                                                                        else
+                                                                                                            local value15
+                                                                                                            min4 = value322.Default
+                                                                                                            if not value322.Default then
+                                                                                                                local value16
+                                                                                                                min4 = value322.min
+                                                                                                                if not value322.min then
+                                                                                                                    min4 = 0
+                                                                                                                end
+                                                                                                            end
+                                                                                                        end
+                                                                                                        local value15
+                                                                                                        data62[value312] = min4
+                                                                                                        value43, value53, value63 = nextEntry4()
+                                                                                                        if value43 then
+                                                                                                            value312 = value53
+                                                                                                            value322 = value63
+                                                                                                            continue
+                                                                                                        end
+                                                                                                        break
+                                                                                                    end
+                                                                                                end
+                                                                                                local value11
+                                                                                                local value12
+                                                                                                do
+                                                                                                    nextEntry4 = nextEntry22
+                                                                                                    local q_2Result = value332
+                                                                                                    local __2Result = value34
+                                                                                                    numberValue32 = numberValue42
+                                                                                                    data102[textValue] = {
+                                                                                                        name = entryKey25,
+                                                                                                        type = "slider_dropdown",
+                                                                                                        sliders = data52,
+                                                                                                        values = data62,
+                                                                                                        page = pageName,
+                                                                                                        section = sectionName,
+                                                                                                    }
+                                                                                                    numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                                    value11, value12 = q_2Result, __2Result
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value5
+                                                                                            data72 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "multi_toggle",
+                                                                                            }
+                                                                                            clone = table.clone
+                                                                                            list3 = entryValue13.list
+                                                                                            if not entryValue13.list then
+                                                                                                list3 = {}
+                                                                                            end
+                                                                                            local value6
+                                                                                            data72.options = clone(list3)
+                                                                                            clone2 = table.clone
+                                                                                            value35 = entryValue13.value
+                                                                                            if not entryValue13.value then
+                                                                                                value35 = {}
+                                                                                            end
+                                                                                            data72.value = clone2(value35)
+                                                                                            data72.page = pageName
+                                                                                            data72.section = sectionName
+                                                                                            data102[textValue] = data72
+                                                                                        end
+                                                                                    else
+                                                                                        local value4
+                                                                                        clone3 = table.clone
+                                                                                        value36 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value36 = {}
+                                                                                        end
+                                                                                        local value5
+                                                                                        value37 = clone3(value36)
+                                                                                        data82 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "priority_dropdown",
+                                                                                        }
+                                                                                        clone4 = table.clone
+                                                                                        list4 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list4 = {}
+                                                                                        end
+                                                                                        data82.options = clone4(list4)
+                                                                                        data82.selected = value37
+                                                                                        data82.value = value37
+                                                                                        data82.page = pageName
+                                                                                        data82.section = sectionName
+                                                                                        data102[textValue] = data82
+                                                                                    end
+                                                                                    continue
+                                                                                else
+                                                                                    value152 = 2
+                                                                                    break
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                        break
+                                                                    end
+                                                                    if value152 == 1 then
+                                                                        value162 = 1
+                                                                        break
+                                                                    elseif value152 == 2 then
+                                                                        local value
+                                                                        data92 = {
+                                                                            name = entryKey25,
+                                                                            type = "dropdown",
+                                                                        }
+                                                                        clone5 = table.clone
+                                                                        list5 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list5 = {}
+                                                                        end
+                                                                        local value2
+                                                                        data92.options = clone5(list5)
+                                                                        list6 = entryValue13.value
+                                                                        if entryValue13.value then
+                                                                            local value3
+                                                                            if list6 then
+                                                                                continue
+                                                                            else
+                                                                                value162 = 2
+                                                                                break
+                                                                            end
+                                                                        else
+                                                                            local value3
+                                                                            list6 = entryValue13.list
+                                                                            if entryValue13.list then
+                                                                                local value4
+                                                                                list6 = entryValue13.list[1]
+                                                                                if entryValue13.list[1] then
+                                                                                    continue
+                                                                                else
+                                                                                    value162 = 2
+                                                                                    break
+                                                                                end
+                                                                            else
+                                                                                local value4
+                                                                                if list6 then
+                                                                                    continue
+                                                                                else
+                                                                                    value162 = 2
+                                                                                    break
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                    end
+                                                                    break
+                                                                end
+                                                                if value162 == 1 then
+                                                                    value172 = 1
+                                                                    break
+                                                                elseif value162 == 2 then
+                                                                    continue
+                                                                end
+                                                                break
+                                                            end
+                                                            if value172 == 1 then
+                                                                while true do
+                                                                    local value
+                                                                    data11 = {
+                                                                        name = entryKey25,
+                                                                        type = "slider",
+                                                                    }
+                                                                    min = entryValue13.min
+                                                                    if not entryValue13.min then
+                                                                        min = 0
+                                                                    end
+                                                                    local value2
+                                                                    data11.min = min
+                                                                    max = entryValue13.max
+                                                                    if not entryValue13.max then
+                                                                        max = 100
+                                                                    end
+                                                                    local value3
+                                                                    data11.max = max
+                                                                    step = entryValue13.step
+                                                                    if not entryValue13.step then
+                                                                        step = 1
+                                                                    end
+                                                                    local value4
+                                                                    data11.step = step
+                                                                    min2 = entryValue13.value
+                                                                    if not entryValue13.value then
+                                                                        local value5
+                                                                        min2 = entryValue13.min
+                                                                        if not entryValue13.min then
+                                                                            min2 = 0
+                                                                        end
+                                                                    end
+                                                                    data11.value = min2
+                                                                    data11.page = pageName
+                                                                    data11.section = sectionName
+                                                                    data102[textValue] = data11
+                                                                    value38 = nil
+                                                                    while true do
+                                                                        numberValue22 = numberValue52 + 427902912
+                                                                        value29 = nil
+                                                                        while true do
+                                                                            local value5
+                                                                            numberValue14 += 1
+                                                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                            if hasEntry24 then
+                                                                                local value6
+                                                                                entryKey25 = entryKey24
+                                                                                entryValue13 = entryValue23
+                                                                                pageName = entryValue23.Page_Name
+                                                                                if not entryValue23.Page_Name then
+                                                                                    pageName = "Default Page"
+                                                                                end
+                                                                                local value7
+                                                                                sectionName = entryValue13.Section_Name
+                                                                                if not entryValue13.Section_Name then
+                                                                                    sectionName = "Default Section"
+                                                                                end
+                                                                                local value8
+                                                                                textValue = tostring(numberValue14)
+                                                                                if entryValue13.type ~= "toggle" then
+                                                                                    local value9
+                                                                                    if entryValue13.type ~= "button" then
+                                                                                        local value10
+                                                                                        if entryValue13.type ~= "textlabel" then
+                                                                                            local value11
+                                                                                            if entryValue13.type ~= "box" then
+                                                                                                value29 = 1
+                                                                                                break
+                                                                                            else
+                                                                                                local value12
+                                                                                                data22 = {
+                                                                                                    name = entryKey25,
+                                                                                                    type = "box",
+                                                                                                }
+                                                                                                value28 = entryValue13.value
+                                                                                                if not entryValue13.value then
+                                                                                                    value28 = ""
+                                                                                                end
+                                                                                                data22.value = value28
+                                                                                                data22.page = pageName
+                                                                                                data22.section = sectionName
+                                                                                                data102[textValue] = data22
+                                                                                                continue
+                                                                                            end
+                                                                                        else
+                                                                                            local value11
+                                                                                            if entryValue13.FunctionCreate then
+                                                                                                local value12
+                                                                                                if entryValue13.FunctionCreate.GetText then
+                                                                                                    local value13
+                                                                                                    entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                                    if not entryKey18 then
+                                                                                                        local value14
+                                                                                                        entryKey18 = entryValue13.text
+                                                                                                        if not entryValue13.text then
+                                                                                                            entryKey18 = entryKey25
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value13
+                                                                                                    entryKey18 = entryValue13.text
+                                                                                                    if not entryValue13.text then
+                                                                                                        entryKey18 = entryKey25
+                                                                                                    end
+                                                                                                end
+                                                                                            else
+                                                                                                local value12
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                            local value12
+                                                                                            data32 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "label",
+                                                                                                value = entryKey18,
+                                                                                                text = entryKey18,
+                                                                                            }
+                                                                                            color = entryValue13.color
+                                                                                            if not entryValue13.color then
+                                                                                                color = "#B8B8B8"
+                                                                                            end
+                                                                                            local value13
+                                                                                            data32.color = color
+                                                                                            size = entryValue13.size
+                                                                                            if not entryValue13.size then
+                                                                                                size = "14px"
+                                                                                            end
+                                                                                            local value14
+                                                                                            data32.size = size
+                                                                                            bold = entryValue13.bold
+                                                                                            if not entryValue13.bold then
+                                                                                                bold = false
+                                                                                            end
+                                                                                            data32.bold = bold
+                                                                                            data32.page = pageName
+                                                                                            data32.section = sectionName
+                                                                                            data102[textValue] = data32
+                                                                                            numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                            continue
+                                                                                        end
+                                                                                    else
+                                                                                        data102[textValue] = {
+                                                                                            name = entryKey25,
+                                                                                            type = "button",
+                                                                                            value = entryKey25,
+                                                                                            text = entryKey25,
+                                                                                            page = pageName,
+                                                                                            section = sectionName,
+                                                                                        }
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    data102[textValue] = {
+                                                                                        name = entryKey25,
+                                                                                        type = "toggle",
+                                                                                        value = entryValue13.value,
+                                                                                        page = pageName,
+                                                                                        section = sectionName,
+                                                                                    }
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                break
+                                                                            end
+                                                                        end
+                                                                        if value29 == 1 then
+                                                                            local value5
+                                                                            numberValue52 = numberValue22 + guardState8
+                                                                            if entryValue13.type == "slider" then
+                                                                                value38 = 1
+                                                                                break
+                                                                            else
+                                                                                local value6
+                                                                                if entryValue13.type ~= "dropdown" then
+                                                                                    local value7
+                                                                                    if entryValue13.type ~= "priority_dropdown" then
+                                                                                        local value8
+                                                                                        if entryValue13.type ~= "multi_toggle" then
+                                                                                            local value9
+                                                                                            if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                                local value10
+                                                                                                data52 = {}
+                                                                                                data62 = {}
+                                                                                                value30 = pairs
+                                                                                                list2 = entryValue13.list
+                                                                                                if not entryValue13.list then
+                                                                                                    list2 = {}
+                                                                                                end
+                                                                                                local value11
+                                                                                                local value12
+                                                                                                local value13
+                                                                                                local value14
+                                                                                                do
+                                                                                                    local value15, value16, value17 = value30(list2)
+                                                                                                    numberValue32 = 2
+                                                                                                    nextEntry4 = createIterator(
+                                                                                                        value15,
+                                                                                                        value16,
+                                                                                                        value17
+                                                                                                    )
+                                                                                                    value31, value210, value33 = nextEntry4()
+                                                                                                    value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                                                end
+                                                                                                if value14 then
+                                                                                                    value312 = value210
+                                                                                                    value322 = value33
+                                                                                                    while true do
+                                                                                                        local value15
+                                                                                                        data42 = {}
+                                                                                                        min3 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min3 = 0
+                                                                                                        end
+                                                                                                        local value16
+                                                                                                        data42.min = min3
+                                                                                                        max2 = value322.max
+                                                                                                        if not value322.max then
+                                                                                                            max2 = 100
+                                                                                                        end
+                                                                                                        local value17
+                                                                                                        data42.max = max2
+                                                                                                        step2 = value322.step
+                                                                                                        if not value322.step then
+                                                                                                            step2 = 1
+                                                                                                        end
+                                                                                                        local value18
+                                                                                                        data42.step = step2
+                                                                                                        data52[value312] = data42
+                                                                                                        if entryValue13.value then
+                                                                                                            local value19
+                                                                                                            min4 = entryValue13.value[value312]
+                                                                                                            if not entryValue13.value[value312] then
+                                                                                                                local value20
+                                                                                                                min4 = value322.Default
+                                                                                                                if not value322.Default then
+                                                                                                                    local value22
+                                                                                                                    min4 = value322.min
+                                                                                                                    if not value322.min then
+                                                                                                                        min4 = 0
+                                                                                                                    end
+                                                                                                                end
+                                                                                                            end
+                                                                                                        else
+                                                                                                            local value19
+                                                                                                            min4 = value322.Default
+                                                                                                            if not value322.Default then
+                                                                                                                local value20
+                                                                                                                min4 = value322.min
+                                                                                                                if not value322.min then
+                                                                                                                    min4 = 0
+                                                                                                                end
+                                                                                                            end
+                                                                                                        end
+                                                                                                        local value19
+                                                                                                        data62[value312] = min4
+                                                                                                        value43, value53, value63 = nextEntry4()
+                                                                                                        if value43 then
+                                                                                                            value312 = value53
+                                                                                                            value322 = value63
+                                                                                                            continue
+                                                                                                        end
+                                                                                                        break
+                                                                                                    end
+                                                                                                end
+                                                                                                local value15
+                                                                                                local value16
+                                                                                                do
+                                                                                                    nextEntry4 = nextEntry22
+                                                                                                    local q_2Result = value332
+                                                                                                    local __2Result = value34
+                                                                                                    numberValue32 = numberValue42
+                                                                                                    data102[textValue] = {
+                                                                                                        name = entryKey25,
+                                                                                                        type = "slider_dropdown",
+                                                                                                        sliders = data52,
+                                                                                                        values = data62,
+                                                                                                        page = pageName,
+                                                                                                        section = sectionName,
+                                                                                                    }
+                                                                                                    numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                                    value15, value16 = q_2Result, __2Result
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value9
+                                                                                            data72 = {
+                                                                                                name = entryKey25,
+                                                                                                type = "multi_toggle",
+                                                                                            }
+                                                                                            clone = table.clone
+                                                                                            list3 = entryValue13.list
+                                                                                            if not entryValue13.list then
+                                                                                                list3 = {}
+                                                                                            end
+                                                                                            local value10
+                                                                                            data72.options = clone(list3)
+                                                                                            clone2 = table.clone
+                                                                                            value35 = entryValue13.value
+                                                                                            if not entryValue13.value then
+                                                                                                value35 = {}
+                                                                                            end
+                                                                                            data72.value = clone2(value35)
+                                                                                            data72.page = pageName
+                                                                                            data72.section = sectionName
+                                                                                            data102[textValue] = data72
+                                                                                        end
+                                                                                    else
+                                                                                        local value8
+                                                                                        clone3 = table.clone
+                                                                                        value36 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value36 = {}
+                                                                                        end
+                                                                                        local value9
+                                                                                        value37 = clone3(value36)
+                                                                                        data82 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "priority_dropdown",
+                                                                                        }
+                                                                                        clone4 = table.clone
+                                                                                        list4 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list4 = {}
+                                                                                        end
+                                                                                        data82.options = clone4(list4)
+                                                                                        data82.selected = value37
+                                                                                        data82.value = value37
+                                                                                        data82.page = pageName
+                                                                                        data82.section = sectionName
+                                                                                        data102[textValue] = data82
+                                                                                    end
+                                                                                else
+                                                                                    local value7
+                                                                                    data92 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "dropdown",
+                                                                                    }
+                                                                                    clone5 = table.clone
+                                                                                    list5 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list5 = {}
+                                                                                    end
+                                                                                    local value8
+                                                                                    data92.options = clone5(list5)
+                                                                                    list6 = entryValue13.value
+                                                                                    if entryValue13.value then
+                                                                                        local value9
+                                                                                        if not list6 then
+                                                                                            list6 = ""
+                                                                                        end
+                                                                                    else
+                                                                                        local value9
+                                                                                        list6 = entryValue13.list
+                                                                                        if entryValue13.list then
+                                                                                            local value10
+                                                                                            list6 = entryValue13.list[1]
+                                                                                            if not entryValue13.list[1] then
+                                                                                                list6 = ""
+                                                                                            end
+                                                                                        else
+                                                                                            local value10
+                                                                                            if not list6 then
+                                                                                                list6 = ""
+                                                                                            end
+                                                                                        end
+                                                                                    end
+                                                                                    data92.value = list6
+                                                                                    data92.page = pageName
+                                                                                    data92.section = sectionName
+                                                                                    data102[textValue] = data92
+                                                                                end
+                                                                                continue
+                                                                            end
+                                                                        end
+                                                                        break
+                                                                    end
+                                                                    if value38 == 1 then
+                                                                        continue
+                                                                    end
+                                                                    break
+                                                                end
+                                                            end
+                                                        end
+                                                    end
+                                                else
+                                                    value212 = nil
+                                                    while true do
+                                                        list5 = {}
+                                                        value202 = nil
+                                                        while true do
+                                                            local value
+                                                            data92.options = clone5(list5)
+                                                            list6 = entryValue13.value
+                                                            if entryValue13.value then
+                                                                local value2
+                                                                if not list6 then
+                                                                    list6 = ""
+                                                                end
+                                                            else
+                                                                local value2
+                                                                list6 = entryValue13.list
+                                                                if entryValue13.list then
+                                                                    local value3
+                                                                    list6 = entryValue13.list[1]
+                                                                    if not entryValue13.list[1] then
+                                                                        list6 = ""
+                                                                    end
+                                                                else
+                                                                    local value3
+                                                                    if not list6 then
+                                                                        list6 = ""
+                                                                    end
+                                                                end
+                                                            end
+                                                            data92.value = list6
+                                                            data92.page = pageName
+                                                            data92.section = sectionName
+                                                            data102[textValue] = data92
+                                                            value192 = nil
+                                                            while true do
+                                                                numberValue22 = numberValue52 + 427902912
+                                                                value182 = nil
+                                                                while true do
+                                                                    local value2
+                                                                    numberValue14 += 1
+                                                                    hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                    if hasEntry24 then
+                                                                        local value3
+                                                                        entryKey25 = entryKey24
+                                                                        entryValue13 = entryValue23
+                                                                        pageName = entryValue23.Page_Name
+                                                                        if not entryValue23.Page_Name then
+                                                                            pageName = "Default Page"
+                                                                        end
+                                                                        local value4
+                                                                        sectionName = entryValue13.Section_Name
+                                                                        if not entryValue13.Section_Name then
+                                                                            sectionName = "Default Section"
+                                                                        end
+                                                                        local value5
+                                                                        textValue = tostring(numberValue14)
+                                                                        if entryValue13.type ~= "toggle" then
+                                                                            local value6
+                                                                            if entryValue13.type ~= "button" then
+                                                                                local value7
+                                                                                if entryValue13.type ~= "textlabel" then
+                                                                                    local value8
+                                                                                    if entryValue13.type ~= "box" then
+                                                                                        value182 = 1
+                                                                                        break
+                                                                                    else
+                                                                                        local value9
+                                                                                        data22 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "box",
+                                                                                        }
+                                                                                        value28 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value28 = ""
+                                                                                        end
+                                                                                        data22.value = value28
+                                                                                        data22.page = pageName
+                                                                                        data22.section = sectionName
+                                                                                        data102[textValue] = data22
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    local value8
+                                                                                    if entryValue13.FunctionCreate then
+                                                                                        local value9
+                                                                                        if entryValue13.FunctionCreate.GetText then
+                                                                                            local value10
+                                                                                            entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                            if not entryKey18 then
+                                                                                                local value11
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value10
+                                                                                            entryKey18 = entryValue13.text
+                                                                                            if not entryValue13.text then
+                                                                                                entryKey18 = entryKey25
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value9
+                                                                                        entryKey18 = entryValue13.text
+                                                                                        if not entryValue13.text then
+                                                                                            entryKey18 = entryKey25
+                                                                                        end
+                                                                                    end
+                                                                                    local value9
+                                                                                    data32 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "label",
+                                                                                        value = entryKey18,
+                                                                                        text = entryKey18,
+                                                                                    }
+                                                                                    color = entryValue13.color
+                                                                                    if not entryValue13.color then
+                                                                                        color = "#B8B8B8"
+                                                                                    end
+                                                                                    local value10
+                                                                                    data32.color = color
+                                                                                    size = entryValue13.size
+                                                                                    if not entryValue13.size then
+                                                                                        size = "14px"
+                                                                                    end
+                                                                                    local value11
+                                                                                    data32.size = size
+                                                                                    bold = entryValue13.bold
+                                                                                    if not entryValue13.bold then
+                                                                                        bold = false
+                                                                                    end
+                                                                                    data32.bold = bold
+                                                                                    data32.page = pageName
+                                                                                    data32.section = sectionName
+                                                                                    data102[textValue] = data32
+                                                                                    numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                data102[textValue] = {
+                                                                                    name = entryKey25,
+                                                                                    type = "button",
+                                                                                    value = entryKey25,
+                                                                                    text = entryKey25,
+                                                                                    page = pageName,
+                                                                                    section = sectionName,
+                                                                                }
+                                                                                continue
+                                                                            end
+                                                                        else
+                                                                            data102[textValue] = {
+                                                                                name = entryKey25,
+                                                                                type = "toggle",
+                                                                                value = entryValue13.value,
+                                                                                page = pageName,
+                                                                                section = sectionName,
+                                                                            }
+                                                                            continue
+                                                                        end
+                                                                    else
+                                                                        break
+                                                                    end
+                                                                end
+                                                                if value182 == 1 then
+                                                                    local value2
+                                                                    numberValue52 = numberValue22 + guardState8
+                                                                    if entryValue13.type == "slider" then
+                                                                        value192 = 1
+                                                                        break
+                                                                    else
+                                                                        local value3
+                                                                        if entryValue13.type ~= "dropdown" then
+                                                                            local value4
+                                                                            if entryValue13.type ~= "priority_dropdown" then
+                                                                                local value5
+                                                                                if entryValue13.type ~= "multi_toggle" then
+                                                                                    local value6
+                                                                                    if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                        local value7
+                                                                                        data52 = {}
+                                                                                        data62 = {}
+                                                                                        value30 = pairs
+                                                                                        list2 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list2 = {}
+                                                                                        end
+                                                                                        local value8
+                                                                                        local value9
+                                                                                        local value10
+                                                                                        local value11
+                                                                                        do
+                                                                                            local value12, value13, value14 = value30(list2)
+                                                                                            numberValue32 = 2
+                                                                                            nextEntry4 = createIterator(
+                                                                                                value12,
+                                                                                                value13,
+                                                                                                value14
+                                                                                            )
+                                                                                            value31, value210, value33 = nextEntry4()
+                                                                                            value8, value9, value10, value11 = value12, value13, value14, value31
+                                                                                        end
+                                                                                        if value11 then
+                                                                                            value312 = value210
+                                                                                            value322 = value33
+                                                                                            while true do
+                                                                                                local value12
+                                                                                                data42 = {}
+                                                                                                min3 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min3 = 0
+                                                                                                end
+                                                                                                local value13
+                                                                                                data42.min = min3
+                                                                                                max2 = value322.max
+                                                                                                if not value322.max then
+                                                                                                    max2 = 100
+                                                                                                end
+                                                                                                local value14
+                                                                                                data42.max = max2
+                                                                                                step2 = value322.step
+                                                                                                if not value322.step then
+                                                                                                    step2 = 1
+                                                                                                end
+                                                                                                local value15
+                                                                                                data42.step = step2
+                                                                                                data52[value312] = data42
+                                                                                                if entryValue13.value then
+                                                                                                    local value16
+                                                                                                    min4 = entryValue13.value[value312]
+                                                                                                    if not entryValue13.value[value312] then
+                                                                                                        local value17
+                                                                                                        min4 = value322.Default
+                                                                                                        if not value322.Default then
+                                                                                                            local value18
+                                                                                                            min4 = value322.min
+                                                                                                            if not value322.min then
+                                                                                                                min4 = 0
+                                                                                                            end
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value16
+                                                                                                    min4 = value322.Default
+                                                                                                    if not value322.Default then
+                                                                                                        local value17
+                                                                                                        min4 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min4 = 0
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                                local value16
+                                                                                                data62[value312] = min4
+                                                                                                value43, value53, value63 = nextEntry4()
+                                                                                                if value43 then
+                                                                                                    value312 = value53
+                                                                                                    value322 = value63
+                                                                                                    continue
+                                                                                                end
+                                                                                                break
+                                                                                            end
+                                                                                        end
+                                                                                        local value12
+                                                                                        local value13
+                                                                                        do
+                                                                                            nextEntry4 = nextEntry22
+                                                                                            local q_2Result = value332
+                                                                                            local __2Result = value34
+                                                                                            numberValue32 = numberValue42
+                                                                                            data102[textValue] = {
+                                                                                                name = entryKey25,
+                                                                                                type = "slider_dropdown",
+                                                                                                sliders = data52,
+                                                                                                values = data62,
+                                                                                                page = pageName,
+                                                                                                section = sectionName,
+                                                                                            }
+                                                                                            numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                            value12, value13 = q_2Result, __2Result
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    local value6
+                                                                                    data72 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "multi_toggle",
+                                                                                    }
+                                                                                    clone = table.clone
+                                                                                    list3 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list3 = {}
+                                                                                    end
+                                                                                    local value7
+                                                                                    data72.options = clone(list3)
+                                                                                    clone2 = table.clone
+                                                                                    value35 = entryValue13.value
+                                                                                    if not entryValue13.value then
+                                                                                        value35 = {}
+                                                                                    end
+                                                                                    data72.value = clone2(value35)
+                                                                                    data72.page = pageName
+                                                                                    data72.section = sectionName
+                                                                                    data102[textValue] = data72
+                                                                                end
+                                                                            else
+                                                                                local value5
+                                                                                clone3 = table.clone
+                                                                                value36 = entryValue13.value
+                                                                                if not entryValue13.value then
+                                                                                    value36 = {}
+                                                                                end
+                                                                                local value6
+                                                                                value37 = clone3(value36)
+                                                                                data82 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "priority_dropdown",
+                                                                                }
+                                                                                clone4 = table.clone
+                                                                                list4 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list4 = {}
+                                                                                end
+                                                                                data82.options = clone4(list4)
+                                                                                data82.selected = value37
+                                                                                data82.value = value37
+                                                                                data82.page = pageName
+                                                                                data82.section = sectionName
+                                                                                data102[textValue] = data82
+                                                                            end
+                                                                            continue
+                                                                        else
+                                                                            value192 = 2
+                                                                            break
+                                                                        end
+                                                                    end
+                                                                end
+                                                                break
+                                                            end
+                                                            if value192 == 1 then
+                                                                value202 = 1
+                                                                break
+                                                            elseif value192 == 2 then
+                                                                local value2
+                                                                data92 = {
+                                                                    name = entryKey25,
+                                                                    type = "dropdown",
+                                                                }
+                                                                clone5 = table.clone
+                                                                list5 = entryValue13.list
+                                                                if entryValue13.list then
+                                                                    continue
+                                                                else
+                                                                    value202 = 2
+                                                                    break
+                                                                end
+                                                            end
+                                                            break
+                                                        end
+                                                        if value202 == 1 then
+                                                            value212 = 1
+                                                            break
+                                                        elseif value202 == 2 then
+                                                            continue
+                                                        end
+                                                        break
+                                                    end
+                                                    if value212 == 1 then
+                                                        while true do
+                                                            local value
+                                                            data11 = {name = entryKey25, type = "slider"}
+                                                            min = entryValue13.min
+                                                            if not entryValue13.min then
+                                                                min = 0
+                                                            end
+                                                            local value2
+                                                            data11.min = min
+                                                            max = entryValue13.max
+                                                            if not entryValue13.max then
+                                                                max = 100
+                                                            end
+                                                            local value3
+                                                            data11.max = max
+                                                            step = entryValue13.step
+                                                            if not entryValue13.step then
+                                                                step = 1
+                                                            end
+                                                            local value4
+                                                            data11.step = step
+                                                            min2 = entryValue13.value
+                                                            if not entryValue13.value then
+                                                                local value5
+                                                                min2 = entryValue13.min
+                                                                if not entryValue13.min then
+                                                                    min2 = 0
+                                                                end
+                                                            end
+                                                            data11.value = min2
+                                                            data11.page = pageName
+                                                            data11.section = sectionName
+                                                            data102[textValue] = data11
+                                                            value38 = nil
+                                                            while true do
+                                                                numberValue22 = numberValue52 + 427902912
+                                                                value29 = nil
+                                                                while true do
+                                                                    local value5
+                                                                    numberValue14 += 1
+                                                                    hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                                    if hasEntry24 then
+                                                                        local value6
+                                                                        entryKey25 = entryKey24
+                                                                        entryValue13 = entryValue23
+                                                                        pageName = entryValue23.Page_Name
+                                                                        if not entryValue23.Page_Name then
+                                                                            pageName = "Default Page"
+                                                                        end
+                                                                        local value7
+                                                                        sectionName = entryValue13.Section_Name
+                                                                        if not entryValue13.Section_Name then
+                                                                            sectionName = "Default Section"
+                                                                        end
+                                                                        local value8
+                                                                        textValue = tostring(numberValue14)
+                                                                        if entryValue13.type ~= "toggle" then
+                                                                            local value9
+                                                                            if entryValue13.type ~= "button" then
+                                                                                local value10
+                                                                                if entryValue13.type ~= "textlabel" then
+                                                                                    local value11
+                                                                                    if entryValue13.type ~= "box" then
+                                                                                        value29 = 1
+                                                                                        break
+                                                                                    else
+                                                                                        local value12
+                                                                                        data22 = {
+                                                                                            name = entryKey25,
+                                                                                            type = "box",
+                                                                                        }
+                                                                                        value28 = entryValue13.value
+                                                                                        if not entryValue13.value then
+                                                                                            value28 = ""
+                                                                                        end
+                                                                                        data22.value = value28
+                                                                                        data22.page = pageName
+                                                                                        data22.section = sectionName
+                                                                                        data102[textValue] = data22
+                                                                                        continue
+                                                                                    end
+                                                                                else
+                                                                                    local value11
+                                                                                    if entryValue13.FunctionCreate then
+                                                                                        local value12
+                                                                                        if entryValue13.FunctionCreate.GetText then
+                                                                                            local value13
+                                                                                            entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                            if not entryKey18 then
+                                                                                                local value14
+                                                                                                entryKey18 = entryValue13.text
+                                                                                                if not entryValue13.text then
+                                                                                                    entryKey18 = entryKey25
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value13
+                                                                                            entryKey18 = entryValue13.text
+                                                                                            if not entryValue13.text then
+                                                                                                entryKey18 = entryKey25
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value12
+                                                                                        entryKey18 = entryValue13.text
+                                                                                        if not entryValue13.text then
+                                                                                            entryKey18 = entryKey25
+                                                                                        end
+                                                                                    end
+                                                                                    local value12
+                                                                                    data32 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "label",
+                                                                                        value = entryKey18,
+                                                                                        text = entryKey18,
+                                                                                    }
+                                                                                    color = entryValue13.color
+                                                                                    if not entryValue13.color then
+                                                                                        color = "#B8B8B8"
+                                                                                    end
+                                                                                    local value13
+                                                                                    data32.color = color
+                                                                                    size = entryValue13.size
+                                                                                    if not entryValue13.size then
+                                                                                        size = "14px"
+                                                                                    end
+                                                                                    local value14
+                                                                                    data32.size = size
+                                                                                    bold = entryValue13.bold
+                                                                                    if not entryValue13.bold then
+                                                                                        bold = false
+                                                                                    end
+                                                                                    data32.bold = bold
+                                                                                    data32.page = pageName
+                                                                                    data32.section = sectionName
+                                                                                    data102[textValue] = data32
+                                                                                    numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                                    continue
+                                                                                end
+                                                                            else
+                                                                                data102[textValue] = {
+                                                                                    name = entryKey25,
+                                                                                    type = "button",
+                                                                                    value = entryKey25,
+                                                                                    text = entryKey25,
+                                                                                    page = pageName,
+                                                                                    section = sectionName,
+                                                                                }
+                                                                                continue
+                                                                            end
+                                                                        else
+                                                                            data102[textValue] = {
+                                                                                name = entryKey25,
+                                                                                type = "toggle",
+                                                                                value = entryValue13.value,
+                                                                                page = pageName,
+                                                                                section = sectionName,
+                                                                            }
+                                                                            continue
+                                                                        end
+                                                                    else
+                                                                        break
+                                                                    end
+                                                                end
+                                                                if value29 == 1 then
+                                                                    local value5
+                                                                    numberValue52 = numberValue22 + guardState8
+                                                                    if entryValue13.type == "slider" then
+                                                                        value38 = 1
+                                                                        break
+                                                                    else
+                                                                        local value6
+                                                                        if entryValue13.type ~= "dropdown" then
+                                                                            local value7
+                                                                            if entryValue13.type ~= "priority_dropdown" then
+                                                                                local value8
+                                                                                if entryValue13.type ~= "multi_toggle" then
+                                                                                    local value9
+                                                                                    if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                        local value10
+                                                                                        data52 = {}
+                                                                                        data62 = {}
+                                                                                        value30 = pairs
+                                                                                        list2 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list2 = {}
+                                                                                        end
+                                                                                        local value11
+                                                                                        local value12
+                                                                                        local value13
+                                                                                        local value14
+                                                                                        do
+                                                                                            local value15, value16, value17 = value30(list2)
+                                                                                            numberValue32 = 2
+                                                                                            nextEntry4 = createIterator(
+                                                                                                value15,
+                                                                                                value16,
+                                                                                                value17
+                                                                                            )
+                                                                                            value31, value210, value33 = nextEntry4()
+                                                                                            value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                                        end
+                                                                                        if value14 then
+                                                                                            value312 = value210
+                                                                                            value322 = value33
+                                                                                            while true do
+                                                                                                local value15
+                                                                                                data42 = {}
+                                                                                                min3 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min3 = 0
+                                                                                                end
+                                                                                                local value16
+                                                                                                data42.min = min3
+                                                                                                max2 = value322.max
+                                                                                                if not value322.max then
+                                                                                                    max2 = 100
+                                                                                                end
+                                                                                                local value17
+                                                                                                data42.max = max2
+                                                                                                step2 = value322.step
+                                                                                                if not value322.step then
+                                                                                                    step2 = 1
+                                                                                                end
+                                                                                                local value18
+                                                                                                data42.step = step2
+                                                                                                data52[value312] = data42
+                                                                                                if entryValue13.value then
+                                                                                                    local value19
+                                                                                                    min4 = entryValue13.value[value312]
+                                                                                                    if not entryValue13.value[value312] then
+                                                                                                        local value20
+                                                                                                        min4 = value322.Default
+                                                                                                        if not value322.Default then
+                                                                                                            local value22
+                                                                                                            min4 = value322.min
+                                                                                                            if not value322.min then
+                                                                                                                min4 = 0
+                                                                                                            end
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value19
+                                                                                                    min4 = value322.Default
+                                                                                                    if not value322.Default then
+                                                                                                        local value20
+                                                                                                        min4 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min4 = 0
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                                local value19
+                                                                                                data62[value312] = min4
+                                                                                                value43, value53, value63 = nextEntry4()
+                                                                                                if value43 then
+                                                                                                    value312 = value53
+                                                                                                    value322 = value63
+                                                                                                    continue
+                                                                                                end
+                                                                                                break
+                                                                                            end
+                                                                                        end
+                                                                                        local value15
+                                                                                        local value16
+                                                                                        do
+                                                                                            nextEntry4 = nextEntry22
+                                                                                            local q_2Result = value332
+                                                                                            local __2Result = value34
+                                                                                            numberValue32 = numberValue42
+                                                                                            data102[textValue] = {
+                                                                                                name = entryKey25,
+                                                                                                type = "slider_dropdown",
+                                                                                                sliders = data52,
+                                                                                                values = data62,
+                                                                                                page = pageName,
+                                                                                                section = sectionName,
+                                                                                            }
+                                                                                            numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                            value15, value16 = q_2Result, __2Result
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    local value9
+                                                                                    data72 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "multi_toggle",
+                                                                                    }
+                                                                                    clone = table.clone
+                                                                                    list3 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list3 = {}
+                                                                                    end
+                                                                                    local value10
+                                                                                    data72.options = clone(list3)
+                                                                                    clone2 = table.clone
+                                                                                    value35 = entryValue13.value
+                                                                                    if not entryValue13.value then
+                                                                                        value35 = {}
+                                                                                    end
+                                                                                    data72.value = clone2(value35)
+                                                                                    data72.page = pageName
+                                                                                    data72.section = sectionName
+                                                                                    data102[textValue] = data72
+                                                                                end
+                                                                            else
+                                                                                local value8
+                                                                                clone3 = table.clone
+                                                                                value36 = entryValue13.value
+                                                                                if not entryValue13.value then
+                                                                                    value36 = {}
+                                                                                end
+                                                                                local value9
+                                                                                value37 = clone3(value36)
+                                                                                data82 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "priority_dropdown",
+                                                                                }
+                                                                                clone4 = table.clone
+                                                                                list4 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list4 = {}
+                                                                                end
+                                                                                data82.options = clone4(list4)
+                                                                                data82.selected = value37
+                                                                                data82.value = value37
+                                                                                data82.page = pageName
+                                                                                data82.section = sectionName
+                                                                                data102[textValue] = data82
+                                                                            end
+                                                                        else
+                                                                            local value7
+                                                                            data92 = {
+                                                                                name = entryKey25,
+                                                                                type = "dropdown",
+                                                                            }
+                                                                            clone5 = table.clone
+                                                                            list5 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list5 = {}
+                                                                            end
+                                                                            local value8
+                                                                            data92.options = clone5(list5)
+                                                                            list6 = entryValue13.value
+                                                                            if entryValue13.value then
+                                                                                local value9
+                                                                                if not list6 then
+                                                                                    list6 = ""
+                                                                                end
+                                                                            else
+                                                                                local value9
+                                                                                list6 = entryValue13.list
+                                                                                if entryValue13.list then
+                                                                                    local value10
+                                                                                    list6 = entryValue13.list[1]
+                                                                                    if not entryValue13.list[1] then
+                                                                                        list6 = ""
+                                                                                    end
+                                                                                else
+                                                                                    local value10
+                                                                                    if not list6 then
+                                                                                        list6 = ""
+                                                                                    end
+                                                                                end
+                                                                            end
+                                                                            data92.value = list6
+                                                                            data92.page = pageName
+                                                                            data92.section = sectionName
+                                                                            data102[textValue] = data92
+                                                                        end
+                                                                        continue
+                                                                    end
+                                                                end
+                                                                break
+                                                            end
+                                                            if value38 == 1 then
+                                                                continue
+                                                            end
+                                                            break
+                                                        end
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    else
+                                        while true do
+                                            local value
+                                            data22 = {name = entryKey25, type = "box"}
+                                            value28 = entryValue13.value
+                                            if not entryValue13.value then
+                                                value28 = ""
+                                            end
+                                            data22.value = value28
+                                            data22.page = pageName
+                                            data22.section = sectionName
+                                            data102[textValue] = data22
+                                            value222 = nil
+                                            while true do
+                                                local value2
+                                                numberValue14 += 1
+                                                hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                if hasEntry24 then
+                                                    local value3
+                                                    entryKey25 = entryKey24
+                                                    entryValue13 = entryValue23
+                                                    pageName = entryValue23.Page_Name
+                                                    if not entryValue23.Page_Name then
+                                                        pageName = "Default Page"
+                                                    end
+                                                    local value4
+                                                    sectionName = entryValue13.Section_Name
+                                                    if not entryValue13.Section_Name then
+                                                        sectionName = "Default Section"
+                                                    end
+                                                    local value5
+                                                    textValue = tostring(numberValue14)
+                                                    if entryValue13.type ~= "toggle" then
+                                                        local value6
+                                                        if entryValue13.type ~= "button" then
+                                                            local value7
+                                                            if entryValue13.type ~= "textlabel" then
+                                                                local value8
+                                                                if entryValue13.type ~= "box" then
+                                                                    local value9
+                                                                    numberValue52 = numberValue22 + guardState8
+                                                                    if entryValue13.type == "slider" then
+                                                                        value222 = 2
+                                                                        break
+                                                                    else
+                                                                        local value10
+                                                                        if entryValue13.type ~= "dropdown" then
+                                                                            local value11
+                                                                            if entryValue13.type ~= "priority_dropdown" then
+                                                                                local value12
+                                                                                if entryValue13.type ~= "multi_toggle" then
+                                                                                    local value13
+                                                                                    if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                        local value14
+                                                                                        data52 = {}
+                                                                                        data62 = {}
+                                                                                        value30 = pairs
+                                                                                        list2 = entryValue13.list
+                                                                                        if not entryValue13.list then
+                                                                                            list2 = {}
+                                                                                        end
+                                                                                        local value15
+                                                                                        local value16
+                                                                                        local value17
+                                                                                        local value18
+                                                                                        do
+                                                                                            local value19, value20, value22 = value30(list2)
+                                                                                            numberValue32 = 2
+                                                                                            nextEntry4 = createIterator(
+                                                                                                value19,
+                                                                                                value20,
+                                                                                                value22
+                                                                                            )
+                                                                                            value31, value210, value33 = nextEntry4()
+                                                                                            value15, value16, value17, value18 = value19, value20, value22, value31
+                                                                                        end
+                                                                                        if value18 then
+                                                                                            value312 = value210
+                                                                                            value322 = value33
+                                                                                            while true do
+                                                                                                local value19
+                                                                                                data42 = {}
+                                                                                                min3 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min3 = 0
+                                                                                                end
+                                                                                                local value20
+                                                                                                data42.min = min3
+                                                                                                max2 = value322.max
+                                                                                                if not value322.max then
+                                                                                                    max2 = 100
+                                                                                                end
+                                                                                                local value22
+                                                                                                data42.max = max2
+                                                                                                step2 = value322.step
+                                                                                                if not value322.step then
+                                                                                                    step2 = 1
+                                                                                                end
+                                                                                                local value39
+                                                                                                data42.step = step2
+                                                                                                data52[value312] = data42
+                                                                                                if entryValue13.value then
+                                                                                                    local value40
+                                                                                                    min4 = entryValue13.value[value312]
+                                                                                                    if not entryValue13.value[value312] then
+                                                                                                        local value41
+                                                                                                        min4 = value322.Default
+                                                                                                        if not value322.Default then
+                                                                                                            local value44
+                                                                                                            min4 = value322.min
+                                                                                                            if not value322.min then
+                                                                                                                min4 = 0
+                                                                                                            end
+                                                                                                        end
+                                                                                                    end
+                                                                                                else
+                                                                                                    local value40
+                                                                                                    min4 = value322.Default
+                                                                                                    if not value322.Default then
+                                                                                                        local value41
+                                                                                                        min4 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min4 = 0
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                                local value40
+                                                                                                data62[value312] = min4
+                                                                                                value43, value53, value63 = nextEntry4()
+                                                                                                if value43 then
+                                                                                                    value312 = value53
+                                                                                                    value322 = value63
+                                                                                                    continue
+                                                                                                end
+                                                                                                break
+                                                                                            end
+                                                                                        end
+                                                                                        local value19
+                                                                                        local value20
+                                                                                        do
+                                                                                            nextEntry4 = nextEntry22
+                                                                                            local q_2Result = value332
+                                                                                            local __2Result = value34
+                                                                                            numberValue32 = numberValue42
+                                                                                            data102[textValue] = {
+                                                                                                name = entryKey25,
+                                                                                                type = "slider_dropdown",
+                                                                                                sliders = data52,
+                                                                                                values = data62,
+                                                                                                page = pageName,
+                                                                                                section = sectionName,
+                                                                                            }
+                                                                                            numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                            value19, value20 = q_2Result, __2Result
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    local value13
+                                                                                    data72 = {
+                                                                                        name = entryKey25,
+                                                                                        type = "multi_toggle",
+                                                                                    }
+                                                                                    clone = table.clone
+                                                                                    list3 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list3 = {}
+                                                                                    end
+                                                                                    local value14
+                                                                                    data72.options = clone(list3)
+                                                                                    clone2 = table.clone
+                                                                                    value35 = entryValue13.value
+                                                                                    if not entryValue13.value then
+                                                                                        value35 = {}
+                                                                                    end
+                                                                                    data72.value = clone2(value35)
+                                                                                    data72.page = pageName
+                                                                                    data72.section = sectionName
+                                                                                    data102[textValue] = data72
+                                                                                end
+                                                                            else
+                                                                                local value12
+                                                                                clone3 = table.clone
+                                                                                value36 = entryValue13.value
+                                                                                if not entryValue13.value then
+                                                                                    value36 = {}
+                                                                                end
+                                                                                local value13
+                                                                                value37 = clone3(value36)
+                                                                                data82 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "priority_dropdown",
+                                                                                }
+                                                                                clone4 = table.clone
+                                                                                list4 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list4 = {}
+                                                                                end
+                                                                                data82.options = clone4(list4)
+                                                                                data82.selected = value37
+                                                                                data82.value = value37
+                                                                                data82.page = pageName
+                                                                                data82.section = sectionName
+                                                                                data102[textValue] = data82
+                                                                            end
+                                                                        else
+                                                                            local value11
+                                                                            data92 = {
+                                                                                name = entryKey25,
+                                                                                type = "dropdown",
+                                                                            }
+                                                                            clone5 = table.clone
+                                                                            list5 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list5 = {}
+                                                                            end
+                                                                            local value12
+                                                                            data92.options = clone5(list5)
+                                                                            list6 = entryValue13.value
+                                                                            if entryValue13.value then
+                                                                                local value13
+                                                                                if not list6 then
+                                                                                    list6 = ""
+                                                                                end
+                                                                            else
+                                                                                local value13
+                                                                                list6 = entryValue13.list
+                                                                                if entryValue13.list then
+                                                                                    local value14
+                                                                                    list6 = entryValue13.list[1]
+                                                                                    if not entryValue13.list[1] then
+                                                                                        list6 = ""
+                                                                                    end
+                                                                                else
+                                                                                    local value14
+                                                                                    if not list6 then
+                                                                                        list6 = ""
+                                                                                    end
+                                                                                end
+                                                                            end
+                                                                            data92.value = list6
+                                                                            data92.page = pageName
+                                                                            data92.section = sectionName
+                                                                            data102[textValue] = data92
+                                                                        end
+                                                                        numberValue22 = numberValue52 + 427902912
+                                                                        continue
+                                                                    end
+                                                                else
+                                                                    value222 = 1
+                                                                    break
+                                                                end
+                                                            else
+                                                                local value8
+                                                                if entryValue13.FunctionCreate then
+                                                                    local value9
+                                                                    if entryValue13.FunctionCreate.GetText then
+                                                                        local value10
+                                                                        entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                        if not entryKey18 then
+                                                                            local value11
+                                                                            entryKey18 = entryValue13.text
+                                                                            if not entryValue13.text then
+                                                                                entryKey18 = entryKey25
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        local value10
+                                                                        entryKey18 = entryValue13.text
+                                                                        if not entryValue13.text then
+                                                                            entryKey18 = entryKey25
+                                                                        end
+                                                                    end
+                                                                else
+                                                                    local value9
+                                                                    entryKey18 = entryValue13.text
+                                                                    if not entryValue13.text then
+                                                                        entryKey18 = entryKey25
+                                                                    end
+                                                                end
+                                                                local value9
+                                                                data32 = {
+                                                                    name = entryKey25,
+                                                                    type = "label",
+                                                                    value = entryKey18,
+                                                                    text = entryKey18,
+                                                                }
+                                                                color = entryValue13.color
+                                                                if not entryValue13.color then
+                                                                    color = "#B8B8B8"
+                                                                end
+                                                                local value10
+                                                                data32.color = color
+                                                                size = entryValue13.size
+                                                                if not entryValue13.size then
+                                                                    size = "14px"
+                                                                end
+                                                                local value11
+                                                                data32.size = size
+                                                                bold = entryValue13.bold
+                                                                if not entryValue13.bold then
+                                                                    bold = false
+                                                                end
+                                                                data32.bold = bold
+                                                                data32.page = pageName
+                                                                data32.section = sectionName
+                                                                data102[textValue] = data32
+                                                                numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                continue
+                                                            end
+                                                        else
+                                                            data102[textValue] = {
+                                                                name = entryKey25,
+                                                                type = "button",
+                                                                value = entryKey25,
+                                                                text = entryKey25,
+                                                                page = pageName,
+                                                                section = sectionName,
+                                                            }
+                                                            continue
+                                                        end
+                                                    else
+                                                        data102[textValue] = {
+                                                            name = entryKey25,
+                                                            type = "toggle",
+                                                            value = entryValue13.value,
+                                                            page = pageName,
+                                                            section = sectionName,
+                                                        }
+                                                        continue
+                                                    end
+                                                else
+                                                    break
+                                                end
+                                            end
+                                            if value222 == 1 then
+                                                continue
+                                            end
+                                            break
+                                        end
+                                        if value222 == 2 then
+                                            while true do
+                                                local value
+                                                data11 = {name = entryKey25, type = "slider"}
+                                                min = entryValue13.min
+                                                if not entryValue13.min then
+                                                    min = 0
+                                                end
+                                                local value2
+                                                data11.min = min
+                                                max = entryValue13.max
+                                                if not entryValue13.max then
+                                                    max = 100
+                                                end
+                                                local value3
+                                                data11.max = max
+                                                step = entryValue13.step
+                                                if not entryValue13.step then
+                                                    step = 1
+                                                end
+                                                local value4
+                                                data11.step = step
+                                                min2 = entryValue13.value
+                                                if not entryValue13.value then
+                                                    local value5
+                                                    min2 = entryValue13.min
+                                                    if not entryValue13.min then
+                                                        min2 = 0
+                                                    end
+                                                end
+                                                data11.value = min2
+                                                data11.page = pageName
+                                                data11.section = sectionName
+                                                data102[textValue] = data11
+                                                value38 = nil
+                                                while true do
+                                                    numberValue22 = numberValue52 + 427902912
+                                                    value29 = nil
+                                                    while true do
+                                                        local value5
+                                                        numberValue14 += 1
+                                                        hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                        if hasEntry24 then
+                                                            local value6
+                                                            entryKey25 = entryKey24
+                                                            entryValue13 = entryValue23
+                                                            pageName = entryValue23.Page_Name
+                                                            if not entryValue23.Page_Name then
+                                                                pageName = "Default Page"
+                                                            end
+                                                            local value7
+                                                            sectionName = entryValue13.Section_Name
+                                                            if not entryValue13.Section_Name then
+                                                                sectionName = "Default Section"
+                                                            end
+                                                            local value8
+                                                            textValue = tostring(numberValue14)
+                                                            if entryValue13.type ~= "toggle" then
+                                                                local value9
+                                                                if entryValue13.type ~= "button" then
+                                                                    local value10
+                                                                    if entryValue13.type ~= "textlabel" then
+                                                                        local value11
+                                                                        if entryValue13.type ~= "box" then
+                                                                            value29 = 1
+                                                                            break
+                                                                        else
+                                                                            local value12
+                                                                            data22 = {
+                                                                                name = entryKey25,
+                                                                                type = "box",
+                                                                            }
+                                                                            value28 = entryValue13.value
+                                                                            if not entryValue13.value then
+                                                                                value28 = ""
+                                                                            end
+                                                                            data22.value = value28
+                                                                            data22.page = pageName
+                                                                            data22.section = sectionName
+                                                                            data102[textValue] = data22
+                                                                            continue
+                                                                        end
+                                                                    else
+                                                                        local value11
+                                                                        if entryValue13.FunctionCreate then
+                                                                            local value12
+                                                                            if entryValue13.FunctionCreate.GetText then
+                                                                                local value13
+                                                                                entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                                if not entryKey18 then
+                                                                                    local value14
+                                                                                    entryKey18 = entryValue13.text
+                                                                                    if not entryValue13.text then
+                                                                                        entryKey18 = entryKey25
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                local value13
+                                                                                entryKey18 = entryValue13.text
+                                                                                if not entryValue13.text then
+                                                                                    entryKey18 = entryKey25
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            local value12
+                                                                            entryKey18 = entryValue13.text
+                                                                            if not entryValue13.text then
+                                                                                entryKey18 = entryKey25
+                                                                            end
+                                                                        end
+                                                                        local value12
+                                                                        data32 = {
+                                                                            name = entryKey25,
+                                                                            type = "label",
+                                                                            value = entryKey18,
+                                                                            text = entryKey18,
+                                                                        }
+                                                                        color = entryValue13.color
+                                                                        if not entryValue13.color then
+                                                                            color = "#B8B8B8"
+                                                                        end
+                                                                        local value13
+                                                                        data32.color = color
+                                                                        size = entryValue13.size
+                                                                        if not entryValue13.size then
+                                                                            size = "14px"
+                                                                        end
+                                                                        local value14
+                                                                        data32.size = size
+                                                                        bold = entryValue13.bold
+                                                                        if not entryValue13.bold then
+                                                                            bold = false
+                                                                        end
+                                                                        data32.bold = bold
+                                                                        data32.page = pageName
+                                                                        data32.section = sectionName
+                                                                        data102[textValue] = data32
+                                                                        numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                        continue
+                                                                    end
+                                                                else
+                                                                    data102[textValue] = {
+                                                                        name = entryKey25,
+                                                                        type = "button",
+                                                                        value = entryKey25,
+                                                                        text = entryKey25,
+                                                                        page = pageName,
+                                                                        section = sectionName,
+                                                                    }
+                                                                    continue
+                                                                end
+                                                            else
+                                                                data102[textValue] = {
+                                                                    name = entryKey25,
+                                                                    type = "toggle",
+                                                                    value = entryValue13.value,
+                                                                    page = pageName,
+                                                                    section = sectionName,
+                                                                }
+                                                                continue
+                                                            end
+                                                        else
+                                                            break
+                                                        end
+                                                    end
+                                                    if value29 == 1 then
+                                                        local value5
+                                                        numberValue52 = numberValue22 + guardState8
+                                                        if entryValue13.type == "slider" then
+                                                            value38 = 1
+                                                            break
+                                                        else
+                                                            local value6
+                                                            if entryValue13.type ~= "dropdown" then
+                                                                local value7
+                                                                if entryValue13.type ~= "priority_dropdown" then
+                                                                    local value8
+                                                                    if entryValue13.type ~= "multi_toggle" then
+                                                                        local value9
+                                                                        if not (entryValue13.type ~= "slider_dropdown") then
+                                                                            local value10
+                                                                            data52 = {}
+                                                                            data62 = {}
+                                                                            value30 = pairs
+                                                                            list2 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list2 = {}
+                                                                            end
+                                                                            local value11, value12
+                                                                            local value13
+                                                                            local value14
+                                                                            do
+                                                                                local value15, value16, value17 = value30(list2)
+                                                                                numberValue32 = 2
+                                                                                nextEntry4 = createIterator(
+                                                                                    value15,
+                                                                                    value16,
+                                                                                    value17
+                                                                                )
+                                                                                value31, value210, value33 = nextEntry4()
+                                                                                value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                            end
+                                                                            if value14 then
+                                                                                value312 = value210
+                                                                                value322 = value33
+                                                                                while true do
+                                                                                    local value15
+                                                                                    data42 = {}
+                                                                                    min3 = value322.min
+                                                                                    if not value322.min then
+                                                                                        min3 = 0
+                                                                                    end
+                                                                                    local value16
+                                                                                    data42.min = min3
+                                                                                    max2 = value322.max
+                                                                                    if not value322.max then
+                                                                                        max2 = 100
+                                                                                    end
+                                                                                    local value17
+                                                                                    data42.max = max2
+                                                                                    step2 = value322.step
+                                                                                    if not value322.step then
+                                                                                        step2 = 1
+                                                                                    end
+                                                                                    local value18
+                                                                                    data42.step = step2
+                                                                                    data52[value312] = data42
+                                                                                    if entryValue13.value then
+                                                                                        local value19
+                                                                                        min4 = entryValue13.value[value312]
+                                                                                        if not entryValue13.value[value312] then
+                                                                                            local value20
+                                                                                            min4 = value322.Default
+                                                                                            if not value322.Default then
+                                                                                                local value22
+                                                                                                min4 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min4 = 0
+                                                                                                end
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value19
+                                                                                        min4 = value322.Default
+                                                                                        if not value322.Default then
+                                                                                            local value20
+                                                                                            min4 = value322.min
+                                                                                            if not value322.min then
+                                                                                                min4 = 0
+                                                                                            end
+                                                                                        end
+                                                                                    end
+                                                                                    local value19
+                                                                                    data62[value312] = min4
+                                                                                    value43, value53, value63 = nextEntry4()
+                                                                                    if value43 then
+                                                                                        value312 = value53
+                                                                                        value322 = value63
+                                                                                        continue
+                                                                                    end
+                                                                                    break
+                                                                                end
+                                                                            end
+                                                                            local value15, value16
+                                                                            do
+                                                                                nextEntry4 = nextEntry22
+                                                                                local q_2Result = value332
+                                                                                local __2Result = value34
+                                                                                numberValue32 = numberValue42
+                                                                                data102[textValue] = {
+                                                                                    name = entryKey25,
+                                                                                    type = "slider_dropdown",
+                                                                                    sliders = data52,
+                                                                                    values = data62,
+                                                                                    page = pageName,
+                                                                                    section = sectionName,
+                                                                                }
+                                                                                numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                value15, value16 = q_2Result, __2Result
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        local value9
+                                                                        data72 = {
+                                                                            name = entryKey25,
+                                                                            type = "multi_toggle",
+                                                                        }
+                                                                        clone = table.clone
+                                                                        list3 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list3 = {}
+                                                                        end
+                                                                        local value10
+                                                                        data72.options = clone(list3)
+                                                                        clone2 = table.clone
+                                                                        value35 = entryValue13.value
+                                                                        if not entryValue13.value then
+                                                                            value35 = {}
+                                                                        end
+                                                                        data72.value = clone2(value35)
+                                                                        data72.page = pageName
+                                                                        data72.section = sectionName
+                                                                        data102[textValue] = data72
+                                                                    end
+                                                                else
+                                                                    local value8
+                                                                    clone3 = table.clone
+                                                                    value36 = entryValue13.value
+                                                                    if not entryValue13.value then
+                                                                        value36 = {}
+                                                                    end
+                                                                    local value9
+                                                                    value37 = clone3(value36)
+                                                                    data82 = {
+                                                                        name = entryKey25,
+                                                                        type = "priority_dropdown",
+                                                                    }
+                                                                    clone4 = table.clone
+                                                                    list4 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list4 = {}
+                                                                    end
+                                                                    data82.options = clone4(list4)
+                                                                    data82.selected = value37
+                                                                    data82.value = value37
+                                                                    data82.page = pageName
+                                                                    data82.section = sectionName
+                                                                    data102[textValue] = data82
+                                                                end
+                                                            else
+                                                                local value7
+                                                                data92 = {
+                                                                    name = entryKey25,
+                                                                    type = "dropdown",
+                                                                }
+                                                                clone5 = table.clone
+                                                                list5 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list5 = {}
+                                                                end
+                                                                local value8
+                                                                data92.options = clone5(list5)
+                                                                list6 = entryValue13.value
+                                                                if entryValue13.value then
+                                                                    local value9
+                                                                    if not list6 then
+                                                                        list6 = ""
+                                                                    end
+                                                                else
+                                                                    local value9
+                                                                    list6 = entryValue13.list
+                                                                    if entryValue13.list then
+                                                                        local value10
+                                                                        list6 = entryValue13.list[1]
+                                                                        if not entryValue13.list[1] then
+                                                                            list6 = ""
+                                                                        end
+                                                                    else
+                                                                        local value10
+                                                                        if not list6 then
+                                                                            list6 = ""
+                                                                        end
+                                                                    end
+                                                                end
+                                                                data92.value = list6
+                                                                data92.page = pageName
+                                                                data92.section = sectionName
+                                                                data102[textValue] = data92
+                                                            end
+                                                            continue
+                                                        end
+                                                    end
+                                                    break
+                                                end
+                                                if value38 == 1 then
+                                                    continue
+                                                end
+                                                break
+                                            end
+                                        end
+                                    end
+                                else
+                                    while true do
+                                        local value
+                                        if entryValue13.FunctionCreate then
+                                            local value2
+                                            if entryValue13.FunctionCreate.GetText then
+                                                local value3
+                                                entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                if not entryKey18 then
+                                                    local value4
+                                                    entryKey18 = entryValue13.text
+                                                    if not entryValue13.text then
+                                                        entryKey18 = entryKey25
+                                                    end
+                                                end
+                                            else
+                                                local value3
+                                                entryKey18 = entryValue13.text
+                                                if not entryValue13.text then
+                                                    entryKey18 = entryKey25
+                                                end
+                                            end
+                                        else
+                                            local value2
+                                            entryKey18 = entryValue13.text
+                                            if not entryValue13.text then
+                                                entryKey18 = entryKey25
+                                            end
+                                        end
+                                        local value2
+                                        data32 = {
+                                            name = entryKey25,
+                                            type = "label",
+                                            value = entryKey18,
+                                            text = entryKey18,
+                                        }
+                                        color = entryValue13.color
+                                        if not entryValue13.color then
+                                            color = "#B8B8B8"
+                                        end
+                                        local value3
+                                        data32.color = color
+                                        size = entryValue13.size
+                                        if not entryValue13.size then
+                                            size = "14px"
+                                        end
+                                        local value4
+                                        data32.size = size
+                                        bold = entryValue13.bold
+                                        if not entryValue13.bold then
+                                            bold = false
+                                        end
+                                        data32.bold = bold
+                                        data32.page = pageName
+                                        data32.section = sectionName
+                                        data102[textValue] = data32
+                                        numberValue22 = numberValue22 + guardState8 + 427902912
+                                        value232 = nil
+                                        while true do
+                                            local value5
+                                            numberValue14 += 1
+                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                            if hasEntry24 then
+                                                local value6
+                                                entryKey25 = entryKey24
+                                                entryValue13 = entryValue23
+                                                pageName = entryValue23.Page_Name
+                                                if not entryValue23.Page_Name then
+                                                    pageName = "Default Page"
+                                                end
+                                                local value7
+                                                sectionName = entryValue13.Section_Name
+                                                if not entryValue13.Section_Name then
+                                                    sectionName = "Default Section"
+                                                end
+                                                local value8
+                                                textValue = tostring(numberValue14)
+                                                if entryValue13.type ~= "toggle" then
+                                                    local value9
+                                                    if entryValue13.type ~= "button" then
+                                                        local value10
+                                                        if entryValue13.type ~= "textlabel" then
+                                                            local value11
+                                                            if entryValue13.type ~= "box" then
+                                                                local value12
+                                                                numberValue52 = numberValue22 + guardState8
+                                                                if entryValue13.type == "slider" then
+                                                                    value232 = 2
+                                                                    break
+                                                                else
+                                                                    local value13
+                                                                    if entryValue13.type ~= "dropdown" then
+                                                                        local value14
+                                                                        if entryValue13.type ~= "priority_dropdown" then
+                                                                            local value15
+                                                                            if entryValue13.type ~= "multi_toggle" then
+                                                                                local value16
+                                                                                if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                    local value17
+                                                                                    data52 = {}
+                                                                                    data62 = {}
+                                                                                    value30 = pairs
+                                                                                    list2 = entryValue13.list
+                                                                                    if not entryValue13.list then
+                                                                                        list2 = {}
+                                                                                    end
+                                                                                    local value18
+                                                                                    local value19
+                                                                                    local value20
+                                                                                    local value22
+                                                                                    do
+                                                                                        local value39, value40, value41 = value30(list2)
+                                                                                        numberValue32 = 2
+                                                                                        nextEntry4 = createIterator(
+                                                                                            value39,
+                                                                                            value40,
+                                                                                            value41
+                                                                                        )
+                                                                                        value31, value210, value33 = nextEntry4()
+                                                                                        value18, value19, value20, value22 = value39, value40, value41, value31
+                                                                                    end
+                                                                                    if value22 then
+                                                                                        value312 = value210
+                                                                                        value322 = value33
+                                                                                        while true do
+                                                                                            local value39
+                                                                                            data42 = {}
+                                                                                            min3 = value322.min
+                                                                                            if not value322.min then
+                                                                                                min3 = 0
+                                                                                            end
+                                                                                            local value40
+                                                                                            data42.min = min3
+                                                                                            max2 = value322.max
+                                                                                            if not value322.max then
+                                                                                                max2 = 100
+                                                                                            end
+                                                                                            local value41
+                                                                                            data42.max = max2
+                                                                                            step2 = value322.step
+                                                                                            if not value322.step then
+                                                                                                step2 = 1
+                                                                                            end
+                                                                                            local value44
+                                                                                            data42.step = step2
+                                                                                            data52[value312] = data42
+                                                                                            if entryValue13.value then
+                                                                                                local value45
+                                                                                                min4 = entryValue13.value[value312]
+                                                                                                if not entryValue13.value[value312] then
+                                                                                                    local value46
+                                                                                                    min4 = value322.Default
+                                                                                                    if not value322.Default then
+                                                                                                        local value47
+                                                                                                        min4 = value322.min
+                                                                                                        if not value322.min then
+                                                                                                            min4 = 0
+                                                                                                        end
+                                                                                                    end
+                                                                                                end
+                                                                                            else
+                                                                                                local value45
+                                                                                                min4 = value322.Default
+                                                                                                if not value322.Default then
+                                                                                                    local value46
+                                                                                                    min4 = value322.min
+                                                                                                    if not value322.min then
+                                                                                                        min4 = 0
+                                                                                                    end
+                                                                                                end
+                                                                                            end
+                                                                                            local value45
+                                                                                            data62[value312] = min4
+                                                                                            value43, value53, value63 = nextEntry4()
+                                                                                            if value43 then
+                                                                                                value312 = value53
+                                                                                                value322 = value63
+                                                                                                continue
+                                                                                            end
+                                                                                            break
+                                                                                        end
+                                                                                    end
+                                                                                    local value39
+                                                                                    local value40
+                                                                                    do
+                                                                                        nextEntry4 = nextEntry22
+                                                                                        local q_2Result = value332
+                                                                                        local __2Result = value34
+                                                                                        numberValue32 = numberValue42
+                                                                                        data102[textValue] = {
+                                                                                            name = entryKey25,
+                                                                                            type = "slider_dropdown",
+                                                                                            sliders = data52,
+                                                                                            values = data62,
+                                                                                            page = pageName,
+                                                                                            section = sectionName,
+                                                                                        }
+                                                                                        numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                        value39, value40 = q_2Result, __2Result
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                local value16
+                                                                                data72 = {
+                                                                                    name = entryKey25,
+                                                                                    type = "multi_toggle",
+                                                                                }
+                                                                                clone = table.clone
+                                                                                list3 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list3 = {}
+                                                                                end
+                                                                                local value17
+                                                                                data72.options = clone(list3)
+                                                                                clone2 = table.clone
+                                                                                value35 = entryValue13.value
+                                                                                if not entryValue13.value then
+                                                                                    value35 = {}
+                                                                                end
+                                                                                data72.value = clone2(value35)
+                                                                                data72.page = pageName
+                                                                                data72.section = sectionName
+                                                                                data102[textValue] = data72
+                                                                            end
+                                                                        else
+                                                                            local value15
+                                                                            clone3 = table.clone
+                                                                            value36 = entryValue13.value
+                                                                            if not entryValue13.value then
+                                                                                value36 = {}
+                                                                            end
+                                                                            local value16
+                                                                            value37 = clone3(value36)
+                                                                            data82 = {
+                                                                                name = entryKey25,
+                                                                                type = "priority_dropdown",
+                                                                            }
+                                                                            clone4 = table.clone
+                                                                            list4 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list4 = {}
+                                                                            end
+                                                                            data82.options = clone4(list4)
+                                                                            data82.selected = value37
+                                                                            data82.value = value37
+                                                                            data82.page = pageName
+                                                                            data82.section = sectionName
+                                                                            data102[textValue] = data82
+                                                                        end
+                                                                    else
+                                                                        local value14
+                                                                        data92 = {
+                                                                            name = entryKey25,
+                                                                            type = "dropdown",
+                                                                        }
+                                                                        clone5 = table.clone
+                                                                        list5 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list5 = {}
+                                                                        end
+                                                                        local value15
+                                                                        data92.options = clone5(list5)
+                                                                        list6 = entryValue13.value
+                                                                        if entryValue13.value then
+                                                                            local value16
+                                                                            if not list6 then
+                                                                                list6 = ""
+                                                                            end
+                                                                        else
+                                                                            local value16
+                                                                            list6 = entryValue13.list
+                                                                            if entryValue13.list then
+                                                                                local value17
+                                                                                list6 = entryValue13.list[1]
+                                                                                if not entryValue13.list[1] then
+                                                                                    list6 = ""
+                                                                                end
+                                                                            else
+                                                                                local value17
+                                                                                if not list6 then
+                                                                                    list6 = ""
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                        data92.value = list6
+                                                                        data92.page = pageName
+                                                                        data92.section = sectionName
+                                                                        data102[textValue] = data92
+                                                                    end
+                                                                    numberValue22 = numberValue52 + 427902912
+                                                                    continue
+                                                                end
+                                                            else
+                                                                local value12
+                                                                data22 = {name = entryKey25, type = "box"}
+                                                                value28 = entryValue13.value
+                                                                if not entryValue13.value then
+                                                                    value28 = ""
+                                                                end
+                                                                data22.value = value28
+                                                                data22.page = pageName
+                                                                data22.section = sectionName
+                                                                data102[textValue] = data22
+                                                                continue
+                                                            end
+                                                        else
+                                                            value232 = 1
+                                                            break
+                                                        end
+                                                    else
+                                                        data102[textValue] = {
+                                                            name = entryKey25,
+                                                            type = "button",
+                                                            value = entryKey25,
+                                                            text = entryKey25,
+                                                            page = pageName,
+                                                            section = sectionName,
+                                                        }
+                                                        continue
+                                                    end
+                                                else
+                                                    data102[textValue] = {
+                                                        name = entryKey25,
+                                                        type = "toggle",
+                                                        value = entryValue13.value,
+                                                        page = pageName,
+                                                        section = sectionName,
+                                                    }
+                                                    continue
+                                                end
+                                            else
+                                                break
+                                            end
+                                        end
+                                        if value232 == 1 then
+                                            continue
+                                        end
+                                        break
+                                    end
+                                    if value232 == 2 then
+                                        while true do
+                                            local value
+                                            data11 = {name = entryKey25, type = "slider"}
+                                            min = entryValue13.min
+                                            if not entryValue13.min then
+                                                min = 0
+                                            end
+                                            local value2
+                                            data11.min = min
+                                            max = entryValue13.max
+                                            if not entryValue13.max then
+                                                max = 100
+                                            end
+                                            local value3
+                                            data11.max = max
+                                            step = entryValue13.step
+                                            if not entryValue13.step then
+                                                step = 1
+                                            end
+                                            local value4
+                                            data11.step = step
+                                            min2 = entryValue13.value
+                                            if not entryValue13.value then
+                                                local value5
+                                                min2 = entryValue13.min
+                                                if not entryValue13.min then
+                                                    min2 = 0
+                                                end
+                                            end
+                                            data11.value = min2
+                                            data11.page = pageName
+                                            data11.section = sectionName
+                                            data102[textValue] = data11
+                                            value38 = nil
+                                            while true do
+                                                numberValue22 = numberValue52 + 427902912
+                                                value29 = nil
+                                                while true do
+                                                    local value5
+                                                    numberValue14 += 1
+                                                    hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                    if hasEntry24 then
+                                                        local value6
+                                                        entryKey25 = entryKey24
+                                                        entryValue13 = entryValue23
+                                                        pageName = entryValue23.Page_Name
+                                                        if not entryValue23.Page_Name then
+                                                            pageName = "Default Page"
+                                                        end
+                                                        local value7
+                                                        sectionName = entryValue13.Section_Name
+                                                        if not entryValue13.Section_Name then
+                                                            sectionName = "Default Section"
+                                                        end
+                                                        local value8
+                                                        textValue = tostring(numberValue14)
+                                                        if entryValue13.type ~= "toggle" then
+                                                            local value9
+                                                            if entryValue13.type ~= "button" then
+                                                                local value10
+                                                                if entryValue13.type ~= "textlabel" then
+                                                                    local value11
+                                                                    if entryValue13.type ~= "box" then
+                                                                        value29 = 1
+                                                                        break
+                                                                    else
+                                                                        local value12
+                                                                        data22 = {
+                                                                            name = entryKey25,
+                                                                            type = "box",
+                                                                        }
+                                                                        value28 = entryValue13.value
+                                                                        if not entryValue13.value then
+                                                                            value28 = ""
+                                                                        end
+                                                                        data22.value = value28
+                                                                        data22.page = pageName
+                                                                        data22.section = sectionName
+                                                                        data102[textValue] = data22
+                                                                        continue
+                                                                    end
+                                                                else
+                                                                    local value11
+                                                                    if entryValue13.FunctionCreate then
+                                                                        local value12
+                                                                        if entryValue13.FunctionCreate.GetText then
+                                                                            local value13
+                                                                            entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                            if not entryKey18 then
+                                                                                local value14
+                                                                                entryKey18 = entryValue13.text
+                                                                                if not entryValue13.text then
+                                                                                    entryKey18 = entryKey25
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            local value13
+                                                                            entryKey18 = entryValue13.text
+                                                                            if not entryValue13.text then
+                                                                                entryKey18 = entryKey25
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        local value12
+                                                                        entryKey18 = entryValue13.text
+                                                                        if not entryValue13.text then
+                                                                            entryKey18 = entryKey25
+                                                                        end
+                                                                    end
+                                                                    local value12
+                                                                    data32 = {
+                                                                        name = entryKey25,
+                                                                        type = "label",
+                                                                        value = entryKey18,
+                                                                        text = entryKey18,
+                                                                    }
+                                                                    color = entryValue13.color
+                                                                    if not entryValue13.color then
+                                                                        color = "#B8B8B8"
+                                                                    end
+                                                                    local value13
+                                                                    data32.color = color
+                                                                    size = entryValue13.size
+                                                                    if not entryValue13.size then
+                                                                        size = "14px"
+                                                                    end
+                                                                    local value14
+                                                                    data32.size = size
+                                                                    bold = entryValue13.bold
+                                                                    if not entryValue13.bold then
+                                                                        bold = false
+                                                                    end
+                                                                    data32.bold = bold
+                                                                    data32.page = pageName
+                                                                    data32.section = sectionName
+                                                                    data102[textValue] = data32
+                                                                    numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                    continue
+                                                                end
+                                                            else
+                                                                data102[textValue] = {
+                                                                    name = entryKey25,
+                                                                    type = "button",
+                                                                    value = entryKey25,
+                                                                    text = entryKey25,
+                                                                    page = pageName,
+                                                                    section = sectionName,
+                                                                }
+                                                                continue
+                                                            end
+                                                        else
+                                                            data102[textValue] = {
+                                                                name = entryKey25,
+                                                                type = "toggle",
+                                                                value = entryValue13.value,
+                                                                page = pageName,
+                                                                section = sectionName,
+                                                            }
+                                                            continue
+                                                        end
+                                                    else
+                                                        break
+                                                    end
+                                                end
+                                                if value29 == 1 then
+                                                    local value5
+                                                    numberValue52 = numberValue22 + guardState8
+                                                    if entryValue13.type == "slider" then
+                                                        value38 = 1
+                                                        break
+                                                    else
+                                                        local value6
+                                                        if entryValue13.type ~= "dropdown" then
+                                                            local value7
+                                                            if entryValue13.type ~= "priority_dropdown" then
+                                                                local value8
+                                                                if entryValue13.type ~= "multi_toggle" then
+                                                                    local value9
+                                                                    if not (entryValue13.type ~= "slider_dropdown") then
+                                                                        local value10
+                                                                        data52 = {}
+                                                                        data62 = {}
+                                                                        value30 = pairs
+                                                                        list2 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list2 = {}
+                                                                        end
+                                                                        local value11, value12, value13
+                                                                        local value14
+                                                                        do
+                                                                            local value15, value16, value17 = value30(list2)
+                                                                            numberValue32 = 2
+                                                                            nextEntry4 = createIterator(
+                                                                                value15,
+                                                                                value16,
+                                                                                value17
+                                                                            )
+                                                                            value31, value210, value33 = nextEntry4()
+                                                                            value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                        end
+                                                                        if value14 then
+                                                                            value312 = value210
+                                                                            value322 = value33
+                                                                            while true do
+                                                                                local value15
+                                                                                data42 = {}
+                                                                                min3 = value322.min
+                                                                                if not value322.min then
+                                                                                    min3 = 0
+                                                                                end
+                                                                                local value16
+                                                                                data42.min = min3
+                                                                                max2 = value322.max
+                                                                                if not value322.max then
+                                                                                    max2 = 100
+                                                                                end
+                                                                                local value17
+                                                                                data42.max = max2
+                                                                                step2 = value322.step
+                                                                                if not value322.step then
+                                                                                    step2 = 1
+                                                                                end
+                                                                                local value18
+                                                                                data42.step = step2
+                                                                                data52[value312] = data42
+                                                                                if entryValue13.value then
+                                                                                    local value19
+                                                                                    min4 = entryValue13.value[value312]
+                                                                                    if not entryValue13.value[value312] then
+                                                                                        local value20
+                                                                                        min4 = value322.Default
+                                                                                        if not value322.Default then
+                                                                                            local value22
+                                                                                            min4 = value322.min
+                                                                                            if not value322.min then
+                                                                                                min4 = 0
+                                                                                            end
+                                                                                        end
+                                                                                    end
+                                                                                else
+                                                                                    local value19
+                                                                                    min4 = value322.Default
+                                                                                    if not value322.Default then
+                                                                                        local value20
+                                                                                        min4 = value322.min
+                                                                                        if not value322.min then
+                                                                                            min4 = 0
+                                                                                        end
+                                                                                    end
+                                                                                end
+                                                                                local value19
+                                                                                data62[value312] = min4
+                                                                                value43, value53, value63 = nextEntry4()
+                                                                                if value43 then
+                                                                                    value312 = value53
+                                                                                    value322 = value63
+                                                                                    continue
+                                                                                end
+                                                                                break
+                                                                            end
+                                                                        end
+                                                                        local value15, value16
+                                                                        do
+                                                                            nextEntry4 = nextEntry22
+                                                                            local q_2Result = value332
+                                                                            local __2Result = value34
+                                                                            numberValue32 = numberValue42
+                                                                            data102[textValue] = {
+                                                                                name = entryKey25,
+                                                                                type = "slider_dropdown",
+                                                                                sliders = data52,
+                                                                                values = data62,
+                                                                                page = pageName,
+                                                                                section = sectionName,
+                                                                            }
+                                                                            numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                            value15, value16 = q_2Result, __2Result
+                                                                        end
+                                                                    end
+                                                                else
+                                                                    local value9
+                                                                    data72 = {
+                                                                        name = entryKey25,
+                                                                        type = "multi_toggle",
+                                                                    }
+                                                                    clone = table.clone
+                                                                    list3 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list3 = {}
+                                                                    end
+                                                                    local value10
+                                                                    data72.options = clone(list3)
+                                                                    clone2 = table.clone
+                                                                    value35 = entryValue13.value
+                                                                    if not entryValue13.value then
+                                                                        value35 = {}
+                                                                    end
+                                                                    data72.value = clone2(value35)
+                                                                    data72.page = pageName
+                                                                    data72.section = sectionName
+                                                                    data102[textValue] = data72
+                                                                end
+                                                            else
+                                                                local value8
+                                                                clone3 = table.clone
+                                                                value36 = entryValue13.value
+                                                                if not entryValue13.value then
+                                                                    value36 = {}
+                                                                end
+                                                                local value9
+                                                                value37 = clone3(value36)
+                                                                data82 = {
+                                                                    name = entryKey25,
+                                                                    type = "priority_dropdown",
+                                                                }
+                                                                clone4 = table.clone
+                                                                list4 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list4 = {}
+                                                                end
+                                                                data82.options = clone4(list4)
+                                                                data82.selected = value37
+                                                                data82.value = value37
+                                                                data82.page = pageName
+                                                                data82.section = sectionName
+                                                                data102[textValue] = data82
+                                                            end
+                                                        else
+                                                            local value7
+                                                            data92 = {name = entryKey25, type = "dropdown"}
+                                                            clone5 = table.clone
+                                                            list5 = entryValue13.list
+                                                            if not entryValue13.list then
+                                                                list5 = {}
+                                                            end
+                                                            local value8
+                                                            data92.options = clone5(list5)
+                                                            list6 = entryValue13.value
+                                                            if entryValue13.value then
+                                                                local value9
+                                                                if not list6 then
+                                                                    list6 = ""
+                                                                end
+                                                            else
+                                                                local value9
+                                                                list6 = entryValue13.list
+                                                                if entryValue13.list then
+                                                                    local value10
+                                                                    list6 = entryValue13.list[1]
+                                                                    if not entryValue13.list[1] then
+                                                                        list6 = ""
+                                                                    end
+                                                                else
+                                                                    local value10
+                                                                    if not list6 then
+                                                                        list6 = ""
+                                                                    end
+                                                                end
+                                                            end
+                                                            data92.value = list6
+                                                            data92.page = pageName
+                                                            data92.section = sectionName
+                                                            data102[textValue] = data92
+                                                        end
+                                                        continue
+                                                    end
+                                                end
+                                                break
+                                            end
+                                            if value38 == 1 then
+                                                continue
+                                            end
+                                            break
+                                        end
+                                    end
+                                end
+                            else
+                                while true do
+                                    data102[textValue] = {
+                                        name = entryKey25,
+                                        type = "button",
+                                        value = entryKey25,
+                                        text = entryKey25,
+                                        page = pageName,
+                                        section = sectionName,
+                                    }
+                                    value24 = nil
+                                    while true do
+                                        local value
+                                        numberValue14 += 1
+                                        hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                        if hasEntry24 then
+                                            local value2
+                                            entryKey25 = entryKey24
+                                            entryValue13 = entryValue23
+                                            pageName = entryValue23.Page_Name
+                                            if not entryValue23.Page_Name then
+                                                pageName = "Default Page"
+                                            end
+                                            local value3
+                                            sectionName = entryValue13.Section_Name
+                                            if not entryValue13.Section_Name then
+                                                sectionName = "Default Section"
+                                            end
+                                            local value4
+                                            textValue = tostring(numberValue14)
+                                            if entryValue13.type ~= "toggle" then
+                                                local value5
+                                                if entryValue13.type ~= "button" then
+                                                    local value6
+                                                    if entryValue13.type ~= "textlabel" then
+                                                        local value7
+                                                        if entryValue13.type ~= "box" then
+                                                            local value8
+                                                            numberValue52 = numberValue22 + guardState8
+                                                            if entryValue13.type == "slider" then
+                                                                value24 = 2
+                                                                break
+                                                            else
+                                                                local value9
+                                                                if entryValue13.type ~= "dropdown" then
+                                                                    local value10
+                                                                    if entryValue13.type ~= "priority_dropdown" then
+                                                                        local value11
+                                                                        if entryValue13.type ~= "multi_toggle" then
+                                                                            local value12
+                                                                            if not (entryValue13.type ~= "slider_dropdown") then
+                                                                                local value13
+                                                                                data52 = {}
+                                                                                data62 = {}
+                                                                                value30 = pairs
+                                                                                list2 = entryValue13.list
+                                                                                if not entryValue13.list then
+                                                                                    list2 = {}
+                                                                                end
+                                                                                local value14, value15
+                                                                                local value16
+                                                                                local value17
+                                                                                do
+                                                                                    local value18, value19, value20 = value30(list2)
+                                                                                    numberValue32 = 2
+                                                                                    nextEntry4 = createIterator(
+                                                                                        value18,
+                                                                                        value19,
+                                                                                        value20
+                                                                                    )
+                                                                                    value31, value210, value33 = nextEntry4()
+                                                                                    value14, value15, value16, value17 = value18, value19, value20, value31
+                                                                                end
+                                                                                if value17 then
+                                                                                    value312 = value210
+                                                                                    value322 = value33
+                                                                                    while true do
+                                                                                        local value18
+                                                                                        data42 = {}
+                                                                                        min3 = value322.min
+                                                                                        if not value322.min then
+                                                                                            min3 = 0
+                                                                                        end
+                                                                                        local value19
+                                                                                        data42.min = min3
+                                                                                        max2 = value322.max
+                                                                                        if not value322.max then
+                                                                                            max2 = 100
+                                                                                        end
+                                                                                        local value20
+                                                                                        data42.max = max2
+                                                                                        step2 = value322.step
+                                                                                        if not value322.step then
+                                                                                            step2 = 1
+                                                                                        end
+                                                                                        local value22
+                                                                                        data42.step = step2
+                                                                                        data52[value312] = data42
+                                                                                        if entryValue13.value then
+                                                                                            local value39
+                                                                                            min4 = entryValue13.value[value312]
+                                                                                            if not entryValue13.value[value312] then
+                                                                                                local value40
+                                                                                                min4 = value322.Default
+                                                                                                if not value322.Default then
+                                                                                                    local value41
+                                                                                                    min4 = value322.min
+                                                                                                    if not value322.min then
+                                                                                                        min4 = 0
+                                                                                                    end
+                                                                                                end
+                                                                                            end
+                                                                                        else
+                                                                                            local value39
+                                                                                            min4 = value322.Default
+                                                                                            if not value322.Default then
+                                                                                                local value40
+                                                                                                min4 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min4 = 0
+                                                                                                end
+                                                                                            end
+                                                                                        end
+                                                                                        local value39
+                                                                                        data62[value312] = min4
+                                                                                        value43, value53, value63 = nextEntry4()
+                                                                                        if value43 then
+                                                                                            value312 = value53
+                                                                                            value322 = value63
+                                                                                            continue
+                                                                                        end
+                                                                                        break
+                                                                                    end
+                                                                                end
+                                                                                local value18, value19
+                                                                                do
+                                                                                    nextEntry4 = nextEntry22
+                                                                                    local q_2Result = value332
+                                                                                    local __2Result = value34
+                                                                                    numberValue32 = numberValue42
+                                                                                    data102[textValue] = {
+                                                                                        name = entryKey25,
+                                                                                        type = "slider_dropdown",
+                                                                                        sliders = data52,
+                                                                                        values = data62,
+                                                                                        page = pageName,
+                                                                                        section = sectionName,
+                                                                                    }
+                                                                                    numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                    value18, value19 = q_2Result, __2Result
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            local value12
+                                                                            data72 = {
+                                                                                name = entryKey25,
+                                                                                type = "multi_toggle",
+                                                                            }
+                                                                            clone = table.clone
+                                                                            list3 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list3 = {}
+                                                                            end
+                                                                            local value13
+                                                                            data72.options = clone(list3)
+                                                                            clone2 = table.clone
+                                                                            value35 = entryValue13.value
+                                                                            if not entryValue13.value then
+                                                                                value35 = {}
+                                                                            end
+                                                                            data72.value = clone2(value35)
+                                                                            data72.page = pageName
+                                                                            data72.section = sectionName
+                                                                            data102[textValue] = data72
+                                                                        end
+                                                                    else
+                                                                        local value11
+                                                                        clone3 = table.clone
+                                                                        value36 = entryValue13.value
+                                                                        if not entryValue13.value then
+                                                                            value36 = {}
+                                                                        end
+                                                                        local value12
+                                                                        value37 = clone3(value36)
+                                                                        data82 = {
+                                                                            name = entryKey25,
+                                                                            type = "priority_dropdown",
+                                                                        }
+                                                                        clone4 = table.clone
+                                                                        list4 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list4 = {}
+                                                                        end
+                                                                        data82.options = clone4(list4)
+                                                                        data82.selected = value37
+                                                                        data82.value = value37
+                                                                        data82.page = pageName
+                                                                        data82.section = sectionName
+                                                                        data102[textValue] = data82
+                                                                    end
+                                                                else
+                                                                    local value10
+                                                                    data92 = {
+                                                                        name = entryKey25,
+                                                                        type = "dropdown",
+                                                                    }
+                                                                    clone5 = table.clone
+                                                                    list5 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list5 = {}
+                                                                    end
+                                                                    local value11
+                                                                    data92.options = clone5(list5)
+                                                                    list6 = entryValue13.value
+                                                                    if entryValue13.value then
+                                                                        local value12
+                                                                        if not list6 then
+                                                                            list6 = ""
+                                                                        end
+                                                                    else
+                                                                        local value12
+                                                                        list6 = entryValue13.list
+                                                                        if entryValue13.list then
+                                                                            local value13
+                                                                            list6 = entryValue13.list[1]
+                                                                            if not entryValue13.list[1] then
+                                                                                list6 = ""
+                                                                            end
+                                                                        else
+                                                                            local value13
+                                                                            if not list6 then
+                                                                                list6 = ""
+                                                                            end
+                                                                        end
+                                                                    end
+                                                                    data92.value = list6
+                                                                    data92.page = pageName
+                                                                    data92.section = sectionName
+                                                                    data102[textValue] = data92
+                                                                end
+                                                                numberValue22 = numberValue52 + 427902912
+                                                                continue
+                                                            end
+                                                        else
+                                                            local value8
+                                                            data22 = {name = entryKey25, type = "box"}
+                                                            value28 = entryValue13.value
+                                                            if not entryValue13.value then
+                                                                value28 = ""
+                                                            end
+                                                            data22.value = value28
+                                                            data22.page = pageName
+                                                            data22.section = sectionName
+                                                            data102[textValue] = data22
+                                                            continue
+                                                        end
+                                                    else
+                                                        local value7
+                                                        if entryValue13.FunctionCreate then
+                                                            local value8
+                                                            if entryValue13.FunctionCreate.GetText then
+                                                                local value9
+                                                                entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                if not entryKey18 then
+                                                                    local value10
+                                                                    entryKey18 = entryValue13.text
+                                                                    if not entryValue13.text then
+                                                                        entryKey18 = entryKey25
+                                                                    end
+                                                                end
+                                                            else
+                                                                local value9
+                                                                entryKey18 = entryValue13.text
+                                                                if not entryValue13.text then
+                                                                    entryKey18 = entryKey25
+                                                                end
+                                                            end
+                                                        else
+                                                            local value8
+                                                            entryKey18 = entryValue13.text
+                                                            if not entryValue13.text then
+                                                                entryKey18 = entryKey25
+                                                            end
+                                                        end
+                                                        local value8
+                                                        data32 = {
+                                                            name = entryKey25,
+                                                            type = "label",
+                                                            value = entryKey18,
+                                                            text = entryKey18,
+                                                        }
+                                                        color = entryValue13.color
+                                                        if not entryValue13.color then
+                                                            color = "#B8B8B8"
+                                                        end
+                                                        local value9
+                                                        data32.color = color
+                                                        size = entryValue13.size
+                                                        if not entryValue13.size then
+                                                            size = "14px"
+                                                        end
+                                                        local value10
+                                                        data32.size = size
+                                                        bold = entryValue13.bold
+                                                        if not entryValue13.bold then
+                                                            bold = false
+                                                        end
+                                                        data32.bold = bold
+                                                        data32.page = pageName
+                                                        data32.section = sectionName
+                                                        data102[textValue] = data32
+                                                        numberValue22 = numberValue22 + guardState8 + 427902912
+                                                        continue
+                                                    end
+                                                else
+                                                    value24 = 1
+                                                    break
+                                                end
+                                            else
+                                                data102[textValue] = {
+                                                    name = entryKey25,
+                                                    type = "toggle",
+                                                    value = entryValue13.value,
+                                                    page = pageName,
+                                                    section = sectionName,
+                                                }
+                                                continue
+                                            end
+                                        else
+                                            break
+                                        end
+                                    end
+                                    if value24 == 1 then
+                                        continue
+                                    end
+                                    break
+                                end
+                                if value24 == 2 then
+                                    while true do
+                                        local value
+                                        data11 = {name = entryKey25, type = "slider"}
+                                        min = entryValue13.min
+                                        if not entryValue13.min then
+                                            min = 0
+                                        end
+                                        local value2
+                                        data11.min = min
+                                        max = entryValue13.max
+                                        if not entryValue13.max then
+                                            max = 100
+                                        end
+                                        local value3
+                                        data11.max = max
+                                        step = entryValue13.step
+                                        if not entryValue13.step then
+                                            step = 1
+                                        end
+                                        local value4
+                                        data11.step = step
+                                        min2 = entryValue13.value
+                                        if not entryValue13.value then
+                                            local value5
+                                            min2 = entryValue13.min
+                                            if not entryValue13.min then
+                                                min2 = 0
+                                            end
+                                        end
+                                        data11.value = min2
+                                        data11.page = pageName
+                                        data11.section = sectionName
+                                        data102[textValue] = data11
+                                        value38 = nil
+                                        while true do
+                                            numberValue22 = numberValue52 + 427902912
+                                            value29 = nil
+                                            while true do
+                                                local value5
+                                                numberValue14 += 1
+                                                hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                if hasEntry24 then
+                                                    local value6
+                                                    entryKey25 = entryKey24
+                                                    entryValue13 = entryValue23
+                                                    pageName = entryValue23.Page_Name
+                                                    if not entryValue23.Page_Name then
+                                                        pageName = "Default Page"
+                                                    end
+                                                    local value7
+                                                    sectionName = entryValue13.Section_Name
+                                                    if not entryValue13.Section_Name then
+                                                        sectionName = "Default Section"
+                                                    end
+                                                    local value8
+                                                    textValue = tostring(numberValue14)
+                                                    if entryValue13.type ~= "toggle" then
+                                                        local value9
+                                                        if entryValue13.type ~= "button" then
+                                                            local value10
+                                                            if entryValue13.type ~= "textlabel" then
+                                                                local value11
+                                                                if entryValue13.type ~= "box" then
+                                                                    value29 = 1
+                                                                    break
+                                                                else
+                                                                    local value12
+                                                                    data22 = {
+                                                                        name = entryKey25,
+                                                                        type = "box",
+                                                                    }
+                                                                    value28 = entryValue13.value
+                                                                    if not entryValue13.value then
+                                                                        value28 = ""
+                                                                    end
+                                                                    data22.value = value28
+                                                                    data22.page = pageName
+                                                                    data22.section = sectionName
+                                                                    data102[textValue] = data22
+                                                                    continue
+                                                                end
+                                                            else
+                                                                local value11
+                                                                if entryValue13.FunctionCreate then
+                                                                    local value12
+                                                                    if entryValue13.FunctionCreate.GetText then
+                                                                        local value13
+                                                                        entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                        if not entryKey18 then
+                                                                            local value14
+                                                                            entryKey18 = entryValue13.text
+                                                                            if not entryValue13.text then
+                                                                                entryKey18 = entryKey25
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        local value13
+                                                                        entryKey18 = entryValue13.text
+                                                                        if not entryValue13.text then
+                                                                            entryKey18 = entryKey25
+                                                                        end
+                                                                    end
+                                                                else
+                                                                    local value12
+                                                                    entryKey18 = entryValue13.text
+                                                                    if not entryValue13.text then
+                                                                        entryKey18 = entryKey25
+                                                                    end
+                                                                end
+                                                                local value12
+                                                                data32 = {
+                                                                    name = entryKey25,
+                                                                    type = "label",
+                                                                    value = entryKey18,
+                                                                    text = entryKey18,
+                                                                }
+                                                                color = entryValue13.color
+                                                                if not entryValue13.color then
+                                                                    color = "#B8B8B8"
+                                                                end
+                                                                local value13
+                                                                data32.color = color
+                                                                size = entryValue13.size
+                                                                if not entryValue13.size then
+                                                                    size = "14px"
+                                                                end
+                                                                local value14
+                                                                data32.size = size
+                                                                bold = entryValue13.bold
+                                                                if not entryValue13.bold then
+                                                                    bold = false
+                                                                end
+                                                                data32.bold = bold
+                                                                data32.page = pageName
+                                                                data32.section = sectionName
+                                                                data102[textValue] = data32
+                                                                numberValue22 = numberValue22 + guardState8 + 427902912
+                                                                continue
+                                                            end
+                                                        else
+                                                            data102[textValue] = {
+                                                                name = entryKey25,
+                                                                type = "button",
+                                                                value = entryKey25,
+                                                                text = entryKey25,
+                                                                page = pageName,
+                                                                section = sectionName,
+                                                            }
+                                                            continue
+                                                        end
+                                                    else
+                                                        data102[textValue] = {
+                                                            name = entryKey25,
+                                                            type = "toggle",
+                                                            value = entryValue13.value,
+                                                            page = pageName,
+                                                            section = sectionName,
+                                                        }
+                                                        continue
+                                                    end
+                                                else
+                                                    break
+                                                end
+                                            end
+                                            if value29 == 1 then
+                                                local value5
+                                                numberValue52 = numberValue22 + guardState8
+                                                if entryValue13.type == "slider" then
+                                                    value38 = 1
+                                                    break
+                                                else
+                                                    local value6
+                                                    if entryValue13.type ~= "dropdown" then
+                                                        local value7
+                                                        if entryValue13.type ~= "priority_dropdown" then
+                                                            local value8
+                                                            if entryValue13.type ~= "multi_toggle" then
+                                                                local value9
+                                                                if not (entryValue13.type ~= "slider_dropdown") then
+                                                                    local value10
+                                                                    data52 = {}
+                                                                    data62 = {}
+                                                                    value30 = pairs
+                                                                    list2 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list2 = {}
+                                                                    end
+                                                                    local value11, value12, value13
+                                                                    local value14
+                                                                    do
+                                                                        local value15, value16, value17 = value30(list2)
+                                                                        numberValue32 = 2
+                                                                        nextEntry4 = createIterator(value15, value16, value17)
+                                                                        value31, value210, value33 = nextEntry4()
+                                                                        value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                    end
+                                                                    if value14 then
+                                                                        value312 = value210
+                                                                        value322 = value33
+                                                                        while true do
+                                                                            local value15
+                                                                            data42 = {}
+                                                                            min3 = value322.min
+                                                                            if not value322.min then
+                                                                                min3 = 0
+                                                                            end
+                                                                            local value16
+                                                                            data42.min = min3
+                                                                            max2 = value322.max
+                                                                            if not value322.max then
+                                                                                max2 = 100
+                                                                            end
+                                                                            local value17
+                                                                            data42.max = max2
+                                                                            step2 = value322.step
+                                                                            if not value322.step then
+                                                                                step2 = 1
+                                                                            end
+                                                                            local value18
+                                                                            data42.step = step2
+                                                                            data52[value312] = data42
+                                                                            if entryValue13.value then
+                                                                                local value19
+                                                                                min4 = entryValue13.value[value312]
+                                                                                if not entryValue13.value[value312] then
+                                                                                    local value20
+                                                                                    min4 = value322.Default
+                                                                                    if not value322.Default then
+                                                                                        local value22
+                                                                                        min4 = value322.min
+                                                                                        if not value322.min then
+                                                                                            min4 = 0
+                                                                                        end
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                local value19
+                                                                                min4 = value322.Default
+                                                                                if not value322.Default then
+                                                                                    local value20
+                                                                                    min4 = value322.min
+                                                                                    if not value322.min then
+                                                                                        min4 = 0
+                                                                                    end
+                                                                                end
+                                                                            end
+                                                                            local value19
+                                                                            data62[value312] = min4
+                                                                            value43, value53, value63 = nextEntry4()
+                                                                            if value43 then
+                                                                                value312 = value53
+                                                                                value322 = value63
+                                                                                continue
+                                                                            end
+                                                                            break
+                                                                        end
+                                                                    end
+                                                                    local value15, value16
+                                                                    do
+                                                                        nextEntry4 = nextEntry22
+                                                                        local q_2Result = value332
+                                                                        local __2Result = value34
+                                                                        numberValue32 = numberValue42
+                                                                        data102[textValue] = {
+                                                                            name = entryKey25,
+                                                                            type = "slider_dropdown",
+                                                                            sliders = data52,
+                                                                            values = data62,
+                                                                            page = pageName,
+                                                                            section = sectionName,
+                                                                        }
+                                                                        numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                        value15, value16 = q_2Result, __2Result
+                                                                    end
+                                                                end
+                                                            else
+                                                                local value9
+                                                                data72 = {
+                                                                    name = entryKey25,
+                                                                    type = "multi_toggle",
+                                                                }
+                                                                clone = table.clone
+                                                                list3 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list3 = {}
+                                                                end
+                                                                local value10
+                                                                data72.options = clone(list3)
+                                                                clone2 = table.clone
+                                                                value35 = entryValue13.value
+                                                                if not entryValue13.value then
+                                                                    value35 = {}
+                                                                end
+                                                                data72.value = clone2(value35)
+                                                                data72.page = pageName
+                                                                data72.section = sectionName
+                                                                data102[textValue] = data72
+                                                            end
+                                                        else
+                                                            local value8
+                                                            clone3 = table.clone
+                                                            value36 = entryValue13.value
+                                                            if not entryValue13.value then
+                                                                value36 = {}
+                                                            end
+                                                            local value9
+                                                            value37 = clone3(value36)
+                                                            data82 = {
+                                                                name = entryKey25,
+                                                                type = "priority_dropdown",
+                                                            }
+                                                            clone4 = table.clone
+                                                            list4 = entryValue13.list
+                                                            if not entryValue13.list then
+                                                                list4 = {}
+                                                            end
+                                                            data82.options = clone4(list4)
+                                                            data82.selected = value37
+                                                            data82.value = value37
+                                                            data82.page = pageName
+                                                            data82.section = sectionName
+                                                            data102[textValue] = data82
+                                                        end
+                                                    else
+                                                        local value7
+                                                        data92 = {name = entryKey25, type = "dropdown"}
+                                                        clone5 = table.clone
+                                                        list5 = entryValue13.list
+                                                        if not entryValue13.list then
+                                                            list5 = {}
+                                                        end
+                                                        local value8
+                                                        data92.options = clone5(list5)
+                                                        list6 = entryValue13.value
+                                                        if entryValue13.value then
+                                                            local value9
+                                                            if not list6 then
+                                                                list6 = ""
+                                                            end
+                                                        else
+                                                            local value9
+                                                            list6 = entryValue13.list
+                                                            if entryValue13.list then
+                                                                local value10
+                                                                list6 = entryValue13.list[1]
+                                                                if not entryValue13.list[1] then
+                                                                    list6 = ""
+                                                                end
+                                                            else
+                                                                local value10
+                                                                if not list6 then
+                                                                    list6 = ""
+                                                                end
+                                                            end
+                                                        end
+                                                        data92.value = list6
+                                                        data92.page = pageName
+                                                        data92.section = sectionName
+                                                        data102[textValue] = data92
+                                                    end
+                                                    continue
+                                                end
+                                            end
+                                            break
+                                        end
+                                        if value38 == 1 then
+                                            continue
+                                        end
+                                        break
+                                    end
+                                end
+                            end
+                        else
+                            while true do
+                                data102[textValue] = {
+                                    name = entryKey25,
+                                    type = "toggle",
+                                    value = entryValue13.value,
+                                    page = pageName,
+                                    section = sectionName,
+                                }
+                                value25 = nil
+                                while true do
+                                    local value
+                                    numberValue14 += 1
+                                    hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                    if hasEntry24 then
+                                        local value2
+                                        entryKey25 = entryKey24
+                                        entryValue13 = entryValue23
+                                        pageName = entryValue23.Page_Name
+                                        if not entryValue23.Page_Name then
+                                            pageName = "Default Page"
+                                        end
+                                        local value3
+                                        sectionName = entryValue13.Section_Name
+                                        if not entryValue13.Section_Name then
+                                            sectionName = "Default Section"
+                                        end
+                                        local value4
+                                        textValue = tostring(numberValue14)
+                                        if entryValue13.type ~= "toggle" then
+                                            local value5
+                                            if entryValue13.type ~= "button" then
+                                                local value6
+                                                if entryValue13.type ~= "textlabel" then
+                                                    local value7
+                                                    if entryValue13.type ~= "box" then
+                                                        local value8
+                                                        numberValue52 = numberValue22 + guardState8
+                                                        if entryValue13.type == "slider" then
+                                                            value25 = 2
+                                                            break
+                                                        else
+                                                            local value9
+                                                            if entryValue13.type ~= "dropdown" then
+                                                                local value10
+                                                                if entryValue13.type ~= "priority_dropdown" then
+                                                                    local value11
+                                                                    if entryValue13.type ~= "multi_toggle" then
+                                                                        local value12
+                                                                        if not (entryValue13.type ~= "slider_dropdown") then
+                                                                            local value13
+                                                                            data52 = {}
+                                                                            data62 = {}
+                                                                            value30 = pairs
+                                                                            list2 = entryValue13.list
+                                                                            if not entryValue13.list then
+                                                                                list2 = {}
+                                                                            end
+                                                                            local value14, value15
+                                                                            local value16
+                                                                            local value17
+                                                                            do
+                                                                                local value18, value19, value20 = value30(list2)
+                                                                                numberValue32 = 2
+                                                                                nextEntry4 = createIterator(
+                                                                                    value18,
+                                                                                    value19,
+                                                                                    value20
+                                                                                )
+                                                                                value31, value210, value33 = nextEntry4()
+                                                                                value14, value15, value16, value17 = value18, value19, value20, value31
+                                                                            end
+                                                                            if value17 then
+                                                                                value312 = value210
+                                                                                value322 = value33
+                                                                                while true do
+                                                                                    local value18
+                                                                                    data42 = {}
+                                                                                    min3 = value322.min
+                                                                                    if not value322.min then
+                                                                                        min3 = 0
+                                                                                    end
+                                                                                    local value19
+                                                                                    data42.min = min3
+                                                                                    max2 = value322.max
+                                                                                    if not value322.max then
+                                                                                        max2 = 100
+                                                                                    end
+                                                                                    local value20
+                                                                                    data42.max = max2
+                                                                                    step2 = value322.step
+                                                                                    if not value322.step then
+                                                                                        step2 = 1
+                                                                                    end
+                                                                                    local value22
+                                                                                    data42.step = step2
+                                                                                    data52[value312] = data42
+                                                                                    if entryValue13.value then
+                                                                                        local value39
+                                                                                        min4 = entryValue13.value[value312]
+                                                                                        if not entryValue13.value[value312] then
+                                                                                            local value40
+                                                                                            min4 = value322.Default
+                                                                                            if not value322.Default then
+                                                                                                local value41
+                                                                                                min4 = value322.min
+                                                                                                if not value322.min then
+                                                                                                    min4 = 0
+                                                                                                end
+                                                                                            end
+                                                                                        end
+                                                                                    else
+                                                                                        local value39
+                                                                                        min4 = value322.Default
+                                                                                        if not value322.Default then
+                                                                                            local value40
+                                                                                            min4 = value322.min
+                                                                                            if not value322.min then
+                                                                                                min4 = 0
+                                                                                            end
+                                                                                        end
+                                                                                    end
+                                                                                    local value39
+                                                                                    data62[value312] = min4
+                                                                                    value43, value53, value63 = nextEntry4()
+                                                                                    if value43 then
+                                                                                        value312 = value53
+                                                                                        value322 = value63
+                                                                                        continue
+                                                                                    end
+                                                                                    break
+                                                                                end
+                                                                            end
+                                                                            local value18, value19
+                                                                            do
+                                                                                nextEntry4 = nextEntry22
+                                                                                local q_2Result = value332
+                                                                                local __2Result = value34
+                                                                                numberValue32 = numberValue42
+                                                                                data102[textValue] = {
+                                                                                    name = entryKey25,
+                                                                                    type = "slider_dropdown",
+                                                                                    sliders = data52,
+                                                                                    values = data62,
+                                                                                    page = pageName,
+                                                                                    section = sectionName,
+                                                                                }
+                                                                                numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                                value18, value19 = q_2Result, __2Result
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        local value12
+                                                                        data72 = {
+                                                                            name = entryKey25,
+                                                                            type = "multi_toggle",
+                                                                        }
+                                                                        clone = table.clone
+                                                                        list3 = entryValue13.list
+                                                                        if not entryValue13.list then
+                                                                            list3 = {}
+                                                                        end
+                                                                        local value13
+                                                                        data72.options = clone(list3)
+                                                                        clone2 = table.clone
+                                                                        value35 = entryValue13.value
+                                                                        if not entryValue13.value then
+                                                                            value35 = {}
+                                                                        end
+                                                                        data72.value = clone2(value35)
+                                                                        data72.page = pageName
+                                                                        data72.section = sectionName
+                                                                        data102[textValue] = data72
+                                                                    end
+                                                                else
+                                                                    local value11
+                                                                    clone3 = table.clone
+                                                                    value36 = entryValue13.value
+                                                                    if not entryValue13.value then
+                                                                        value36 = {}
+                                                                    end
+                                                                    local value12
+                                                                    value37 = clone3(value36)
+                                                                    data82 = {
+                                                                        name = entryKey25,
+                                                                        type = "priority_dropdown",
+                                                                    }
+                                                                    clone4 = table.clone
+                                                                    list4 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list4 = {}
+                                                                    end
+                                                                    data82.options = clone4(list4)
+                                                                    data82.selected = value37
+                                                                    data82.value = value37
+                                                                    data82.page = pageName
+                                                                    data82.section = sectionName
+                                                                    data102[textValue] = data82
+                                                                end
+                                                            else
+                                                                local value10
+                                                                data92 = {
+                                                                    name = entryKey25,
+                                                                    type = "dropdown",
+                                                                }
+                                                                clone5 = table.clone
+                                                                list5 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list5 = {}
+                                                                end
+                                                                local value11
+                                                                data92.options = clone5(list5)
+                                                                list6 = entryValue13.value
+                                                                if entryValue13.value then
+                                                                    local value12
+                                                                    if not list6 then
+                                                                        list6 = ""
+                                                                    end
+                                                                else
+                                                                    local value12
+                                                                    list6 = entryValue13.list
+                                                                    if entryValue13.list then
+                                                                        local value13
+                                                                        list6 = entryValue13.list[1]
+                                                                        if not entryValue13.list[1] then
+                                                                            list6 = ""
+                                                                        end
+                                                                    else
+                                                                        local value13
+                                                                        if not list6 then
+                                                                            list6 = ""
+                                                                        end
+                                                                    end
+                                                                end
+                                                                data92.value = list6
+                                                                data92.page = pageName
+                                                                data92.section = sectionName
+                                                                data102[textValue] = data92
+                                                            end
+                                                            numberValue22 = numberValue52 + 427902912
+                                                            continue
+                                                        end
+                                                    else
+                                                        local value8
+                                                        data22 = {name = entryKey25, type = "box"}
+                                                        value28 = entryValue13.value
+                                                        if not entryValue13.value then
+                                                            value28 = ""
+                                                        end
+                                                        data22.value = value28
+                                                        data22.page = pageName
+                                                        data22.section = sectionName
+                                                        data102[textValue] = data22
+                                                        continue
+                                                    end
+                                                else
+                                                    local value7
+                                                    if entryValue13.FunctionCreate then
+                                                        local value8
+                                                        if entryValue13.FunctionCreate.GetText then
+                                                            local value9
+                                                            entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                            if not entryKey18 then
+                                                                local value10
+                                                                entryKey18 = entryValue13.text
+                                                                if not entryValue13.text then
+                                                                    entryKey18 = entryKey25
+                                                                end
+                                                            end
+                                                        else
+                                                            local value9
+                                                            entryKey18 = entryValue13.text
+                                                            if not entryValue13.text then
+                                                                entryKey18 = entryKey25
+                                                            end
+                                                        end
+                                                    else
+                                                        local value8
+                                                        entryKey18 = entryValue13.text
+                                                        if not entryValue13.text then
+                                                            entryKey18 = entryKey25
+                                                        end
+                                                    end
+                                                    local value8
+                                                    data32 = {
+                                                        name = entryKey25,
+                                                        type = "label",
+                                                        value = entryKey18,
+                                                        text = entryKey18,
+                                                    }
+                                                    color = entryValue13.color
+                                                    if not entryValue13.color then
+                                                        color = "#B8B8B8"
+                                                    end
+                                                    local value9
+                                                    data32.color = color
+                                                    size = entryValue13.size
+                                                    if not entryValue13.size then
+                                                        size = "14px"
+                                                    end
+                                                    local value10
+                                                    data32.size = size
+                                                    bold = entryValue13.bold
+                                                    if not entryValue13.bold then
+                                                        bold = false
+                                                    end
+                                                    data32.bold = bold
+                                                    data32.page = pageName
+                                                    data32.section = sectionName
+                                                    data102[textValue] = data32
+                                                    numberValue22 = numberValue22 + guardState8 + 427902912
+                                                    continue
+                                                end
+                                            else
+                                                data102[textValue] = {
+                                                    name = entryKey25,
+                                                    type = "button",
+                                                    value = entryKey25,
+                                                    text = entryKey25,
+                                                    page = pageName,
+                                                    section = sectionName,
+                                                }
+                                                continue
+                                            end
+                                        else
+                                            value25 = 1
+                                            break
+                                        end
+                                    else
+                                        break
+                                    end
+                                end
+                                if value25 == 1 then
+                                    continue
+                                end
+                                break
+                            end
+                            if value25 == 2 then
+                                while true do
+                                    local value
+                                    data11 = {name = entryKey25, type = "slider"}
+                                    min = entryValue13.min
+                                    if not entryValue13.min then
+                                        min = 0
+                                    end
+                                    local value2
+                                    data11.min = min
+                                    max = entryValue13.max
+                                    if not entryValue13.max then
+                                        max = 100
+                                    end
+                                    local value3
+                                    data11.max = max
+                                    step = entryValue13.step
+                                    if not entryValue13.step then
+                                        step = 1
+                                    end
+                                    local value4
+                                    data11.step = step
+                                    min2 = entryValue13.value
+                                    if not entryValue13.value then
+                                        local value5
+                                        min2 = entryValue13.min
+                                        if not entryValue13.min then
+                                            min2 = 0
+                                        end
+                                    end
+                                    data11.value = min2
+                                    data11.page = pageName
+                                    data11.section = sectionName
+                                    data102[textValue] = data11
+                                    value38 = nil
+                                    while true do
+                                        numberValue22 = numberValue52 + 427902912
+                                        value29 = nil
+                                        while true do
+                                            local value5
+                                            numberValue14 += 1
+                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                            if hasEntry24 then
+                                                local value6
+                                                entryKey25 = entryKey24
+                                                entryValue13 = entryValue23
+                                                pageName = entryValue23.Page_Name
+                                                if not entryValue23.Page_Name then
+                                                    pageName = "Default Page"
+                                                end
+                                                local value7
+                                                sectionName = entryValue13.Section_Name
+                                                if not entryValue13.Section_Name then
+                                                    sectionName = "Default Section"
+                                                end
+                                                local value8
+                                                textValue = tostring(numberValue14)
+                                                if entryValue13.type ~= "toggle" then
+                                                    local value9
+                                                    if entryValue13.type ~= "button" then
+                                                        local value10
+                                                        if entryValue13.type ~= "textlabel" then
+                                                            local value11
+                                                            if entryValue13.type ~= "box" then
+                                                                value29 = 1
+                                                                break
+                                                            else
+                                                                local value12
+                                                                data22 = {name = entryKey25, type = "box"}
+                                                                value28 = entryValue13.value
+                                                                if not entryValue13.value then
+                                                                    value28 = ""
+                                                                end
+                                                                data22.value = value28
+                                                                data22.page = pageName
+                                                                data22.section = sectionName
+                                                                data102[textValue] = data22
+                                                                continue
+                                                            end
+                                                        else
+                                                            local value11
+                                                            if entryValue13.FunctionCreate then
+                                                                local value12
+                                                                if entryValue13.FunctionCreate.GetText then
+                                                                    local value13
+                                                                    entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                    if not entryKey18 then
+                                                                        local value14
+                                                                        entryKey18 = entryValue13.text
+                                                                        if not entryValue13.text then
+                                                                            entryKey18 = entryKey25
+                                                                        end
+                                                                    end
+                                                                else
+                                                                    local value13
+                                                                    entryKey18 = entryValue13.text
+                                                                    if not entryValue13.text then
+                                                                        entryKey18 = entryKey25
+                                                                    end
+                                                                end
+                                                            else
+                                                                local value12
+                                                                entryKey18 = entryValue13.text
+                                                                if not entryValue13.text then
+                                                                    entryKey18 = entryKey25
+                                                                end
+                                                            end
+                                                            local value12
+                                                            data32 = {
+                                                                name = entryKey25,
+                                                                type = "label",
+                                                                value = entryKey18,
+                                                                text = entryKey18,
+                                                            }
+                                                            color = entryValue13.color
+                                                            if not entryValue13.color then
+                                                                color = "#B8B8B8"
+                                                            end
+                                                            local value13
+                                                            data32.color = color
+                                                            size = entryValue13.size
+                                                            if not entryValue13.size then
+                                                                size = "14px"
+                                                            end
+                                                            local value14
+                                                            data32.size = size
+                                                            bold = entryValue13.bold
+                                                            if not entryValue13.bold then
+                                                                bold = false
+                                                            end
+                                                            data32.bold = bold
+                                                            data32.page = pageName
+                                                            data32.section = sectionName
+                                                            data102[textValue] = data32
+                                                            numberValue22 = numberValue22 + guardState8 + 427902912
+                                                            continue
+                                                        end
+                                                    else
+                                                        data102[textValue] = {
+                                                            name = entryKey25,
+                                                            type = "button",
+                                                            value = entryKey25,
+                                                            text = entryKey25,
+                                                            page = pageName,
+                                                            section = sectionName,
+                                                        }
+                                                        continue
+                                                    end
+                                                else
+                                                    data102[textValue] = {
+                                                        name = entryKey25,
+                                                        type = "toggle",
+                                                        value = entryValue13.value,
+                                                        page = pageName,
+                                                        section = sectionName,
+                                                    }
+                                                    continue
+                                                end
+                                            else
+                                                break
+                                            end
+                                        end
+                                        if value29 == 1 then
+                                            local value5
+                                            numberValue52 = numberValue22 + guardState8
+                                            if entryValue13.type == "slider" then
+                                                value38 = 1
+                                                break
+                                            else
+                                                local value6
+                                                if entryValue13.type ~= "dropdown" then
+                                                    local value7
+                                                    if entryValue13.type ~= "priority_dropdown" then
+                                                        local value8
+                                                        if entryValue13.type ~= "multi_toggle" then
+                                                            local value9
+                                                            if not (entryValue13.type ~= "slider_dropdown") then
+                                                                local value10
+                                                                data52 = {}
+                                                                data62 = {}
+                                                                value30 = pairs
+                                                                list2 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list2 = {}
+                                                                end
+                                                                local value11, value12, value13
+                                                                local value14
+                                                                do
+                                                                    local value15, value16, value17 = value30(list2)
+                                                                    numberValue32 = 2
+                                                                    nextEntry4 = createIterator(value15, value16, value17)
+                                                                    value31, value210, value33 = nextEntry4()
+                                                                    value11, value12, value13, value14 = value15, value16, value17, value31
+                                                                end
+                                                                if value14 then
+                                                                    value312 = value210
+                                                                    value322 = value33
+                                                                    while true do
+                                                                        local value15
+                                                                        data42 = {}
+                                                                        min3 = value322.min
+                                                                        if not value322.min then
+                                                                            min3 = 0
+                                                                        end
+                                                                        local value16
+                                                                        data42.min = min3
+                                                                        max2 = value322.max
+                                                                        if not value322.max then
+                                                                            max2 = 100
+                                                                        end
+                                                                        local value17
+                                                                        data42.max = max2
+                                                                        step2 = value322.step
+                                                                        if not value322.step then
+                                                                            step2 = 1
+                                                                        end
+                                                                        local value18
+                                                                        data42.step = step2
+                                                                        data52[value312] = data42
+                                                                        if entryValue13.value then
+                                                                            local value19
+                                                                            min4 = entryValue13.value[value312]
+                                                                            if not entryValue13.value[value312] then
+                                                                                local value20
+                                                                                min4 = value322.Default
+                                                                                if not value322.Default then
+                                                                                    local value22
+                                                                                    min4 = value322.min
+                                                                                    if not value322.min then
+                                                                                        min4 = 0
+                                                                                    end
+                                                                                end
+                                                                            end
+                                                                        else
+                                                                            local value19
+                                                                            min4 = value322.Default
+                                                                            if not value322.Default then
+                                                                                local value20
+                                                                                min4 = value322.min
+                                                                                if not value322.min then
+                                                                                    min4 = 0
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                        local value19
+                                                                        data62[value312] = min4
+                                                                        value43, value53, value63 = nextEntry4()
+                                                                        if value43 then
+                                                                            value312 = value53
+                                                                            value322 = value63
+                                                                            continue
+                                                                        end
+                                                                        break
+                                                                    end
+                                                                end
+                                                                local value15, value16
+                                                                do
+                                                                    nextEntry4 = nextEntry22
+                                                                    local q_2Result = value332
+                                                                    local __2Result = value34
+                                                                    numberValue32 = numberValue42
+                                                                    data102[textValue] = {
+                                                                        name = entryKey25,
+                                                                        type = "slider_dropdown",
+                                                                        sliders = data52,
+                                                                        values = data62,
+                                                                        page = pageName,
+                                                                        section = sectionName,
+                                                                    }
+                                                                    numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                    value15, value16 = q_2Result, __2Result
+                                                                end
+                                                            end
+                                                        else
+                                                            local value9
+                                                            data72 = {
+                                                                name = entryKey25,
+                                                                type = "multi_toggle",
+                                                            }
+                                                            clone = table.clone
+                                                            list3 = entryValue13.list
+                                                            if not entryValue13.list then
+                                                                list3 = {}
+                                                            end
+                                                            local value10
+                                                            data72.options = clone(list3)
+                                                            clone2 = table.clone
+                                                            value35 = entryValue13.value
+                                                            if not entryValue13.value then
+                                                                value35 = {}
+                                                            end
+                                                            data72.value = clone2(value35)
+                                                            data72.page = pageName
+                                                            data72.section = sectionName
+                                                            data102[textValue] = data72
+                                                        end
+                                                    else
+                                                        local value8
+                                                        clone3 = table.clone
+                                                        value36 = entryValue13.value
+                                                        if not entryValue13.value then
+                                                            value36 = {}
+                                                        end
+                                                        local value9
+                                                        value37 = clone3(value36)
+                                                        data82 = {
+                                                            name = entryKey25,
+                                                            type = "priority_dropdown",
+                                                        }
+                                                        clone4 = table.clone
+                                                        list4 = entryValue13.list
+                                                        if not entryValue13.list then
+                                                            list4 = {}
+                                                        end
+                                                        data82.options = clone4(list4)
+                                                        data82.selected = value37
+                                                        data82.value = value37
+                                                        data82.page = pageName
+                                                        data82.section = sectionName
+                                                        data102[textValue] = data82
+                                                    end
+                                                else
+                                                    local value7
+                                                    data92 = {name = entryKey25, type = "dropdown"}
+                                                    clone5 = table.clone
+                                                    list5 = entryValue13.list
+                                                    if not entryValue13.list then
+                                                        list5 = {}
+                                                    end
+                                                    local value8
+                                                    data92.options = clone5(list5)
+                                                    list6 = entryValue13.value
+                                                    if entryValue13.value then
+                                                        local value9
+                                                        if not list6 then
+                                                            list6 = ""
+                                                        end
+                                                    else
+                                                        local value9
+                                                        list6 = entryValue13.list
+                                                        if entryValue13.list then
+                                                            local value10
+                                                            list6 = entryValue13.list[1]
+                                                            if not entryValue13.list[1] then
+                                                                list6 = ""
+                                                            end
+                                                        else
+                                                            local value10
+                                                            if not list6 then
+                                                                list6 = ""
+                                                            end
+                                                        end
+                                                    end
+                                                    data92.value = list6
+                                                    data92.page = pageName
+                                                    data92.section = sectionName
+                                                    data102[textValue] = data92
+                                                end
+                                                continue
+                                            end
+                                        end
+                                        break
+                                    end
+                                    if value38 == 1 then
+                                        continue
+                                    end
+                                    break
+                                end
+                            end
+                        end
+                    else
+                        value27 = nil
+                        while true do
+                            pageName = "Default Page"
+                            value26 = nil
+                            while true do
+                                local value
+                                sectionName = entryValue13.Section_Name
+                                if not entryValue13.Section_Name then
+                                    sectionName = "Default Section"
+                                end
+                                local value2
+                                textValue = tostring(numberValue14)
+                                if entryValue13.type ~= "toggle" then
+                                    local value3
+                                    if entryValue13.type ~= "button" then
+                                        local value4
+                                        if entryValue13.type ~= "textlabel" then
+                                            local value5
+                                            if entryValue13.type ~= "box" then
+                                                local value6
+                                                numberValue52 = numberValue22 + guardState8
+                                                if entryValue13.type == "slider" then
+                                                    value26 = 1
+                                                    break
+                                                end
+                                                do
+                                                    local value7
+                                                    if entryValue13.type ~= "dropdown" then
+                                                        local value8
+                                                        if entryValue13.type ~= "priority_dropdown" then
+                                                            local value9
+                                                            if entryValue13.type ~= "multi_toggle" then
+                                                                local value10
+                                                                if not (entryValue13.type ~= "slider_dropdown") then
+                                                                    local value11
+                                                                    data52 = {}
+                                                                    data62 = {}
+                                                                    value30 = pairs
+                                                                    list2 = entryValue13.list
+                                                                    if not entryValue13.list then
+                                                                        list2 = {}
+                                                                    end
+                                                                    local value12, value13, value14
+                                                                    local value15
+                                                                    do
+                                                                        local value16, value17, value18 = value30(list2)
+                                                                        numberValue32 = 2
+                                                                        nextEntry4 = createIterator(value16, value17, value18)
+                                                                        value31, value210, value33 = nextEntry4()
+                                                                        value12, value13, value14, value15 = value16, value17, value18, value31
+                                                                    end
+                                                                    if value15 then
+                                                                        value312 = value210
+                                                                        value322 = value33
+                                                                        while true do
+                                                                            local value16
+                                                                            data42 = {}
+                                                                            min3 = value322.min
+                                                                            if not value322.min then
+                                                                                min3 = 0
+                                                                            end
+                                                                            local value17
+                                                                            data42.min = min3
+                                                                            max2 = value322.max
+                                                                            if not value322.max then
+                                                                                max2 = 100
+                                                                            end
+                                                                            local value18
+                                                                            data42.max = max2
+                                                                            step2 = value322.step
+                                                                            if not value322.step then
+                                                                                step2 = 1
+                                                                            end
+                                                                            local value19
+                                                                            data42.step = step2
+                                                                            data52[value312] = data42
+                                                                            if entryValue13.value then
+                                                                                local value20
+                                                                                min4 = entryValue13.value[value312]
+                                                                                if not entryValue13.value[value312] then
+                                                                                    local value22
+                                                                                    min4 = value322.Default
+                                                                                    if not value322.Default then
+                                                                                        local value39
+                                                                                        min4 = value322.min
+                                                                                        if not value322.min then
+                                                                                            min4 = 0
+                                                                                        end
+                                                                                    end
+                                                                                end
+                                                                            else
+                                                                                local value20
+                                                                                min4 = value322.Default
+                                                                                if not value322.Default then
+                                                                                    local value22
+                                                                                    min4 = value322.min
+                                                                                    if not value322.min then
+                                                                                        min4 = 0
+                                                                                    end
+                                                                                end
+                                                                            end
+                                                                            local value20
+                                                                            data62[value312] = min4
+                                                                            value43, value53, value63 = nextEntry4()
+                                                                            if value43 then
+                                                                                value312 = value53
+                                                                                value322 = value63
+                                                                                continue
+                                                                            end
+                                                                            break
+                                                                        end
+                                                                    end
+                                                                    local value16, value17
+                                                                    do
+                                                                        nextEntry4 = nextEntry22
+                                                                        local q_2Result = value332
+                                                                        local __2Result = value34
+                                                                        numberValue32 = numberValue42
+                                                                        data102[textValue] = {
+                                                                            name = entryKey25,
+                                                                            type = "slider_dropdown",
+                                                                            sliders = data52,
+                                                                            values = data62,
+                                                                            page = pageName,
+                                                                            section = sectionName,
+                                                                        }
+                                                                        numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                        value16, value17 = q_2Result, __2Result
+                                                                    end
+                                                                end
+                                                            else
+                                                                local value10
+                                                                data72 = {
+                                                                    name = entryKey25,
+                                                                    type = "multi_toggle",
+                                                                }
+                                                                clone = table.clone
+                                                                list3 = entryValue13.list
+                                                                if not entryValue13.list then
+                                                                    list3 = {}
+                                                                end
+                                                                local value11
+                                                                data72.options = clone(list3)
+                                                                clone2 = table.clone
+                                                                value35 = entryValue13.value
+                                                                if not entryValue13.value then
+                                                                    value35 = {}
+                                                                end
+                                                                data72.value = clone2(value35)
+                                                                data72.page = pageName
+                                                                data72.section = sectionName
+                                                                data102[textValue] = data72
+                                                            end
+                                                        else
+                                                            local value9
+                                                            clone3 = table.clone
+                                                            value36 = entryValue13.value
+                                                            if not entryValue13.value then
+                                                                value36 = {}
+                                                            end
+                                                            local value10
+                                                            value37 = clone3(value36)
+                                                            data82 = {
+                                                                name = entryKey25,
+                                                                type = "priority_dropdown",
+                                                            }
+                                                            clone4 = table.clone
+                                                            list4 = entryValue13.list
+                                                            if not entryValue13.list then
+                                                                list4 = {}
+                                                            end
+                                                            data82.options = clone4(list4)
+                                                            data82.selected = value37
+                                                            data82.value = value37
+                                                            data82.page = pageName
+                                                            data82.section = sectionName
+                                                            data102[textValue] = data82
+                                                        end
+                                                    else
+                                                        local value8
+                                                        data92 = {name = entryKey25, type = "dropdown"}
+                                                        clone5 = table.clone
+                                                        list5 = entryValue13.list
+                                                        if not entryValue13.list then
+                                                            list5 = {}
+                                                        end
+                                                        local value9
+                                                        data92.options = clone5(list5)
+                                                        list6 = entryValue13.value
+                                                        if entryValue13.value then
+                                                            local value10
+                                                            if not list6 then
+                                                                list6 = ""
+                                                            end
+                                                        else
+                                                            local value10
+                                                            list6 = entryValue13.list
+                                                            if entryValue13.list then
+                                                                local value11
+                                                                list6 = entryValue13.list[1]
+                                                                if not entryValue13.list[1] then
+                                                                    list6 = ""
+                                                                end
+                                                            else
+                                                                local value11
+                                                                if not list6 then
+                                                                    list6 = ""
+                                                                end
+                                                            end
+                                                        end
+                                                        data92.value = list6
+                                                        data92.page = pageName
+                                                        data92.section = sectionName
+                                                        data102[textValue] = data92
+                                                    end
+                                                    numberValue22 = numberValue52 + 427902912
+                                                    local value8
+                                                    numberValue14 += 1
+                                                    hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                    if hasEntry24 then
+                                                        local value9
+                                                        entryKey25 = entryKey24
+                                                        entryValue13 = entryValue23
+                                                        pageName = entryValue23.Page_Name
+                                                        if entryValue23.Page_Name then
+                                                            continue
+                                                        else
+                                                            value26 = 2
+                                                            break
+                                                        end
+                                                    end
+                                                end
+                                            else
+                                                local value6
+                                                data22 = {name = entryKey25, type = "box"}
+                                                value28 = entryValue13.value
+                                                if not entryValue13.value then
+                                                    value28 = ""
+                                                end
+                                                data22.value = value28
+                                                data22.page = pageName
+                                                data22.section = sectionName
+                                                data102[textValue] = data22
+                                                local value7
+                                                numberValue14 += 1
+                                                hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                                if hasEntry24 then
+                                                    local value8
+                                                    entryKey25 = entryKey24
+                                                    entryValue13 = entryValue23
+                                                    pageName = entryValue23.Page_Name
+                                                    if entryValue23.Page_Name then
+                                                        continue
+                                                    else
+                                                        value26 = 2
+                                                        break
+                                                    end
+                                                end
+                                            end
+                                        else
+                                            local value5
+                                            if entryValue13.FunctionCreate then
+                                                local value6
+                                                if entryValue13.FunctionCreate.GetText then
+                                                    local value7
+                                                    entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                    if not entryKey18 then
+                                                        local value8
+                                                        entryKey18 = entryValue13.text
+                                                        if not entryValue13.text then
+                                                            entryKey18 = entryKey25
+                                                        end
+                                                    end
+                                                else
+                                                    local value7
+                                                    entryKey18 = entryValue13.text
+                                                    if not entryValue13.text then
+                                                        entryKey18 = entryKey25
+                                                    end
+                                                end
+                                            else
+                                                local value6
+                                                entryKey18 = entryValue13.text
+                                                if not entryValue13.text then
+                                                    entryKey18 = entryKey25
+                                                end
+                                            end
+                                            local value6
+                                            data32 = {
+                                                name = entryKey25,
+                                                type = "label",
+                                                value = entryKey18,
+                                                text = entryKey18,
+                                            }
+                                            color = entryValue13.color
+                                            if not entryValue13.color then
+                                                color = "#B8B8B8"
+                                            end
+                                            local value7
+                                            data32.color = color
+                                            size = entryValue13.size
+                                            if not entryValue13.size then
+                                                size = "14px"
+                                            end
+                                            local value8
+                                            data32.size = size
+                                            bold = entryValue13.bold
+                                            if not entryValue13.bold then
+                                                bold = false
+                                            end
+                                            data32.bold = bold
+                                            data32.page = pageName
+                                            data32.section = sectionName
+                                            data102[textValue] = data32
+                                            numberValue22 = numberValue22 + guardState8 + 427902912
+                                            local value9
+                                            numberValue14 += 1
+                                            hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                            if hasEntry24 then
+                                                local value10
+                                                entryKey25 = entryKey24
+                                                entryValue13 = entryValue23
+                                                pageName = entryValue23.Page_Name
+                                                if entryValue23.Page_Name then
+                                                    continue
+                                                else
+                                                    value26 = 2
+                                                    break
+                                                end
+                                            end
+                                        end
+                                    else
+                                        data102[textValue] = {
+                                            name = entryKey25,
+                                            type = "button",
+                                            value = entryKey25,
+                                            text = entryKey25,
+                                            page = pageName,
+                                            section = sectionName,
+                                        }
+                                        local value4
+                                        numberValue14 += 1
+                                        hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                        if hasEntry24 then
+                                            local value5
+                                            entryKey25 = entryKey24
+                                            entryValue13 = entryValue23
+                                            pageName = entryValue23.Page_Name
+                                            if entryValue23.Page_Name then
+                                                continue
+                                            else
+                                                value26 = 2
+                                                break
+                                            end
+                                        end
+                                    end
+                                else
+                                    data102[textValue] = {
+                                        name = entryKey25,
+                                        type = "toggle",
+                                        value = entryValue13.value,
+                                        page = pageName,
+                                        section = sectionName,
+                                    }
+                                    local value3
+                                    numberValue14 += 1
+                                    hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                    if hasEntry24 then
+                                        local value4
+                                        entryKey25 = entryKey24
+                                        entryValue13 = entryValue23
+                                        pageName = entryValue23.Page_Name
+                                        if entryValue23.Page_Name then
+                                            continue
+                                        else
+                                            value26 = 2
+                                            break
+                                        end
+                                    end
+                                end
+                                break
+                            end
+                            if value26 == 1 then
+                                value27 = 1
+                                break
+                            elseif value26 == 2 then
+                                continue
+                            end
+                            break
+                        end
+                        if value27 == 1 then
+                            while true do
+                                local value
+                                data11 = {name = entryKey25, type = "slider"}
+                                min = entryValue13.min
+                                if not entryValue13.min then
+                                    min = 0
+                                end
+                                local value2
+                                data11.min = min
+                                max = entryValue13.max
+                                if not entryValue13.max then
+                                    max = 100
+                                end
+                                local value3
+                                data11.max = max
+                                step = entryValue13.step
+                                if not entryValue13.step then
+                                    step = 1
+                                end
+                                local value4
+                                data11.step = step
+                                min2 = entryValue13.value
+                                if not entryValue13.value then
+                                    local value5
+                                    min2 = entryValue13.min
+                                    if not entryValue13.min then
+                                        min2 = 0
+                                    end
+                                end
+                                data11.value = min2
+                                data11.page = pageName
+                                data11.section = sectionName
+                                data102[textValue] = data11
+                                value38 = nil
+                                while true do
+                                    numberValue22 = numberValue52 + 427902912
+                                    value29 = nil
+                                    while true do
+                                        local value5
+                                        numberValue14 += 1
+                                        hasEntry24, entryKey24, entryValue23 = nextEntry22()
+                                        if hasEntry24 then
+                                            local value6
+                                            entryKey25 = entryKey24
+                                            entryValue13 = entryValue23
+                                            pageName = entryValue23.Page_Name
+                                            if not entryValue23.Page_Name then
+                                                pageName = "Default Page"
+                                            end
+                                            local value7
+                                            sectionName = entryValue13.Section_Name
+                                            if not entryValue13.Section_Name then
+                                                sectionName = "Default Section"
+                                            end
+                                            local value8
+                                            textValue = tostring(numberValue14)
+                                            if entryValue13.type ~= "toggle" then
+                                                local value9
+                                                if entryValue13.type ~= "button" then
+                                                    local value10
+                                                    if entryValue13.type ~= "textlabel" then
+                                                        local value11
+                                                        if entryValue13.type ~= "box" then
+                                                            value29 = 1
+                                                            break
+                                                        else
+                                                            local value12
+                                                            data22 = {name = entryKey25, type = "box"}
+                                                            value28 = entryValue13.value
+                                                            if not entryValue13.value then
+                                                                value28 = ""
+                                                            end
+                                                            data22.value = value28
+                                                            data22.page = pageName
+                                                            data22.section = sectionName
+                                                            data102[textValue] = data22
+                                                            continue
+                                                        end
+                                                    else
+                                                        local value11
+                                                        if entryValue13.FunctionCreate then
+                                                            local value12
+                                                            if entryValue13.FunctionCreate.GetText then
+                                                                local value13
+                                                                entryKey18 = entryValue13.FunctionCreate.GetText()
+                                                                if not entryKey18 then
+                                                                    local value14
+                                                                    entryKey18 = entryValue13.text
+                                                                    if not entryValue13.text then
+                                                                        entryKey18 = entryKey25
+                                                                    end
+                                                                end
+                                                            else
+                                                                local value13
+                                                                entryKey18 = entryValue13.text
+                                                                if not entryValue13.text then
+                                                                    entryKey18 = entryKey25
+                                                                end
+                                                            end
+                                                        else
+                                                            local value12
+                                                            entryKey18 = entryValue13.text
+                                                            if not entryValue13.text then
+                                                                entryKey18 = entryKey25
+                                                            end
+                                                        end
+                                                        local value12
+                                                        data32 = {
+                                                            name = entryKey25,
+                                                            type = "label",
+                                                            value = entryKey18,
+                                                            text = entryKey18,
+                                                        }
+                                                        color = entryValue13.color
+                                                        if not entryValue13.color then
+                                                            color = "#B8B8B8"
+                                                        end
+                                                        local value13
+                                                        data32.color = color
+                                                        size = entryValue13.size
+                                                        if not entryValue13.size then
+                                                            size = "14px"
+                                                        end
+                                                        local value14
+                                                        data32.size = size
+                                                        bold = entryValue13.bold
+                                                        if not entryValue13.bold then
+                                                            bold = false
+                                                        end
+                                                        data32.bold = bold
+                                                        data32.page = pageName
+                                                        data32.section = sectionName
+                                                        data102[textValue] = data32
+                                                        numberValue22 = numberValue22 + guardState8 + 427902912
+                                                        continue
+                                                    end
+                                                else
+                                                    data102[textValue] = {
+                                                        name = entryKey25,
+                                                        type = "button",
+                                                        value = entryKey25,
+                                                        text = entryKey25,
+                                                        page = pageName,
+                                                        section = sectionName,
+                                                    }
+                                                    continue
+                                                end
+                                            else
+                                                data102[textValue] = {
+                                                    name = entryKey25,
+                                                    type = "toggle",
+                                                    value = entryValue13.value,
+                                                    page = pageName,
+                                                    section = sectionName,
+                                                }
+                                                continue
+                                            end
+                                        else
+                                            break
+                                        end
+                                    end
+                                    if value29 == 1 then
+                                        local value5
+                                        numberValue52 = numberValue22 + guardState8
+                                        if entryValue13.type == "slider" then
+                                            value38 = 1
+                                            break
+                                        else
+                                            local value6
+                                            if entryValue13.type ~= "dropdown" then
+                                                local value7
+                                                if entryValue13.type ~= "priority_dropdown" then
+                                                    local value8
+                                                    if entryValue13.type ~= "multi_toggle" then
+                                                        local value9
+                                                        if not (entryValue13.type ~= "slider_dropdown") then
+                                                            local value10
+                                                            data52 = {}
+                                                            data62 = {}
+                                                            value30 = pairs
+                                                            list2 = entryValue13.list
+                                                            if not entryValue13.list then
+                                                                list2 = {}
+                                                            end
+                                                            local value11, value12, value13
+                                                            local value14
+                                                            do
+                                                                local value15, value16, value17 = value30(list2)
+                                                                numberValue32 = 2
+                                                                nextEntry4 = createIterator(value15, value16, value17)
+                                                                value31, value210, value33 = nextEntry4()
+                                                                value11, value12, value13, value14 = value15, value16, value17, value31
+                                                            end
+                                                            if value14 then
+                                                                value312 = value210
+                                                                value322 = value33
+                                                                while true do
+                                                                    local value15
+                                                                    data42 = {}
+                                                                    min3 = value322.min
+                                                                    if not value322.min then
+                                                                        min3 = 0
+                                                                    end
+                                                                    local value16
+                                                                    data42.min = min3
+                                                                    max2 = value322.max
+                                                                    if not value322.max then
+                                                                        max2 = 100
+                                                                    end
+                                                                    local value17
+                                                                    data42.max = max2
+                                                                    step2 = value322.step
+                                                                    if not value322.step then
+                                                                        step2 = 1
+                                                                    end
+                                                                    local value18
+                                                                    data42.step = step2
+                                                                    data52[value312] = data42
+                                                                    if entryValue13.value then
+                                                                        local value19
+                                                                        min4 = entryValue13.value[value312]
+                                                                        if not entryValue13.value[value312] then
+                                                                            local value20
+                                                                            min4 = value322.Default
+                                                                            if not value322.Default then
+                                                                                local value22
+                                                                                min4 = value322.min
+                                                                                if not value322.min then
+                                                                                    min4 = 0
+                                                                                end
+                                                                            end
+                                                                        end
+                                                                    else
+                                                                        local value19
+                                                                        min4 = value322.Default
+                                                                        if not value322.Default then
+                                                                            local value20
+                                                                            min4 = value322.min
+                                                                            if not value322.min then
+                                                                                min4 = 0
+                                                                            end
+                                                                        end
+                                                                    end
+                                                                    local value19
+                                                                    data62[value312] = min4
+                                                                    value43, value53, value63 = nextEntry4()
+                                                                    if value43 then
+                                                                        value312 = value53
+                                                                        value322 = value63
+                                                                        continue
+                                                                    end
+                                                                    break
+                                                                end
+                                                            end
+                                                            local value15, value16
+                                                            do
+                                                                nextEntry4 = nextEntry22
+                                                                local q_2Result = value332
+                                                                local __2Result = value34
+                                                                numberValue32 = numberValue42
+                                                                data102[textValue] = {
+                                                                    name = entryKey25,
+                                                                    type = "slider_dropdown",
+                                                                    sliders = data52,
+                                                                    values = data62,
+                                                                    page = pageName,
+                                                                    section = sectionName,
+                                                                }
+                                                                numberValue52 = numberValue52 + guardKey8 + 173837537
+                                                                value15, value16 = q_2Result, __2Result
+                                                            end
+                                                        end
+                                                    else
+                                                        local value9
+                                                        data72 = {name = entryKey25, type = "multi_toggle"}
+                                                        clone = table.clone
+                                                        list3 = entryValue13.list
+                                                        if not entryValue13.list then
+                                                            list3 = {}
+                                                        end
+                                                        local value10
+                                                        data72.options = clone(list3)
+                                                        clone2 = table.clone
+                                                        value35 = entryValue13.value
+                                                        if not entryValue13.value then
+                                                            value35 = {}
+                                                        end
+                                                        data72.value = clone2(value35)
+                                                        data72.page = pageName
+                                                        data72.section = sectionName
+                                                        data102[textValue] = data72
+                                                    end
+                                                else
+                                                    local value8
+                                                    clone3 = table.clone
+                                                    value36 = entryValue13.value
+                                                    if not entryValue13.value then
+                                                        value36 = {}
+                                                    end
+                                                    local value9
+                                                    value37 = clone3(value36)
+                                                    data82 = {name = entryKey25, type = "priority_dropdown"}
+                                                    clone4 = table.clone
+                                                    list4 = entryValue13.list
+                                                    if not entryValue13.list then
+                                                        list4 = {}
+                                                    end
+                                                    data82.options = clone4(list4)
+                                                    data82.selected = value37
+                                                    data82.value = value37
+                                                    data82.page = pageName
+                                                    data82.section = sectionName
+                                                    data102[textValue] = data82
+                                                end
+                                            else
+                                                local value7
+                                                data92 = {name = entryKey25, type = "dropdown"}
+                                                clone5 = table.clone
+                                                list5 = entryValue13.list
+                                                if not entryValue13.list then
+                                                    list5 = {}
+                                                end
+                                                local value8
+                                                data92.options = clone5(list5)
+                                                list6 = entryValue13.value
+                                                if entryValue13.value then
+                                                    local value9
+                                                    if not list6 then
+                                                        list6 = ""
+                                                    end
+                                                else
+                                                    local value9
+                                                    list6 = entryValue13.list
+                                                    if entryValue13.list then
+                                                        local value10
+                                                        list6 = entryValue13.list[1]
+                                                        if not entryValue13.list[1] then
+                                                            list6 = ""
+                                                        end
+                                                    else
+                                                        local value10
+                                                        if not list6 then
+                                                            list6 = ""
+                                                        end
+                                                    end
+                                                end
+                                                data92.value = list6
+                                                data92.page = pageName
+                                                data92.section = sectionName
+                                                data102[textValue] = data92
+                                            end
+                                            continue
+                                        end
+                                    end
+                                    break
+                                end
+                                if value38 == 1 then
+                                    continue
+                                end
+                                break
+                            end
+                        end
+                    end
+                end
+                return data102
+            end
+
+            function UploadSchemaToWeb(inputValue, inputValue2)
+                if inputValue and inputValue2 then
+                    local value = BuildSchema()
+
+                    local handler4 = function()
+                        local urlEncode = HttpService2.UrlEncode
+                        return request({
+                            Url = string.format(
+                                "%s/schema/init?authId=%s&userId=%s",
+                                text,
+                                HttpService2:UrlEncode(inputValue),
+                                urlEncode(HttpService2, inputValue2)
+                            ),
+                            Method = "POST",
+                            Headers = {["Content-Type"] = "application/json"},
+                            Body = HttpService2:JSONEncode(value),
+                        })
+                    end
+
+                    local ok, result3 = pcall(handler4)
+                    if ok then
+                        if result3.StatusCode == 200 then
+                            print("✅ Schema initialized (first time)")
+                            return true
+                        end
+                        if result3.StatusCode == 409 then
+                            print("ℹ️ Schema already exists, skipping upload")
+                            return true
+                        end
+                    end
+                    warn("❌ Schema upload failed")
+                    if ok then
+                        warn("Status:", result3.StatusCode)
+                        warn("Body:", result3.Body)
+                        return false
+                    end
+                    return false
+                end
+                warn("❌ Missing authId or userId for schema upload")
+                return false
+            end
+
+            function PushSchemaToWebupdate(inputValue, inputValue2)
+                if not inputValue then
+                    return
+                end
+                if not inputValue2 then
+                    return
+                end
+                do
+                    local value = BuildSchema()
+                    local ok, result3 = pcall(function()
+                        local urlEncode = HttpService2.UrlEncode
+                        return request({
+                            Url = string.format(
+                                "%s/schema/update?authId=%s&userId=%s",
+                                text,
+                                HttpService2:UrlEncode(inputValue),
+                                urlEncode(HttpService2, inputValue2)
+                            ),
+                            Method = "POST",
+                            Headers = {["Content-Type"] = "application/json"},
+                            Body = HttpService2:JSONEncode(value),
+                        })
+                    end)
+                    if ok and result3.StatusCode == 200 then
+                        print("✅ Schema UPDATED → web will reload")
+                        return
+                    end
+                    warn("❌ Push schema failed")
+                    if ok then
+                        warn("Status:", result3.StatusCode)
+                        warn("Body:", result3.Body)
+                        return
+                    end
+                    return
+                end
+            end
+
+            local key = getgenv().Key
+            local name = game.Players.LocalPlayer.Name
+            request({
+                Url = "https://cfg.banana-hub.xyz/config/get?authId=" .. key .. "&userId=" .. name .. "&roblox=true",
+                Method = "GET",
+            })
+
+            function ForceResetSchema(y, inputValue)
+                pcall(function()
+                    local value, x = request, {}
+                    x.Url, x.Method = string.format(
+                        "%s/schema/delete?authId=%s&userId=%s",
+                        text,
+                        HttpService2:UrlEncode(y),
+                        HttpService2:UrlEncode(inputValue)
+                    ), "DELETE"
+                    value(x)
+                end)
+                wait(0.5)
+                return UploadSchemaToWeb(y, inputValue)
+            end
+
+            ForceResetSchema(key, name)
+        end)
+        sharedState2.value = require
+        local replicatedStorage = game.ReplicatedStorage
+        blackScreen = game.ReplicatedStorage.WaitForChild
+        blackScreen = game.ReplicatedStorage.WaitForChild
+        local waitForChild2 = game.ReplicatedStorage.WaitForChild
+        blackScreen = blackScreen(replicatedStorage, "Controllers")
+        local sharedState3, sharedState4 = {}, {}
+        sharedState3.value = blackScreen
+        sharedState4.value = blackScreen.WaitForChild
+        local waitForChild3 = blackScreen.WaitForChild
+        local value = sharedState2.value(sharedState4.value(sharedState3.value, "UI"):WaitForChild("Inventory"))
+        SectionLocalPlayerMain.CreateButton({Title = "Show Item"}, function()
+            local createUIListLayout, createUIGridLayout, createTextLabel, nextEntry5, entryKey19
+            local hasEntry19, entryValue14, entryValue24, bubbleChat2, value2, value3, numberValue
+            local handler25, handler26, handler32, handler42, handler52, numberValue15, value39
+            local value211, value310, numberValue23, value44, value54, value64, value73, value83
+            local value113, value123, value133, value173, value183, value193, value203, value213
+            local value223, value302, value313, value323, value333, value342, value352, value362
+            local guardState9 = 1468926788
+            local guardKey9 = 3254841826
+            local numberValue43 = 381201977
+            local bubbleChat = game:GetService("CoreGui").ExperienceChat.bubbleChat
+            if bubbleChat:FindFirstChild("Right") then
+                numberValue15 = 59693393
+
+                function handler25()
+                    game:GetService("Players").LocalPlayer.PlayerGui.Main.MenuButton.Visible = true
+                end
+
+                numberValue15 = 253240503
+                pcall(handler25)
+                pcall(function()
+                    game:GetService("Players").LocalPlayer.PlayerGui.Main.HP.Visible = true
+                end)
+
+                function handler26()
+                    game:GetService("Players").LocalPlayer.PlayerGui.Main.Energy.Visible = true
+                end
+
+                pcall(handler26)
+                value39, value211, value310 = pairs(game:GetService("Players").LocalPlayer.PlayerGui.Main:GetChildren())
+                numberValue = 2
+                nextEntry5 = createIterator(value39, value211, value310)
+                while true do
+                    local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                    if not hasEntry16 then
+                        break
+                    end
+                    do
+                        local value4 = entryValue12
+                        local exitReason = nil
+                        while value4:IsA("ImageButton") do
+                            value4.Visible = true
+                            local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                            if not hasEntry17 then
+                                exitReason = 1
+                                break
+                            end
+                            value4 = entryValue13
+                        end
+                        if exitReason == 1 then
+                            break
+                        end
+                    end
+                end
+                nextEntry5 = value333
+                value2 = value342
+                value3 = value352
+                numberValue = value362
+                numberValue23 = guardState9 - 1195491240
+
+                function handler32()
+                    game:GetService("Players").LocalPlayer.PlayerGui.Main.Compass.Visible = true
+                end
+
+                numberValue23 = 367940106
+                pcall(handler32)
+                value44 = pairs
+                bubbleChat2 = game:GetService("CoreGui").ExperienceChat.bubbleChat
+                value54 = table.pack(bubbleChat2:GetChildren())
+                bit32.band(guardKey9, 3675511066)
+                value64, value73, value83 = value44(table.unpack(value54, 1, value54.n))
+                numberValue = 2
+                nextEntry5 = createIterator(value64, value73, value83)
+                while true do
+                    local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                    if not hasEntry16 then
+                        break
+                    end
+                    do
+                        local value4 = entryValue12
+                        while true do
+                            if value4.Name ~= "Left" then
+                                if value4.Name ~= "Right" then
+                                    if value4.Name ~= "Fragments" then
+                                        break
+                                    end
+                                    value4:Destroy()
+                                    local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                                    if hasEntry17 then
+                                        value4 = entryValue13
+                                        continue
+                                    end
+                                    nextEntry5 = value333
+                                    value2 = value342
+                                    value3 = value352
+                                    numberValue = value362
+                                    return
+                                end
+                                value4:Destroy()
+                                local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                                if hasEntry17 then
+                                    value4 = entryValue13
+                                    continue
+                                end
+                                nextEntry5 = value333
+                                value2 = value342
+                                value3 = value352
+                                numberValue = value362
+                            else
+                                value4:Destroy()
+                                local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                                if hasEntry17 then
+                                    value4 = entryValue13
+                                    continue
+                                end
+                                nextEntry5 = value333
+                                value2 = value342
+                                value3 = value352
+                                numberValue = value362
+                            end
+                            return
+                        end
+                    end
+                end
+                nextEntry5 = value333
+                value2 = value342
+                value3 = value352
+                numberValue = value362
+                return
+            end
+            local localPlayer = game.Players.LocalPlayer
+            local value93 = game
+            local getService4 = game.GetService
+            local value252 = game.GetService(value93, "CoreGui")
+            local value103 = game
+            local getService22 = game.GetService
+            local value233 = game.GetService(value103, "ReplicatedStorage")
+            if not value.IsOpen then
+                value:Open()
+                task.wait(2)
+            end
+            local container = localPlayer.PlayerGui.Inventory.Frame.Main.PageContent.Inner.TileGrid.Inner.Container
+            local data12 = {}
+            local data23 = {}
+            local playerGui = Runtime.localPlayer2.PlayerGui
+            local waitForChild = Runtime.localPlayer2.PlayerGui.WaitForChild
+            Runtime.localPlayer2.PlayerGui.WaitForChild(playerGui, "Inventory"):WaitForChild("Frame")
+            container.CanvasPosition = Vector2.new(0, 0)
+            local guardState22 = guardState9 - guardKey9
+            local numberValue33 = 0
+            while container.CanvasPosition.Y < container.CanvasSize.Y.Offset - container.AbsoluteWindowSize.Y do
+                if task.wait(0.1) then
+                    container.CanvasPosition = Vector2.new(0, numberValue33)
+                    local value4, value5, value6 = pairs(container:GetChildren())
+                    numberValue = 2
+                    nextEntry5 = createIterator(value4, value5, value6)
+                    while true do
+                        local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                        if not hasEntry16 then
+                            break
+                        end
+                        do
+                            local value7 = entryValue12
+                            local exitReason = nil
+                            while value7:FindFirstChild("Details") do
+                                if value7.Details:FindFirstChild("Line-1") then
+                                    local contentText = value7.Details["Line-1"].ContentText
+                                    local contentText2
+                                    if value7.Details:FindFirstChild("Line-2") then
+                                        contentText2 = value7.Details["Line-2"].ContentText or ""
+                                    else
+                                        contentText2 = ""
+                                    end
+                                    local text = contentText .. contentText2
+                                    if not data12[contentText .. contentText2] then
+                                        data12[text] = true
+                                        table.insert(data23, value7:Clone())
+                                        local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                                        if hasEntry17 then
+                                            value7 = entryValue13
+                                            continue
+                                        else
+                                            exitReason = 1
+                                            break
+                                        end
+                                    end
+                                end
+                                break
+                            end
+                            if exitReason == 1 then
+                                break
+                            end
+                        end
+                    end
+                    nextEntry5 = value333
+                    value2 = value342
+                    value3 = value352
+                    numberValue = value362
+                    numberValue33 += 20
+                    continue
+                end
+                break
+            end
+            value113, value123, value133 = ipairs({"Left", "Right"})
+            numberValue = 2
+            nextEntry5 = createIterator(value113, value123, value133)
+            while true do
+                local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                if not hasEntry16 then
+                    break
+                end
+                do
+                    local value4 = entryValue12
+                    local exitReason = nil
+                    while true do
+                        local bubbleChat3 = value252.ExperienceChat.bubbleChat
+                        local findFirstChild = value252.ExperienceChat.bubbleChat.FindFirstChild
+                        local value5 = value252.ExperienceChat.bubbleChat.FindFirstChild(bubbleChat3, value4)
+                        if not value5 then
+                            break
+                        end
+                        do
+                            value5:Destroy()
+                            local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                            if not hasEntry17 then
+                                exitReason = 1
+                                break
+                            end
+                            value4 = entryValue13
+                        end
+                    end
+                    if exitReason == 1 then
+                        break
+                    end
+                end
+            end
+            nextEntry5 = value333
+            value2 = value342
+            value3 = value352
+            numberValue = value362
+            local left2 = Instance.new("Frame", value252.ExperienceChat.bubbleChat)
+            left2.Name = "Left"
+            left2.BackgroundTransparency = 1
+            left2.Size = UDim2.new(0.5, 0, 1, 0)
+            local right = Instance.new("Frame", value252.ExperienceChat.bubbleChat)
+            right.Name = "Right"
+            right.BackgroundTransparency = 1
+            right.Position = UDim2.new(0.5, 0, 0, 0)
+            right.Size = UDim2.new(0.5, 0, 1, 0)
+
+            function createUIListLayout(inputValue)
+                local uiListLayout = Instance.new("UIListLayout", inputValue)
+                uiListLayout.FillDirection = Enum.FillDirection.Vertical
+                uiListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+                uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                uiListLayout.Padding = UDim.new(0, 10)
+                return uiListLayout
+            end
+
+            createUIListLayout(left2)
+            createUIListLayout(right)
+            local value163 = 406230260
+
+            function createUIGridLayout(inputValue)
+                local uiGridLayout = Instance.new("UIGridLayout", inputValue)
+                uiGridLayout.CellPadding = UDim2.new(0, 8, 0, 8)
+                if value163 + 284718134 ~= 512973162 then
+                    value163 = bit32.bxor(value163, 2570500083)
+                end
+                uiGridLayout.CellSize = UDim2.new(0, 70, 0, 70)
+                uiGridLayout.FillDirectionMaxCells = 8
+                uiGridLayout.FillDirection = Enum.FillDirection.Horizontal
+                uiGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                return uiGridLayout
+            end
+
+            local frame = Instance.new("Frame", left2)
+            frame.BackgroundTransparency = 1
+            frame.Size = UDim2.new(1, 0, 0, 0)
+            local automaticSize = Enum.AutomaticSize
+            local value143 = bit32.band(guardState22, 4294967295)
+            local value153 = bit32.band((bit32.band(guardState22, 4294967295)), 65535)
+            local guardState42 = bit32.band((bit32.band((bit32.band(guardState22, 4294967295)), 65535)) * 34901 + bit32.lshift(bit32.band(
+                (bit32.band((bit32.band(guardState22, 4294967295)), 65535)) * 0 + bit32.rshift((bit32.band(guardState22, 4294967295)), 16) * 34901,
+                65535
+            ), 16), 4294967295)
+            frame.AutomaticSize = Enum.AutomaticSize.Y
+            value163 = 228255028
+            frame.LayoutOrder = 1
+            createUIGridLayout(frame)
+            local frame2 = Instance.new("Frame", right)
+            frame2.BackgroundTransparency = 1
+            frame2.Size = UDim2.new(1, 0, 0, 0)
+            frame2.AutomaticSize = Enum.AutomaticSize.Y
+            frame2.LayoutOrder = 1
+            createUIGridLayout(frame2)
+            local data33 = {Vector2.new(218, 225), Vector2.new(436, 225)}
+            value173, value183, value193 = ipairs(data23)
+            numberValue = 2
+            nextEntry5 = createIterator(value173, value183, value193)
+            hasEntry19, entryKey19, entryValue14 = nextEntry5()
+            if hasEntry19 then
+                entryValue24 = entryValue14
+                while true do
+                    local contentText = entryValue24.Details.Category.ContentText
+                    if entryValue24.Details.Category.ContentText ~= "Blox Fruit" then
+                        if entryValue24.Details.Category.ContentText ~= "Blox Fruit" then
+                            entryValue24.Parent = frame
+                            local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                            if hasEntry16 then
+                                entryValue24 = entryValue12
+                                continue
+                            end
+                            break
+                        end
+                        local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                        if hasEntry16 then
+                            entryValue24 = entryValue12
+                            continue
+                        end
+                    else
+                        if table.find(data33, entryValue24.ImageRectOffset) then
+                            entryValue24.Parent = frame2
+                            local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                            if hasEntry16 then
+                                entryValue24 = entryValue12
+                                continue
+                            end
+                            break
+                        end
+                        local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                        if hasEntry16 then
+                            entryValue24 = entryValue12
+                            continue
+                        end
+                    end
+                    break
+                end
+            end
+            nextEntry5 = value333
+            value2 = value342
+            value3 = value352
+            numberValue = value362
+            local frame3 = Instance.new("Frame", right)
+            frame3.BackgroundTransparency = 1
+            frame3.Size = UDim2.new(1, 0, 0, 0)
+            frame3.AutomaticSize = Enum.AutomaticSize.Y
+            frame3.LayoutOrder = 100
+            createUIGridLayout(frame3)
+            local guardKey22 = guardKey9 + numberValue43
+            local data53 = {}
+            local data43 = {}
+            value203, value213, value223 = pairs({
+                Superhuman = Vector2.new(3, 2),
+                DeathStep = Vector2.new(4, 3),
+                ElectricClaw = Vector2.new(2, 0),
+                SharkmanKarate = Vector2.new(0, 0),
+                DragonTalon = Vector2.new(1, 5),
+                Godhuman = "rbxassetid://10338473987",
+            })
+            numberValue = 2
+            nextEntry5 = createIterator(value203, value213, value223)
+            while true do
+                local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                if not hasEntry16 then
+                    break
+                end
+                do
+                    local value4 = entryKey16
+                    local value5 = entryValue12
+                    local exitReason = nil
+                    while true do
+                        if value233.Remotes.CommF_:InvokeServer("Buy" .. value4, true) ~= 1 then
+                            break
+                        end
+                        do
+                            local imageLabel = Instance.new("ImageLabel", frame3)
+                            imageLabel.BackgroundTransparency = 1
+                            if type(value5) ~= "string" then
+                                imageLabel.Image = "rbxassetid://9945562382"
+                                imageLabel.ImageRectSize = Vector2.new(100, 100)
+                                imageLabel.ImageRectOffset = value5 * 100
+                            else
+                                imageLabel.Image = value5
+                            end
+                            data43[value4] = imageLabel
+                            table.insert(data53, value4)
+                            local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                            if not hasEntry17 then
+                                exitReason = 1
+                                break
+                            end
+                            value4 = entryKey17
+                            value5 = entryValue13
+                        end
+                    end
+                    if exitReason == 1 then
+                        break
+                    end
+                end
+            end
+            nextEntry5 = value333
+            value2 = value342
+            value3 = value352
+            numberValue = value362
+
+            function createTextLabel()
+                local textLabel = Instance.new("TextLabel")
+                textLabel.BackgroundTransparency = 1
+                textLabel.Size = UDim2.new(0.5, 0, 0.5, 0)
+                textLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+                textLabel.Font = Enum.Font.GothamBold
+                textLabel.TextColor3 = Color3.new(1, 1, 1)
+                textLabel.TextSize = 10
+                textLabel.TextXAlignment = Enum.TextXAlignment.Right
+                textLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+                textLabel.ZIndex = 5
+                return textLabel
+            end
+
+            local value242 = 187021299
+
+            function handler42(inputValue)
+                local backpack = localPlayer.Backpack
+                if bit32.bxor(value242, 39087877) ~= 459429846 then
+                    value242 = bit32.bxor(value242, 2331058049)
+                end
+                local value4, value5, value6 = pairs(backpack:GetChildren())
+                local M_1 = 2
+                local X_1 = createIterator(value4, value5, value6)
+                local value7
+                while true do
+                    local value8, value9, value10 = X_1()
+                    if value8 then
+                        if value10.Name:gsub(" ", "") ~= inputValue then
+                            continue
+                        end
+                        return value7
+                    else
+                        break
+                    end
+                end
+            end
+
+            value242 = 422983891
+
+            function handler52()
+                bit32.bor(nil, nil)
+                while true do
+                end
+            end
+
+            spawn(handler52)
+            local guardKey32 = guardKey22 + guardState42
+            task.wait(2)
+            localPlayer.PlayerGui.Main.AwakeningToggler.Visible = true
+            local clone6 = localPlayer.PlayerGui.Main.AwakeningToggler:Clone()
+            clone6.LayoutOrder = 101
+            localPlayer.PlayerGui.Main.AwakeningToggler.Visible = false
+            clone6.Parent = right
+            clone6.Size = UDim2.new(1, 0, 0.30000001192092896, 0)
+            local clone22 = localPlayer.PlayerGui.Main.Fragments:Clone()
+            clone22.Parent = value252.ExperienceChat.bubbleChat
+            clone22.Position = UDim2.new(0, 6, 0.85799002647399902, 0)
+            clone22.Text = "ƒ" .. (function(y)
+                return tostring(y):reverse():gsub("%d%d%d", "%1,"):reverse():gsub("^,", "")
+            end)(localPlayer.Data.Fragments.Value)
+            wait(2)
+            local value262 = bit32.band(guardState42, 4294967295)
+            local value272 = bit32.band(guardKey32, 4294967295)
+            local value282 = bit32.band((bit32.band(guardState42, 4294967295)), 65535)
+            local value292 = bit32.band((bit32.band(guardKey32, 4294967295)), 65535)
+            local guardState32 = bit32.band((bit32.band((bit32.band(guardState42, 4294967295)), 65535)) * (bit32.band((bit32.band(guardKey32, 4294967295)), 65535)) + bit32.lshift(bit32.band(
+                (bit32.band((bit32.band(guardState42, 4294967295)), 65535)) * bit32.rshift((bit32.band(guardKey32, 4294967295)), 16) + (bit32.rshift((bit32.band(guardState42, 4294967295)), 16)) * (bit32.band((bit32.band(guardKey32, 4294967295)), 65535)),
+                65535
+            ), 16), 4294967295)
+            pcall(function()
+                game:GetService("Players").LocalPlayer.PlayerGui.Main.MenuButton.Visible = false
+            end)
+            pcall(function()
+                game:GetService("Players").LocalPlayer.PlayerGui.Main.HP.Visible = false
+            end)
+            pcall(function()
+                game:GetService("Players").LocalPlayer.PlayerGui.Main.Energy.Visible = false
+            end)
+            value302, value313, value323 = pairs(game:GetService("Players").LocalPlayer.PlayerGui.Main:GetChildren())
+            numberValue = 2
+            nextEntry5 = createIterator(value302, value313, value323)
+            while true do
+                local hasEntry16, entryKey16, entryValue12 = nextEntry5()
+                if not hasEntry16 then
+                    break
+                end
+                do
+                    local value4 = entryValue12
+                    while value4:IsA("ImageButton") do
+                        value4.Visible = false
+                        local hasEntry17, entryKey17, entryValue13 = nextEntry5()
+                        if hasEntry17 then
+                            value4 = entryValue13
+                            continue
+                        end
+                        nextEntry5 = value333
+                        value2 = value342
+                        value3 = value352
+                        numberValue = value362
+                        pcall(function()
+                            game:GetService("Players").LocalPlayer.PlayerGui.Main.Compass.Visible = false
+                        end)
+                        value:Close()
+                        return
+                    end
+                end
+            end
+            nextEntry5 = value333
+            value2 = value342
+            value3 = value352
+            numberValue = value362
+            pcall(function()
+                game:GetService("Players").LocalPlayer.PlayerGui.Main.Compass.Visible = false
+            end)
+            value:Close()
+        end)
+
+        local handler4 = function()
+            local FruitShop = require(game.ReplicatedStorage.Controllers.UI.FruitShop)
+            FruitShop.init()
+            FruitShop:Open()
+        end
+
+        SectionLocalPlayerMain.CreateButton({Title = "Open Devil Fruit Shop"}, handler4)
+        Runtime.numberValue12 = 2385181361
+        SectionLocalPlayerMain.CreateButton({Title = "Open Devil Fruit Shop Mirage"}, function()
+            local FruitShop = require(game.ReplicatedStorage.Controllers.UI.FruitShop)
+            FruitShop.init()
+            FruitShop:Open("AdvancedFruitDealer")
+        end)
+        SectionLocalPlayerMain.CreateButton({Title = "Open Title"}, function()
+            game:GetService("Players").LocalPlayer.PlayerGui.Main.Titles.Visible = true
+        end)
+        local value2 = table.pack(bit32.band(Runtime.guardState4, 4294967295))
+        local value3 = table.pack(bit32.band(sharedState.value, 4294967295))
+        local value4 = table.pack(bit32.band(value2[1], 65535))
+        local value5 = table.pack(bit32.rshift(value2[1], 16))
+        local value6 = table.pack(bit32.band(value3[1], 65535))
+        Runtime.guardState26 = bit32.band(
+            value4[1] * value6[1] + bit32.lshift(bit32.band(value4[1] * bit32.rshift(value3[1], 16) + value5[1] * value6[1], 65535), 16),
+            4294967295
+        )
+        SectionLocalPlayerMain.CreateButton({Title = "Open Color"}, function()
+            game:GetService("Players").LocalPlayer.PlayerGui.Main.Colors.Visible = true
+        end)
+        Runtime.guardKey30 = Runtime.guardState26
+        local data = {
+            Melee = false,
+            Defense = false,
+            Sword = false,
+            Gun = false,
+            ["Demon Fruit"] = false,
+        }
+        Runtime.createDropdown = SectionLocalPlayerMain.CreateDropdown
+        Runtime.data13 = {
+            Title = "Select Stats",
+            List = PrepareMultiSelectList(data, Settings["Select Stats"]),
+            Search = true,
+            Selected = true,
+        }
+        Runtime.selectStats = Settings["Select Stats"]
+        return sharedState, sharedState2, handler, createButton, handler2, handler3, replicatedStorage, waitForChild2, sharedState3, sharedState4, waitForChild3, value, handler4, value2, value3, value4, value5, value6, data, Settings["Select Stats"]
+    end
+
+    -- Initialize interface visibility
+    function Features.initializeInterfaceVisibility()
+        Runtime.data16.Default = Runtime.noclip
+        Runtime.createToggle4(Runtime.data16, function(inputValue)
+            SaveSettings("Noclip", inputValue)
+        end)
+        blackScreen = nil
+
+        function SetRobloxGUI(y)
+            game.CoreGui.RobloxGui.Enabled = y
+        end
+
+        local handler = function()
+            local numberValue = 2606183254
+            local numberValue2 = 2421653060
+            local now = tick()
+            while true do
+                wait(1)
+                if tick() - now > 179 then
+                    game:Shutdown()
+                    wait(10)
+                end
+                if not game:FindFirstChild("CoreGui") then
+                    continue
+                end
+                if not game.Players.LocalPlayer then
+                    continue
+                end
+                if not game.Players.LocalPlayer.Character then
+                    continue
+                end
+                break
+            end
+            local now2 = tick()
+            while true do
+                wait(1)
+                if tick() - now2 > 169 then
+                    game:Shutdown()
+                    wait(10)
+                end
+                if not game.Players.LocalPlayer:FindFirstChild("Backpack") then
+                    continue
+                end
+                if not game.Players.LocalPlayer:GetMouse() then
+                    continue
+                end
+                break
+            end
+            local screenGui = Instance.new("ScreenGui")
+            screenGui.Parent = game:GetService("Players").LocalPlayer.PlayerGui
+            screenGui.ResetOnSpawn = false
+            getgenv().SCGUI = screenGui
+            wait(1)
+            blackScreen = Instance.new("ImageLabel", SCGUI)
+            blackScreen.BackgroundColor3 = Color3.new(0, 0, 0)
+            blackScreen.Position = UDim2.new(0, 0, 0, -50)
+            blackScreen.Size = UDim2.new(1, 0, 1, 50)
+            blackScreen.Visible = false
+            blackScreen.Name = "Black Screen"
+            getgenv().BS_Text = Instance.new("TextLabel", blackScreen)
+            BS_Text.TextSize = 30
+            BS_Text.TextColor3 = Color3.new(1, 1, 1)
+            BS_Text.AnchorPoint = Vector2.new(0.5, 0)
+            BS_Text.Position = UDim2.new(0.5, 0, 0.60000002384185791, 0)
+            BS_Text.Font = Enum.Font.SourceSansBold
+            BS_Text.RichText = true
+            BS_Default = "\n<font color=\"rgb(45, 45, 45)\"><font size=\"20\">Black Screen</font></font>"
+            local numberValue3 = 472333638
+
+            local handler2 = function(inputValue)
+                BS_Text.Text = inputValue .. BS_Default
+            end
+
+            numberValue3 = 414617501
+            getgenv().UpdateBlackScreenText = handler2
+            UpdateBlackScreenText("")
+            bit32.band(numberValue2, 2606183254)
+            getgenv().DisableBlackScreen = false
+        end
+
+        Runtime.guardKey31 = Runtime.guardKey30 // 75
+        spawn(handler)
+        Runtime.data17 = {}
+        Runtime.data18 = {}
+        local value, value2, value3 = pairs(game:GetService("Workspace").NPCs:GetChildren())
+        Runtime.b02 = 2
+        nextEntry3 = createIterator(value, value2, value3)
+        return handler, value, value2, value3
+    end
+
+    -- Configure first sea destinations
+    function Features.configureFirstSeaDestinations()
+        local data = {}
+        local cframe = CFrame.new
+        local value = table.pack(bit32.band(Runtime.guardState27, 4294967295))
+        local value2 = table.pack(bit32.band(Runtime.numberValue12, 4294967295))
+        local value3 = table.pack(bit32.band(value[1], 65535))
+        local value4 = table.pack(bit32.rshift(value[1], 16))
+        local value5 = table.pack(bit32.band(value2[1], 65535))
+        local value6 = bit32.band(
+            value3[1] * value5[1] + bit32.lshift(bit32.band(value3[1] * bit32.rshift(value2[1], 16) + value4[1] * value5[1], 65535), 16),
+            4294967295
+        )
+        data["Start Island"] = cframe(1071.2832, 16.3085976, 1426.86792)
+        data["Marine Start"] = CFrame.new(-2573.3374, 6.88881969, 2046.99817)
+        data["Middle Town"] = CFrame.new(-655.824158, 7.88708115, 1436.67908)
+        data.Jungle = CFrame.new(-1249.77222, 11.8870859, 341.356476)
+        data["Pirate Village"] = CFrame.new(-1122.34998, 4.78708982, 3855.91992)
+        data.Desert = CFrame.new(1094.14587, 6.47350502, 4192.88721)
+        data["Frozen Village"] = CFrame.new(1198.00928, 27.0074959, -1211.73376)
+        data.MarineFord = CFrame.new(-4505.375, 20.687294, 4260.55908)
+        data.Colosseum = CFrame.new(-1428.35474, 7.38933945, -3014.37305)
+        data["Sky 1st Floor"] = CFrame.new(-4970.21875, 717.707275, -2622.35449)
+        data["Sky 2st Floor"] = CFrame.new(-4813.0249, 903.708557, -1912.69055)
+        data["Sky 3st Floor"] = CFrame.new(-7952.31006, 5545.52832, -320.704956)
+        data.Prison = CFrame.new(4854.16455, 5.68742752, 740.194641)
+        data["Magma Village"] = CFrame.new(-5231.75879, 8.61593437, 8467.87695)
+        data["UndeyWater City"] = CFrame.new(61163.8516, 11.7796879, 1819.78418)
+        data["Fountain City"] = CFrame.new(5132.7124, 4.53632832, 4037.8562)
+        data["House Cyborg's"] = CFrame.new(6262.72559, 71.3003616, 3998.23047)
+        Runtime.guardState30 = value6 + 1247486868
+        data["Shank's Room"] = CFrame.new(-1442.16553, 29.8788261, -28.3547478)
+        data["Mob Island"] = CFrame.new(-2850.20068, 7.39224768, 5354.99268)
+        Runtime.guardKey31 = 7158278
+        Runtime.value648 = data
+        return data, cframe, value, value2, value3, value4, value5, value6
+    end
+
+    -- Configure second sea destinations
+    function Features.configureSecondSeaDestinations()
+        local sharedState, sharedState2 = {}, {}
+        sharedState.value = Runtime.guardKey31 // 2
+        sharedState2.value = Runtime.guardKey31 // 2
+        local cframe = CFrame.new
+        Runtime.data19 = {
+            ["First Spot"] = cframe(82.9490662, 18.0710983, 2834.98779),
+            ["Kingdom of Rose"] = game.Workspace._WorldOrigin.Locations["Kingdom of Rose"].CFrame,
+            ["Dark Ares"] = game.Workspace._WorldOrigin.Locations["Dark Arena"].CFrame,
+            ["Flamingo Mansion"] = cframe(-390.096313, 331.886475, 673.464966),
+            ["Flamingo Room"] = cframe(2302.19019, 15.1778421, 663.811035),
+            ["Green bit"] = cframe(-2372.14697, 72.9919434, -3166.51416),
+            Cafe = cframe(-385.250916, 73.0458984, 297.388397),
+            Factroy = cframe(430.42569, 210.019623, -432.504791),
+            Colosseum = cframe(-1836.58191, 44.5890656, 1360.30652),
+            ["Ghost Island"] = cframe(-5571.84424, 195.182297, -795.432922),
+            ["Ghost Island 2nd"] = CFrame.new(-5931.77979, 5.19706631, -1189.6908),
+            ["Snow Mountain"] = CFrame.new(1384.68298, 453.569031, -4990.09766),
+        }
+        local numberValue = sharedState.value - 2387067063
+        Runtime.data19["Hot and Cold"] = CFrame.new(-6026.96484, 14.7461271, -5071.96338)
+        Runtime.data19["Magma Side"] = CFrame.new(-5478.39209, 15.9775667, -5246.9126)
+        Runtime.data19["Cursed Ship"] = CFrame.new(902.059143, 124.752518, 33071.8125)
+        Runtime.data19["Frosted Island"] = CFrame.new(5400.40381, 28.21698, -6236.99219)
+        Runtime.data19["Forgotten Island"] = CFrame.new(-3043.31543, 238.881271, -10191.5791)
+        Runtime.data19["Usoapp Island"] = CFrame.new(4748.78857, 8.35370827, 2849.57959)
+        Runtime.data19["Raids Low"] = CFrame.new(-5554.95313, 329.075623, -5930.31396)
+        Runtime.data19.Minisky = CFrame.new(-260.358917, 49325.7031, -35259.3008)
+        Runtime.numberValue12 = 2385181361
+        Runtime.guardState29 = sharedState2.value + 3579139
+        Runtime.guardKey31 = numberValue - 1904321094
+        return sharedState, sharedState2, cframe, numberValue
+    end
+
+    -- Initialize teleport controls
+    function Features.initializeTeleportControls()
+        local sharedState = {}
+        nextEntry3 = Runtime.value644
+        Runtime.q02 = Runtime.value645
+        Runtime.n02 = Runtime.value646
+        Runtime.b02 = Runtime.value647
+        local createDropdown = SectionLocalPlayerMain.CreateDropdown
+        local data = {}
+        local value = table.pack(bit32.band(Runtime.guardState30, 4294967295))
+        local value2 = table.pack(bit32.band(value[1], 65535))
+        local value3 = bit32.band(
+            value2[1] * 54840 + bit32.lshift(bit32.band(value2[1] * 0 + bit32.rshift(value[1], 16) * 54840, 65535), 16),
+            4294967295
+        )
+        data.Title = "Select Npc"
+        data.List = Runtime.data17
+        data.Search = true
+        data.Selected = false
+        data.Default = nil
+        createDropdown(data, function(inputValue)
+            Runtime.data7["Select Npc"] = inputValue
+        end)
+        SectionLocalPlayerMain.CreateToggle({Title = "Teleport To Npc", Desc = nil, Default = false}, function(enabled)
+            Runtime.data7["Teleport To Npc"] = enabled
+        end)
+        SectionLocalPlayerMain.CreateDropdown({
+            Title = "Select Island",
+            List = Runtime.data20,
+            Search = true,
+            Selected = false,
+            Default = nil,
+        }, function(selection)
+            Runtime.data7["Select Island"] = selection
+        end)
+        sharedState.value = {Title = "Teleport To Island", Desc = nil, Default = false}
+        SectionLocalPlayerMain.CreateToggle(sharedState.value, function(enabled)
+            Runtime.data7["Teleport To Island"] = enabled
+        end)
+        local createToggle3 = SectionLocalPlayerMain.CreateToggle
+        local data2 = {Title = "Teleport Mirage", Desc = nil}
+        Runtime.guardKey5 = bit32.bor(2974668620, Runtime.numberValue12)
+        data2.Default = false
+
+        local handler = function(inputValue)
+            Runtime.data7["Teleport Mirage"] = inputValue
+        end
+
+        createToggle3(data2, handler)
+        SectionLocalPlayerMain.CreateToggle({Title = "Teleport Prehistoric Island", Desc = nil, Default = false}, function(enabled)
+            Runtime.data7["Teleport Prehistoric Island"] = enabled
+        end)
+
+        local handler2 = function()
+            local value4 = next
+            local children, value5 = workspace._WorldOrigin.Locations:GetChildren()
+            local b_1 = 2
+            local nextEntry4 = createIterator(value4, children, value5)
+            while true do
+                local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                if not hasEntry16 then
+                    break
+                end
+                do
+                    local value6 = entryValue12
+                    if entryValue12.Name ~= "Prehistoric Island" then
+                        continue
+                    end
+                    if value6:GetAttribute("CFrame") then
+                        return value6
+                    end
+                end
+            end
+        end
+
+        DetectPrehistoricIsland = handler2
+
+        function SetNoClip(noclip)
+            getgenv().noclip = noclip
+            local character = Runtime.localPlayer2.Character
+            if not Runtime.localPlayer2.Character then
+                return
+            end
+            do
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                local humanoid = character:FindFirstChildOfClass("Humanoid")
+                if not noclip then
+                    local value4, value5, value6 = ipairs(character:GetDescendants())
+                    local b_1 = 2
+                    local nextEntry4 = createIterator(value4, value5, value6)
+                    while true do
+                        local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                        if not hasEntry16 then
+                            break
+                        end
+                        do
+                            local value7 = entryValue12
+                            local exitReason = nil
+                            while value7:IsA("BasePart") do
+                                value7.CanCollide = true
+                                local hasEntry17, entryKey17, entryValue13 = nextEntry4()
+                                if not hasEntry17 then
+                                    exitReason = 1
+                                    break
+                                end
+                                value7 = entryValue13
+                            end
+                            if exitReason == 1 then
+                                break
+                            end
+                        end
+                    end
+                    local value7
+                    nextEntry4 = value7
+                    local value8
+                    local value9 = value8
+                    local value10
+                    local value11 = value10
+                    local b_0
+                    b_1 = b_0
+                    if humanoid then
+                        humanoid.PlatformStand = false
+                        if humanoidRootPart and (humanoidRootPart:FindFirstChild("FloatForce") and not ToggleNoclip()) then
+                            humanoidRootPart.FloatForce:Destroy()
+                            return
+                        end
+                    elseif humanoidRootPart and (humanoidRootPart:FindFirstChild("FloatForce") and not ToggleNoclip()) then
+                        humanoidRootPart.FloatForce:Destroy()
+                        return
+                    end
+                end
+                return
+            end
+        end
+
+        local handler3 = function()
+            if Settings["Start Farm"] or Settings["Auto Present Event"] or Settings["Auto Celestial Soldier"] or Settings["Auto Rip Commander"] or Settings["Auto Event Halloween"] or Settings["Auto Farm Pumpkins"] or Settings["Auto Farm Jack o' Lantern & Pumpkin Snowman"] or Settings["Auto Halloween Bosses"] or Settings["Auto Summon Great Pumpkin"] or Settings["Auto Collect Candy Spill"] or Settings["Auto Attack Dungeon"] or Settings["Auto Fishing"] or Settings["Auto Secret Quest"] or Settings["Teleport To Fruit"] or Settings["Auto Factory"] or Settings["Auto Pirate Raid"] or Settings["Auto Elite Hunter"] or Settings["Auto Touch Pad Haki"] or Settings["Auto Summon Rip Indra"] or Settings["Attack Rip Indra"] or Settings["Attack Soul Reaper"] or Settings["Attack Dough King"] or Settings["Attack Darkbeard"] or Settings["Auto Raid"] or Settings["Auto Sea Event"] or Settings["Auto Shipwright"] or Settings["Teleport Acient Clock"] or Settings["Auto Upgrade Race V2-V3"] or Settings["Auto Trial"] or Settings["Auto Get Ghoul"] or Settings["Auto Get Cyborg"] or Settings["Auto Pull Lever"] or Runtime.data7["Teleport Mirage"] or Runtime.data7["Teleport To Island"] or Runtime.data7["Teleport To Npc"] or Runtime.data7["Teleport Prehistoric Island"] or Runtime.data7["Sanguine Art"] or Runtime.data7["God Human"] or Runtime.data7["Dragon Talon"] or Runtime.data7["Electric Claw"] or Runtime.data7["Sharkman Karate"] or Runtime.data7["Death Step"] or Runtime.data7.SuperHuman or Runtime.data7.DragonClaw or Runtime.data7.Electro or Runtime.data7["Fishman Karate"] or Runtime.data7["Black Leg"] or Settings["Teleport To Kitsune Island"] or Settings["Auto Spawn Kitsune Island"] or Settings["Auto Collect Soul Ember"] or Settings["Auto Summon Soul Ember"] or Settings["Auto Attack Leviathan"] or Settings["Auto Soul Guitar"] or Settings["Auto CDK"] or Settings["Auto Yama"] or Settings["Auto Tushita"] or Settings["Auto Upgrade Sword Inventory"] or Settings["Teleport Player"] or Settings["Auto Chest"] or Settings["Farm Observation"] or Settings["Auto Upgrade Gun Inventory"] or Settings["Kill Boss"] or Settings["Kill Mob"] or Settings["Auto UP Observation V2"] or Settings["Auto New World"] or Settings["Auto Third World"] or Settings["Tween Safe if have Items"] or Settings["Teleport Frozen Dimension"] or Settings["Auto Yoru Mini"] or Settings["Auto Quest Dojo Trainer"] or Settings["Auto Sharkman Master"] or Settings["Auto Quest Dragon Hunter"] or Settings["Auto Crafting Volcanic Magnet"] or Settings["Auto Find Prehistoric Island"] or Settings["Auto Find Mirage"] or Settings["Auto Event Prehistoric Island"] or Settings["Auto Collect Bone"] or Settings["Auto Collect Berry"] or Settings["Auto Upgrade Race V2-V3 Draco"] or Settings["Auto Trial Draco"] or Settings["Auto Get Rainbow Haki"] or Settings["Follow Player Select"] then
+                return true
+            elseif Settings["Auto Tween To Prehistoric Island"] then
+                return true
+            elseif Settings["Auto Kill Golem"] then
+                return true
+            elseif Settings["Auto Fix Volcano"] then
+                return true
+            elseif Settings["Multi Find Leviathan"] then
+                return true
+            elseif Settings["Fully Event Prehistoric Island"] then
+                return true
+            elseif Settings["Auto Multi Raid"] then
+                return true
+            elseif Settings["Auto Fire Shoot Heart Leviathan"] then
+                return true
+            elseif Settings["Auto Buy Chip and Attack Law"] then
+                return true
+            elseif Settings["Fully Trial Draco"] then
+                return true
+            elseif Settings["Auto Finish Train Quest"] then
+                return true
+            elseif Settings["Auto Destroy IDK"] then
+                return true
+            elseif Settings["Auto Finish Train Draco Quest"] then
+                return true
+            elseif Settings["Auto TTK"] then
+                return true
+            elseif Settings["Auto Attack All Mob and Boss"] then
+                return true
+            elseif Settings["Auto Collect Egg"] then
+                return true
+            else
+                if not Settings["Collect Chest When Server Spawn God's Chalice or Fist of Darkness"] then
+                    return
+                end
+                do
+                    return true
+                end
+            end
+        end
+
+        ToggleNoclip = handler3
+        local value4 = game
+        local getService = game.GetService
+        local getService2 = game.GetService
+        tweenService = getService(value4, "TweenService")
+        Runtime.genv = getgenv()
+        Runtime.guardState5 = Runtime.numberValue12
+        Runtime.data4 = {currentTween = nil, currentPart = nil, currentGoal = nil}
+        return sharedState, createDropdown, data, value, value2, value3, createToggle3, data2, handler, handler2, handler3, value4, getService, getService2, not sharedState.value
+    end
+
+    -- Initialize tween manager
+    function Features.initializeTweenManager()
+        Runtime.data4.TweenRunning = false
+
+        local handler = function()
+            local currentTween = TweenManager.currentTween
+            local tween = getgenv().Tween
+            if currentTween then
+                pcall(function()
+                    currentTween:Cancel()
+                    currentTween:Destroy()
+                end)
+                if tween and tween ~= currentTween then
+                    pcall(function()
+                        tween:Cancel()
+                        tween:Destroy()
+                    end)
+                end
+            elseif tween and tween ~= currentTween then
+                pcall(function()
+                    tween:Cancel()
+                    tween:Destroy()
+                end)
+            end
+            TweenManager.currentTween = nil
+            TweenManager.currentPart = nil
+            TweenManager.currentGoal = nil
+            TweenManager.TweenRunning = false
+            getgenv().Tween = nil
+        end
+
+        Runtime.data4.CancelTweenOnly = handler
+
+        function Runtime.data4.PlayTween(inputValue, inputValue2, targetRoot, inputValue3)
+            local value = inputValue
+            local value2 = inputValue2
+            local value3 = targetRoot
+            if not inputValue then
+                return
+            end
+            do
+                if inputValue2 then
+                    if targetRoot then
+                        if targetRoot.CFrame then
+                            local targetEpsilon = (inputValue3 or ({})).TargetEpsilon
+                            targetEpsilon = targetEpsilon or 12
+                            local tween
+                            if TweenManager.currentTween then
+                                if TweenManager.currentPart == inputValue and TweenManager.currentGoal then
+                                    local numberValue = 0
+                                    if (TweenManager.currentGoal.Position - targetRoot.CFrame.Position).Magnitude <= targetEpsilon then
+                                        return TweenManager.currentTween
+                                    end
+                                end
+                                TweenManager.CancelTweenOnly()
+                                tween = tweenService:Create(value, value2, value3)
+                            else
+                                TweenManager.CancelTweenOnly()
+                                tween = tweenService:Create(value, value2, value3)
+                            end
+                            TweenManager.currentTween = tween
+                            TweenManager.currentPart = value
+                            TweenManager.currentGoal = value3.CFrame
+                            TweenManager.TweenRunning = true
+                            getgenv().Tween = tween
+                            local completed = tween.Completed
+                            local numberValue = 188075341
+
+                            local handler2 = function()
+                                if not (TweenManager.currentTween == tween) then
+                                    return
+                                end
+                                do
+                                    TweenManager.currentTween = nil
+                                    TweenManager.currentPart = nil
+                                    TweenManager.currentGoal = nil
+                                    TweenManager.TweenRunning = false
+                                    getgenv().Tween = nil
+                                    pcall(function()
+                                        tween:Destroy()
+                                    end)
+                                    return
+                                end
+                            end
+
+                            numberValue = 206210223
+                            tween.Completed.Connect(completed, handler2)
+                            tween:Play()
+                            return tween
+                        end
+                        return
+                    end
+                    return
+                end
+                return
+            end
+        end
+
+        local handler2 = function()
+            local character = Runtime.localPlayer2.Character
+            local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+            if TweenManager.currentTween then
+                TweenManager.CancelTweenOnly()
+                if not not ToggleNoclip() then
+                    return
+                end
+                do
+                    pcall(function()
+                        if not character then
+                            return
+                        end
+                        do
+                            local value, value2, value3 = ipairs(character:GetDescendants())
+                            local b_1 = 2
+                            local nextEntry4 = createIterator(value, value2, value3)
+                            while true do
+                                local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                                if not hasEntry16 then
+                                    break
+                                end
+                                do
+                                    local value4 = entryValue12
+                                    local exitReason = nil
+                                    while value4:IsA("BasePart") do
+                                        value4.CanCollide = true
+                                        local hasEntry17, entryKey17, entryValue13 = nextEntry4()
+                                        if not hasEntry17 then
+                                            exitReason = 1
+                                            break
+                                        end
+                                        value4 = entryValue13
+                                    end
+                                    if exitReason == 1 then
+                                        break
+                                    end
+                                end
+                            end
+                            local value4
+                            nextEntry4 = value4
+                            local value5
+                            local value6 = value5
+                            local value7
+                            local value8 = value7
+                            local b_0
+                            b_1 = b_0
+                            local humanoid = character:FindFirstChildOfClass("Humanoid")
+                            if humanoid then
+                                humanoid.PlatformStand = false
+                            end
+                            if humanoidRootPart and humanoidRootPart:FindFirstChild("FloatForce") then
+                                humanoidRootPart.FloatForce:Destroy()
+                                return
+                            end
+                            return
+                        end
+                    end)
+                    return
+                end
+            elseif getgenv().Tween then
+                TweenManager.CancelTweenOnly()
+                if not not ToggleNoclip() then
+                    return
+                end
+                do
+                    pcall(function()
+                        if not character then
+                            return
+                        end
+                        do
+                            local value, value2, value3 = ipairs(character:GetDescendants())
+                            local b_1 = 2
+                            local nextEntry4 = createIterator(value, value2, value3)
+                            while true do
+                                local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                                if not hasEntry16 then
+                                    break
+                                end
+                                do
+                                    local value4 = entryValue12
+                                    local exitReason = nil
+                                    while value4:IsA("BasePart") do
+                                        value4.CanCollide = true
+                                        local hasEntry17, entryKey17, entryValue13 = nextEntry4()
+                                        if not hasEntry17 then
+                                            exitReason = 1
+                                            break
+                                        end
+                                        value4 = entryValue13
+                                    end
+                                    if exitReason == 1 then
+                                        break
+                                    end
+                                end
+                            end
+                            local value4
+                            nextEntry4 = value4
+                            local value5
+                            local value6 = value5
+                            local value7
+                            local value8 = value7
+                            local b_0
+                            b_1 = b_0
+                            local humanoid = character:FindFirstChildOfClass("Humanoid")
+                            if humanoid then
+                                humanoid.PlatformStand = false
+                            end
+                            if humanoidRootPart and humanoidRootPart:FindFirstChild("FloatForce") then
+                                humanoidRootPart.FloatForce:Destroy()
+                                return
+                            end
+                            return
+                        end
+                    end)
+                    return
+                end
+            else
+                if not humanoidRootPart then
+                    return
+                end
+                if not humanoidRootPart:FindFirstChild("FloatForce") then
+                    return
+                end
+                TweenManager.CancelTweenOnly()
+                if not not ToggleNoclip() then
+                    return
+                end
+                do
+                    pcall(function()
+                        if not character then
+                            return
+                        end
+                        do
+                            local value, value2, value3 = ipairs(character:GetDescendants())
+                            local b_1 = 2
+                            local nextEntry4 = createIterator(value, value2, value3)
+                            while true do
+                                local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                                if not hasEntry16 then
+                                    break
+                                end
+                                do
+                                    local value4 = entryValue12
+                                    local exitReason = nil
+                                    while value4:IsA("BasePart") do
+                                        value4.CanCollide = true
+                                        local hasEntry17, entryKey17, entryValue13 = nextEntry4()
+                                        if not hasEntry17 then
+                                            exitReason = 1
+                                            break
+                                        end
+                                        value4 = entryValue13
+                                    end
+                                    if exitReason == 1 then
+                                        break
+                                    end
+                                end
+                            end
+                            local value4
+                            nextEntry4 = value4
+                            local value5
+                            local value6 = value5
+                            local value7
+                            local value8 = value7
+                            local b_0
+                            b_1 = b_0
+                            local humanoid = character:FindFirstChildOfClass("Humanoid")
+                            if humanoid then
+                                humanoid.PlatformStand = false
+                            end
+                            if humanoidRootPart and humanoidRootPart:FindFirstChild("FloatForce") then
+                                humanoidRootPart.FloatForce:Destroy()
+                                return
+                            end
+                            return
+                        end
+                    end)
+                    return
+                end
+            end
+        end
+
+        Runtime.data4.CancelCurrent = handler2
+        local sharedState, sharedState2 = {}, {}
+        Runtime.genv.TweenManager = Runtime.data4
+        TweenManager = getgenv().TweenManager
+        Runtime.data6 = {
+            Sea1 = {
+                Colosseum = Vector3.new(-2143.4133, 152.07433, -3025.5461),
+                Desert = Vector3.new(1330.683, 103.55368, 4489.306),
+                Fountain = Vector3.new(5420.3364, 431.04068, 4396.387),
+                Jungle = Vector3.new(-1340.2195, 136.02054, -101.374214),
+                ["Marine Fortress"] = Vector3.new(-5180.2383, 281.34344, 4383.0317),
+                ["Middle Town"] = Vector3.new(-703.1675, 9.5518875, 1575.1864),
+                ["Pirate Village"] = Vector3.new(-807.6621, 27.802052, 4119.3013),
+                Prison = Vector3.new(5270.5693, 163.50847, 844.7282),
+                Sky = Vector3.new(-4808.769, 721.32635, -2668.8179),
+                Snow = Vector3.new(1394.464, 39.044888, -1321.639),
+                ["Starter Island"] = Vector3.new(1038.2997, 112.136505, 1287.8345),
+                ["Starter Marine"] = Vector3.new(-3096.5193, 231.44356, 2087.5193),
+                Underwater = Vector3.new(61147.977, 20.57084, 1366.0984),
+                ["Upper Sky"] = Vector3.new(-7950.0366, 5815.6846, -1968.3374),
+                Volcano = Vector3.new(-5513.9785, 64.494316, 8577.4),
+            },
+        }
+        sharedState.value = Runtime.guardState5 // 826606924
+        local data = {
+            Cafe = Vector3.new(-382, 74, 356),
+            Colosseum = Vector3.new(-1836, 46, 1642),
+            ["Dark Arena"] = Vector3.new(3948, 13, -3479),
+            ["Docks 1"] = Vector3.new(-923, 8, 1810),
+            ["Docks 2"] = Vector3.new(-13, 39, 2708),
+            ["Docks 3"] = Vector3.new(-1944, 9, -2594),
+            ["Docks 4"] = Vector3.new(-5798, 1, -5021),
+            Doghouse = Vector3.new(-1984, 125, -82),
+            Graveyard = Vector3.new(-5710, 126, -775),
+            ["Haunted Ship"] = Vector3.new(937, 125, 32879),
+            Lab = Vector3.new(-5542, 335, -5924),
+            Lava = Vector3.new(-5280, 7, -5618),
+            Mansion = Vector3.new(-494, 339, 593),
+        }
+        sharedState2.value = bit32.band(826606924, sharedState.value)
+        data.Raid = Vector3.new(-6503, 251, -4495)
+        data.Remote = Vector3.new(4766, 8, 2911)
+        data.Skull = Vector3.new(-2956.2434, 123.39932, -9981.069)
+        data.Snow = Vector3.new(1210, 429, -4663)
+        data["Winter Castle"] = Vector3.new(5544.718, 60.139385, -6359.089)
+        Runtime.data6.Sea2 = data
+        local numberValue = sharedState.value - 3232627047
+        Runtime.numberValue3 = 219205272
+        Runtime.data6.Sea3 = {
+            ["Cake Land"] = Vector3.new(-2098.9705, 76.39494, -12128.359),
+            ["Chocolate Land"] = Vector3.new(379.13962, 130.206, -12720.84),
+            ["Great Tree"] = Vector3.new(4345.0938, 575.0524, -6159.0044),
+            ["Haunted Castle"] = Vector3.new(-9515.001, 149.18877, 5534.0503),
+            ["Hydra Arena"] = Vector3.new(5020.946, 174.08646, -2011.185),
+            ["Hydra Town"] = Vector3.new(5288.6216, 1011.6528, 392.4297),
+            ["Ice Cream Land"] = Vector3.new(-917.5485, 63.364143, -10858.696),
+            ["Peanut Land"] = Vector3.new(-2037.8002, 13.651118, -9948.202),
+            Port = Vector3.new(-342.43436, 23.831549, 5547.3457),
+            ["Sea Castle"] = Vector3.new(-5502.1787, 323.6709, -2863.4617),
+            ["Tiki Outpost"] = Vector3.new(-16456.463, 530.25195, 436.2318),
+            ["Turtle Center"] = Vector3.new(-12007.9795, 339.1555, -9178.58),
+            ["Turtle Entrance"] = Vector3.new(-10163.965, 340.29028, -8320.768),
+            ["Turtle Mansion"] = Vector3.new(-12538.422, 339.3936, -7817.071),
+            ["Turtle Mountain"] = Vector3.new(-12856.613, 852.7536, -10715.23),
+        }
+        Runtime.guardKey6 = sharedState2.value * Runtime.numberValue3
+        local isTargetPlace = game.PlaceId ~= getgenv().CheckPlaceId
+        return handler, handler2, sharedState, sharedState2, data, numberValue, isTargetPlace
+    end
+
+    -- Initialize special island travel
+    function Features.initializeSpecialIslandTravel()
+        local value = game
+        local getService = game.GetService
+        local getService2 = game.GetService
+        Runtime.collectionService = getService(value, "CollectionService")
+        Runtime.numberValue4 = 0
+        Runtime.condition = false
+
+        function Runtime.handler5()
+            Runtime.numberValue4 = tick() + 1.5
+            if Runtime.collectionService:HasTag(Runtime.localPlayer2, "Teleporting") then
+                return
+            end
+            Runtime.collectionService:AddTag(Runtime.localPlayer2, "Teleporting")
+            Runtime.condition = true
+        end
+
+        local handler = function()
+            while task.wait(0.1) do
+                if Runtime.condition and Runtime.numberValue4 <= tick() then
+                    Runtime.collectionService:RemoveTag(Runtime.localPlayer2, "Teleporting")
+                    Runtime.condition = false
+                end
+            end
+        end
+
+        task.spawn(handler)
+        local value2 = game
+        local getService3 = game.GetService
+        local getService4 = game.GetService
+        Runtime.players = getService3(value2, "Players")
+        game:GetService("ReplicatedStorage")
+        local value3 = game
+        local getService5 = game.GetService
+        local getService6 = game.GetService
+        Runtime.virtualInputManager = getService5(value3, "VirtualInputManager")
+
+        function Runtime.handler()
+            local numberValue = 805139965
+            local numberValue2 = 1078669945
+            local devilFruit = Runtime.localPlayer2.Data:FindFirstChild("DevilFruit")
+            if devilFruit then
+                if devilFruit.Value ~= "Portal-Portal" then
+                    return false
+                end
+                local c = Runtime.localPlayer2.PlayerGui.Main.Skills:FindFirstChild(devilFruit.Value)
+                c = c and c:FindFirstChild("C")
+                if c and c:IsA("Frame") then
+                    local cooldown = c:FindFirstChild("Cooldown")
+                    local isTextColor3 = c.Title.TextColor3 == Color3.new(1, 1, 1)
+                    if isTextColor3 then
+                        isTextColor3 = cooldown.Size == UDim2.new(0, 0, 1, -1)
+                        if not isTextColor3 then
+                            return cooldown.Size == UDim2.new(1, 0, 1, -1)
+                        end
+                    end
+                    return isTextColor3
+                end
+                local portalPortal = Runtime.localPlayer2.Character:FindFirstChild("Portal-Portal")
+                if not portalPortal then
+                    portalPortal = Runtime.localPlayer2.Backpack:FindFirstChild("Portal-Portal")
+                    if not portalPortal then
+                        return false
+                    end
+                end
+                Runtime.localPlayer2.Character:FindFirstChildOfClass("Humanoid"):EquipTool(portalPortal)
+                return false
+            end
+            return false
+        end
+
+        function Runtime.handler2(y)
+            local portalPortal = Runtime.localPlayer2.Character:FindFirstChild("Portal-Portal") or Runtime.localPlayer2.Backpack:FindFirstChild("Portal-Portal")
+            if not portalPortal then
+                return false
+            end
+            Runtime.localPlayer2.Character:FindFirstChildOfClass("Humanoid"):EquipTool(portalPortal)
+            portalPortal = Runtime.localPlayer2.PlayerGui.Main:FindFirstChild("Gateway")
+            if not portalPortal then
+                return false
+            end
+            Runtime.virtualInputManager:SendKeyEvent(true, "C", false, game)
+            Runtime.virtualInputManager:SendKeyEvent(false, "C", false, game)
+            local numberValue = tick() + 3
+            repeat
+                task.wait(0.1)
+            until portalPortal.Visible or tick() > numberValue
+            if not portalPortal.Visible then
+                return false
+            end
+            numberValue = portalPortal:FindFirstChild("MainContent")
+            if not numberValue then
+                return false
+            end
+            portalPortal = numberValue.ScrollingFrame:FindFirstChild(tostring(y))
+            if portalPortal and portalPortal.MouseButton1Click then
+                for y, y in pairs(getconnections(portalPortal.MouseButton1Click)) do
+                    pcall(function()
+                        y.Function()
+                    end)
+                end
+                return true
+            end
+            return false
+        end
+
+        function GetTempleOfTime()
+            local templeOfTime = workspace.Map:FindFirstChild("Temple of Time")
+            if not templeOfTime then
+                return
+            end
+            if not not templeOfTime:GetAttribute("ClientBorrowed") then
+                return
+            end
+            do
+                return templeOfTime
+            end
+        end
+
+        Runtime.condition2 = false
+
+        local handler2 = function()
+            if Runtime.localPlayer2.Character then
+                if Runtime.localPlayer2.Character:FindFirstChild("Humanoid") then
+                    if Runtime.localPlayer2.Character.Humanoid.Health ~= 0 then
+                        return
+                    end
+                    return true
+                end
+                return true
+            end
+            return true
+        end
+
+        getgenv().IsPlayerDead = handler2
+        CS = game:GetService("CollectionService")
+        cam = workspace.CurrentCamera
+
+        function LoadIslandByFakePoint(inputValue)
+            local part = Instance.new("Part")
+            part.Transparency = 1
+            part.CanCollide = false
+            part.Anchored = true
+            part.Size = Vector3.zero
+            part.CFrame = CFrame.new(inputValue:GetPivot().Position)
+            CS:AddTag(part, "LoDPosition")
+            part.Parent = cam
+            return part
+        end
+
+        local handler3 = function()
+            pcall(function()
+                local value4, value5, value6 = ipairs(workspace:GetChildren())
+                local b_1 = 2
+                local nextEntry4 = createIterator(value4, value5, value6)
+                while true do
+                    local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                    if not hasEntry16 then
+                        break
+                    end
+                    do
+                        local value7 = entryValue12
+                        local exitReason = nil
+                        while value7:IsA("Model") do
+                            if value7:GetAttribute("LevelOfDetailDiameter") then
+                                LoadIslandByFakePoint(value7)
+                                local hasEntry17, entryKey17, entryValue13 = nextEntry4()
+                                if hasEntry17 then
+                                    value7 = entryValue13
+                                    continue
+                                else
+                                    exitReason = 1
+                                    break
+                                end
+                            end
+                            break
+                        end
+                        if exitReason == 1 then
+                            break
+                        end
+                    end
+                end
+                local value7
+                nextEntry4 = value7
+                local value8
+                local value9 = value8
+                local value10
+                local value11 = value10
+                local b_0
+                b_1 = b_0
+                local value12, value13, value14 = ipairs(workspace.Map:GetChildren())
+                b_1 = 2
+                nextEntry4 = createIterator(value12, value13, value14)
+                while true do
+                    local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                    if not hasEntry16 then
+                        break
+                    end
+                    do
+                        local value15 = entryValue12
+                        local exitReason = nil
+                        while value15:IsA("Model") do
+                            LoadIslandByFakePoint(value15)
+                            local hasEntry17, entryKey17, entryValue13 = nextEntry4()
+                            if not hasEntry17 then
+                                exitReason = 1
+                                break
+                            end
+                            value15 = entryValue13
+                        end
+                        if exitReason == 1 then
+                            break
+                        end
+                    end
+                end
+                nextEntry4 = value7
+                value9 = value8
+                value11 = value10
+                b_1 = b_0
+                local value15, value16, value17 = ipairs(game:GetService("ReplicatedStorage").FakeIslands:GetChildren())
+                b_1 = 2
+                nextEntry4 = createIterator(value15, value16, value17)
+                while true do
+                    local hasEntry16, entryKey16, entryValue12 = nextEntry4()
+                    if not hasEntry16 then
+                        break
+                    end
+                    do
+                        local value18 = entryValue12
+                        while value18:IsA("Model") do
+                            LoadIslandByFakePoint(value18)
+                            local hasEntry17, entryKey17, entryValue13 = nextEntry4()
+                            if hasEn

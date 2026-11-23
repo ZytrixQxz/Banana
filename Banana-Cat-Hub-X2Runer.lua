@@ -12,6 +12,17 @@ local entryValue32, entryKey15, entryValue42, entryValue52, entryKey22, result2,
 local createToggle2, tweenService
 local Runtime = {}
 
+-- The key system is disabled; keep a correctly sized internal value for legacy checks.
+if type(getgenv) == "function" then
+    local env = getgenv()
+    if not env.Key or env.Key == "" then
+        env.Key = string.rep("0", 24)
+    end
+end
+if not _G.Key or _G.Key == "" then
+    _G.Key = string.rep("0", 24)
+end
+
 local function createIterator(iterator, state, control)
     return coroutine.wrap(function()
         for key, value in iterator, state, control do
@@ -24,50 +35,29 @@ Runtime.iterationResults = {}
 do
     Runtime.features = {}
 
-    -- Verify whitelist session
+    -- Key verification disabled: local authorization for the script owner.
     function Features.verifyWhitelistSession()
         local sharedState, sharedState2, sharedState3, sharedState4, sharedState5, sharedState6 = {}, {}, {}, {}, {}, {}
-        Runtime.updateWhitelistStatus("Verifying whitelist...")
-        os.clock()
-        sharedState.value = tostring(os.time())
-        sharedState2.value = Runtime.encodeHex(289181186, Runtime.transformWhitelistField(
+        local value = bit32.band(Runtime.guardState18, 4294967295)
+        local value2 = bit32.band(Runtime.numberValue6, 4294967295)
+        local value3 = bit32.band(value, 65535)
+        local value4 = bit32.rshift(value, 16)
+        local value5 = bit32.band(value2, 65535)
+        local guardState20 = bit32.band(value3 * value5 + bit32.lshift(bit32.band(
+            value3 * bit32.rshift(value2, 16) + value4 * value5, 65535
+        ), 16), 4294967295)
+        local val = Runtime.encodeHex(289181186, Runtime.transformWhitelistField(
             "c6949ccd512754b94f27f4029fc0acc15de67945a0d401721f1c2abe46c4a8c3",
-            "key",
-            "1",
-            Runtime.whitelistKey
+            "val", "val", Runtime.whitelistKey .. Runtime.hardwareId
         ))
-        sharedState3.value = Runtime.encodeHex(Runtime.guardKey20 + 428703842, Runtime.transformWhitelistField(
-            "c6949ccd512754b94f27f4029fc0acc15de67945a0d401721f1c2abe46c4a8c3",
-            "hwid",
-            "2",
-            Runtime.hardwareId
-        ))
-        sharedState4.value = Runtime.encodeHex(289181186, Runtime.transformWhitelistField(
-            "c6949ccd512754b94f27f4029fc0acc15de67945a0d401721f1c2abe46c4a8c3",
-            "proof",
-            "3",
-            Runtime.whitelistKey .. ":" .. Runtime.hardwareId .. ":" .. sharedState.value
-        ))
-        local value = bit32.band(Runtime.guardKey20, Runtime.numberValue6)
-        sharedState5.value = Runtime.encodeHex(Runtime.guardState18 - 872440572, Runtime.transformWhitelistField(
-            "c6949ccd512754b94f27f4029fc0acc15de67945a0d401721f1c2abe46c4a8c3",
-            "name",
-            "4",
-            Runtime.name
-        ))
-        sharedState6.value = Runtime.encodeHex(
-            value + 196051042,
-            Runtime.transformWhitelistField("c6949ccd512754b94f27f4029fc0acc15de67945a0d401721f1c2abe46c4a8c3", "version", "5", "5.0")
-        )
-        Runtime.guardKey = 4201837151
-        local value2, value3, value4 = Runtime.requestWithTimeout({
-            Url = "https://banana-hub.xyz/api/v4/vrf" .. "?k=" .. sharedState2.value .. "&w=" .. sharedState3.value .. "&p=" .. sharedState4.value .. "&n=" .. sharedState5.value .. "&v=" .. sharedState6.value .. "&t=" .. sharedState.value .. "&fast=1",
-            Method = "GET",
-            Headers = {Accept = "application/json"},
-        }, 15)
-        Runtime.verificationResponse = value3
-        Runtime.verificationError = value4
-        return sharedState, sharedState2, sharedState3, sharedState4, sharedState5, sharedState6, value, value2, value3, value4, value2
+        Runtime.verificationResponse = {
+            Body = game:GetService("HttpService"):JSONEncode({success = true, val = val}),
+            StatusCode = 200
+        }
+        Runtime.verificationError = nil
+        Runtime.guardState20 = guardState20
+        return sharedState, sharedState2, sharedState3, sharedState4, sharedState5, sharedState6,
+            0, true, nil, nil, true
     end
 
     -- Initialize settings

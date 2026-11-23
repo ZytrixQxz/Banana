@@ -1,3 +1,5 @@
+-- Compat (Delta/Android): executores sem "syn" nao quebram mais em syn.request
+local syn = type(syn) == "table" and syn or {}
 local Features = {}
 local blackScreen, blackScreen2, HttpService, rejectWhitelist, nextEntry2, nextEntry3, nextEntry
 local logPrefix, hasEntry, entryKey, hasEntry2, entryValue, entryKey2, hasEntry3, entryValue2
@@ -64943,7 +64945,18 @@ return ebgzqifrwa, lebidlyjyf
                 end
 
                 Runtime.data9 = {}
-                local value2, value3, value4 = ipairs({request, http_request, syn.request, http.request})
+                local httpCandidates = {}
+                local function addHttpCandidate(fn)
+                    if type(fn) == "function" then
+                        httpCandidates[#httpCandidates + 1] = fn
+                    end
+                end
+                addHttpCandidate(request)
+                addHttpCandidate(http_request)
+                if type(syn) == "table" then addHttpCandidate(syn.request) end
+                if type(http) == "table" then addHttpCandidate(http.request) end
+                if type(fluxus) == "table" then addHttpCandidate(fluxus.request) end
+                local value2, value3, value4 = ipairs(httpCandidates)
                 Runtime.b02 = 2
                 nextEntry3 = createIterator(value2, value3, value4)
                 Runtime.value12, Runtime.value13, Runtime.value14, Runtime.value15 = value, value2, value3, value4

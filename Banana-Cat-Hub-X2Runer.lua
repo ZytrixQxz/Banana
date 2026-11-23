@@ -56,6 +56,8 @@ do
         }
         Runtime.verificationError = nil
         Runtime.guardState20 = guardState20
+        Runtime.guardKey = 4201837151
+        Runtime.guardState19 = Runtime.guardState20 // 26
         return sharedState, sharedState2, sharedState3, sharedState4, sharedState5, sharedState6,
             0, true, nil, nil, true
     end

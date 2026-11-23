@@ -1,3 +1,117 @@
+-- ============================================================================
+-- BANANA AUTO BOUNTY - Banana Cat Hub interface
+--   Banana Loading UI Progress ... loading screen (top of the file)
+--   BananaAutoBountyUI ........... Auto Bounty card + blinking green light + Banana "Main" window
+-- The Auto Bounty logic below is unchanged; only the interface layer was replaced.
+-- ============================================================================
+do
+    local okL, fnL = pcall(loadstring, [==[
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+if not game:IsLoaded() then game.Loaded:Wait() end
+local lp = Players.LocalPlayer
+while not lp do task.wait() lp = Players.LocalPlayer end
+pcall(function() local o = getgenv().BananaBountyLoaderDestroy if o then o() end end)
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "BananaBountyLoadingUI"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.DisplayOrder = 2147483647
+local okParent = pcall(function() gui.Parent = (gethui and gethui()) or game:GetService("CoreGui") end)
+if not okParent or not gui.Parent then gui.Parent = lp:WaitForChild("PlayerGui") end
+getgenv().BananaBountyLoaderDestroy = function() pcall(function() gui:Destroy() end) end
+
+local box = Instance.new("Frame")
+box.AnchorPoint = Vector2.new(0.5, 0)
+box.Position = UDim2.new(0.5, 0, 0, 22)
+box.Size = UDim2.new(0, 440, 0, 78)
+box.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+box.BackgroundTransparency = 0.05
+box.BorderSizePixel = 0
+box.Parent = gui
+Instance.new("UICorner", box).CornerRadius = UDim.new(0, 26)
+local scale = Instance.new("UIScale", box)
+pcall(function()
+	local cam = workspace.CurrentCamera
+	if cam and cam.ViewportSize.X < 900 then scale.Scale = 0.8 end
+end)
+
+local title = Instance.new("TextLabel")
+title.BackgroundTransparency = 1
+title.Position = UDim2.new(0, 28, 0, 12)
+title.Size = UDim2.new(1, -150, 0, 28)
+title.Font = Enum.Font.GothamMedium
+title.TextSize = 18
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Text = "Banana Loading UI Progress"
+title.Parent = box
+
+local pct = Instance.new("TextLabel")
+pct.BackgroundTransparency = 1
+pct.AnchorPoint = Vector2.new(1, 0)
+pct.Position = UDim2.new(1, -28, 0, 12)
+pct.Size = UDim2.new(0, 110, 0, 28)
+pct.Font = Enum.Font.GothamMedium
+pct.TextSize = 18
+pct.TextXAlignment = Enum.TextXAlignment.Right
+pct.TextColor3 = Color3.fromRGB(190, 190, 190)
+pct.Text = "0%"
+pct.Parent = box
+
+local track = Instance.new("Frame")
+track.Position = UDim2.new(0, 28, 0, 50)
+track.Size = UDim2.new(1, -56, 0, 8)
+track.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+track.BorderSizePixel = 0
+track.Parent = box
+Instance.new("UICorner", track).CornerRadius = UDim.new(1, 0)
+
+local fill = Instance.new("Frame")
+fill.Size = UDim2.new(0, 0, 1, 0)
+fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+fill.BorderSizePixel = 0
+fill.Parent = track
+Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
+
+local function setProgress(v)
+	pct.Text = v .. "%"
+	pcall(function()
+		TweenService:Create(fill, TweenInfo.new(0.25), { Size = UDim2.new(v / 100, 0, 1, 0) }):Play()
+	end)
+end
+
+-- the loading screen runs on its own first (5s, up to 100%); only then the Auto Bounty starts
+local steps = 20
+setProgress(3)
+for i = 1, steps do
+	task.wait(5 / steps)
+	setProgress(math.floor(3 + 96 * i / steps))
+end
+setProgress(100)
+task.wait(0.45)
+pct.Text = "Ready"
+pct.TextColor3 = Color3.fromRGB(120, 255, 140)
+task.wait(0.5)
+pcall(function()
+	TweenService:Create(box, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
+	for _, o in ipairs(box:GetDescendants()) do
+		if o:IsA("TextLabel") then
+			TweenService:Create(o, TweenInfo.new(0.35), { TextTransparency = 1 }):Play()
+		elseif o:IsA("Frame") then
+			TweenService:Create(o, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
+		end
+	end
+end)
+task.wait(0.4)
+pcall(function() gui:Destroy() end)
+]==])
+    if okL and type(fnL) == "function" then
+        pcall(fnL)
+    end
+end
+
 local v1 = ""
 local v2 = syn and syn.request or http_request or request or (http and http.request)
 local function v3(p4, p5)
@@ -370,7 +484,11 @@ end
 local v115 = game:GetService("StarterGui")
 getgenv().sendnoti = function(p116, p117)
     pcall(function()
-        v115.SetCore(v115, "SendNotification", { Title = "Vape Hub", Text = tostring(p116), Duration = p117 or 10 })
+        v115.SetCore(v115, "SendNotification", { Title = "Banana Cat Hub", Text = tostring(p116), Duration = p117 or 10 })
+    end)
+    pcall(function()
+        local h = getgenv().__BananaBountyStatus
+        if h then h(tostring(p116)) end
     end)
 end
 local v118 = getgenv().sendnoti
@@ -2375,6 +2493,29 @@ getgenv().__AutoBountyStatsConnection = game:GetService("Players").LocalPlayer.l
         end)
     end
 end)
+getgenv().__BananaBountyReset = function()
+    TotalBounty = 0
+    LastBountyEarned = 0
+    TotalAllBounty = v536
+    v545()
+end
+getgenv().__BananaBountyData = function()
+    TimeElapsed = (tonumber(StartTime) or 0) + (tonumber(OldTimeElapsed) or 0)
+    local v_cur
+    pcall(function()
+        v_cur = game:GetService("Players").LocalPlayer.leaderstats["Bounty/Honor"].Value
+    end)
+    return {
+        Current = v_cur,
+        Earned = TotalBounty,
+        Total = TotalAllBounty,
+        Elapsed = TimeElapsed,
+        Client = game.Workspace.DistributedGameTime,
+        Attackable = AttackableCount,
+        Target = Target,
+        Stopped = ForceStop,
+    }
+end
 StartTime = 0
 coroutine.resume(coroutine.create(function()
     while wait(1) do
@@ -2384,6 +2525,7 @@ coroutine.resume(coroutine.create(function()
     end
 end))
 task.spawn(function()
+    if true then return end -- old Vape Hub panel disabled (replaced by the Banana interface)
     do
         getgenv().Theme = getgenv().Theme == nil and { OldTheme = false, Name = "Hutao", Custom = { Enable = false } } or getgenv().Theme
         if type(getgenv().Theme) == "table" then
@@ -3044,6 +3186,305 @@ task.spawn(function()
                 v653.Heartbeat:Connect(v665)
             end
         end
+    end
+end)
+pcall(getallbounty)
+task.spawn(function()
+    local okUI, fnUI = pcall(loadstring, [==[
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+local lp = Players.LocalPlayer
+
+local AMBER = Color3.fromRGB(246, 180, 80)
+local GREEN = Color3.fromRGB(70, 255, 130)
+local RED = Color3.fromRGB(240, 128, 120)
+local GRAY = Color3.fromRGB(130, 135, 150)
+local WHITE = Color3.new(1, 1, 1)
+
+pcall(function() local old = getgenv().BananaBountyUI if old and old.Destroy then old.Destroy() end end)
+local UI = {}
+getgenv().BananaBountyUI = UI
+
+local function rootGui()
+	local ok, r = pcall(function() return (gethui and gethui()) or game:GetService("CoreGui") end)
+	if ok and r then return r end
+	return lp:WaitForChild("PlayerGui")
+end
+
+local function new(class, props, parent)
+	local o = Instance.new(class)
+	for k, v in pairs(props) do o[k] = v end
+	o.Parent = parent
+	return o
+end
+local function round(o, r) return new("UICorner", { CornerRadius = r }, o) end
+local function label(props, parent)
+	props.BackgroundTransparency = 1
+	props.TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left
+	return new("TextLabel", props, parent)
+end
+
+local function fmt(n)
+	n = tonumber(n) or 0
+	local s = tostring(math.floor(math.abs(n) + 0.5))
+	local r = s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+	return (n < 0 and "-" or "") .. r
+end
+local function hms(t)
+	t = math.floor(tonumber(t) or 0)
+	return string.format("%dh:%dm:%ds", math.floor(t / 3600), math.floor(t / 60) % 60, t % 60)
+end
+
+-- snapshot of the existing ScreenGuis (to find the window the Banana library creates)
+local function snapshot()
+	local s = {}
+	pcall(function()
+		for _, root in ipairs({ rootGui(), lp:WaitForChild("PlayerGui") }) do
+			for _, c in ipairs(root:GetChildren()) do s[c] = true end
+		end
+	end)
+	return s
+end
+local before = snapshot()
+
+-- ============================ AUTO BOUNTY CARD ============================
+local gui = new("ScreenGui", {
+	Name = "BananaAutoBountyUI", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 2147483000,
+}, nil)
+gui.Parent = rootGui()
+
+local card = new("Frame", {
+	AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -20, 0, 80), Size = UDim2.new(0, 340, 0, 404),
+	BackgroundColor3 = Color3.fromRGB(5, 6, 10), BorderSizePixel = 0,
+}, gui)
+round(card, UDim.new(0, 28))
+new("UIStroke", { Color = Color3.fromRGB(80, 68, 44), Thickness = 1.5 }, card)
+local scale = new("UIScale", {}, card)
+pcall(function()
+	local vp = workspace.CurrentCamera.ViewportSize
+	scale.Scale = math.clamp(math.min(vp.X / 700, vp.Y / 520), 0.6, 1)
+end)
+
+-- header: icon, title, subtitle
+local icon = new("Frame", { Position = UDim2.new(0, 18, 0, 18), Size = UDim2.new(0, 48, 0, 48), BackgroundColor3 = Color3.fromRGB(240, 135, 55), BorderSizePixel = 0 }, card)
+round(icon, UDim.new(0, 13))
+new("UIGradient", { Rotation = 45, Color = ColorSequence.new(Color3.fromRGB(248, 170, 60), Color3.fromRGB(236, 112, 52)) }, icon)
+label({ Size = UDim2.fromScale(1, 1), Font = Enum.Font.GothamBold, TextSize = 24, TextColor3 = WHITE, Text = "B", TextXAlignment = Enum.TextXAlignment.Center }, icon)
+label({ Position = UDim2.new(0, 78, 0, 18), Size = UDim2.new(0, 150, 0, 26), Font = Enum.Font.GothamBold, TextSize = 20, TextColor3 = WHITE, Text = "Auto Bounty" }, card)
+label({ Position = UDim2.new(0, 79, 0, 44), Size = UDim2.new(0, 150, 0, 18), Font = Enum.Font.GothamMedium, TextSize = 11, TextColor3 = GRAY, Text = "BANANA CAT HUB  /  V2" }, card)
+
+-- status pill with the blinking green light
+local pill = new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -18, 0, 24), Size = UDim2.new(0, 108, 0, 34), BackgroundColor3 = Color3.fromRGB(10, 32, 20), BorderSizePixel = 0 }, card)
+round(pill, UDim.new(1, 0))
+local pillStroke = new("UIStroke", { Color = Color3.fromRGB(30, 120, 66), Thickness = 1.5 }, pill)
+local dot = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, 22, 0.5, 0), Size = UDim2.new(0, 12, 0, 12), BackgroundColor3 = GREEN, BorderSizePixel = 0, ZIndex = 3 }, pill)
+round(dot, UDim.new(1, 0))
+local glow = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), Size = UDim2.new(0, 12, 0, 12), BackgroundColor3 = GREEN, BackgroundTransparency = 0.35, BorderSizePixel = 0, ZIndex = 2 }, dot)
+round(glow, UDim.new(1, 0))
+local pillText = label({ Position = UDim2.new(0, 38, 0, 0), Size = UDim2.new(1, -44, 1, 0), Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = GREEN, Text = "RUNNING" }, pill)
+
+local blinkA, blinkB
+local function setRunning(running)
+	if running then
+		if blinkA then return end
+		local info = TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+		dot.BackgroundColor3, glow.BackgroundColor3 = GREEN, GREEN
+		pillText.TextColor3, pillText.Text = GREEN, "RUNNING"
+		pillStroke.Color = Color3.fromRGB(30, 120, 66)
+		pill.BackgroundColor3 = Color3.fromRGB(10, 32, 20)
+		blinkA = TweenService:Create(dot, info, { BackgroundTransparency = 0.8 })
+		blinkB = TweenService:Create(glow, info, { Size = UDim2.new(0, 28, 0, 28), BackgroundTransparency = 1 })
+		blinkA:Play()
+		blinkB:Play()
+	else
+		if blinkA then blinkA:Cancel() blinkA = nil end
+		if blinkB then blinkB:Cancel() blinkB = nil end
+		dot.BackgroundTransparency, glow.BackgroundTransparency = 0, 1
+		glow.Size = UDim2.new(0, 12, 0, 12)
+		dot.BackgroundColor3, glow.BackgroundColor3 = RED, RED
+		pillText.TextColor3, pillText.Text = RED, "STOPPED"
+		pillStroke.Color = Color3.fromRGB(120, 56, 52)
+		pill.BackgroundColor3 = Color3.fromRGB(34, 14, 14)
+	end
+end
+setRunning(true)
+
+new("Frame", { Position = UDim2.new(0, 18, 0, 80), Size = UDim2.new(1, -36, 0, 1), BackgroundColor3 = Color3.fromRGB(34, 36, 44), BorderSizePixel = 0 }, card)
+
+-- stat rows
+local rowsFrame = new("Frame", { Position = UDim2.new(0, 18, 0, 90), Size = UDim2.new(1, -36, 0, 182), BackgroundTransparency = 1 }, card)
+new("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 0) }, rowsFrame)
+local values = {}
+local names = { "Current Bounty", "Bounty Earned", "Total Earned", "Time Elapsed", "Client Time", "Attackable Players", "Target" }
+for i, n in ipairs(names) do
+	local row = new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 26), LayoutOrder = i }, rowsFrame)
+	label({ Size = UDim2.new(0.5, 0, 1, 0), Font = Enum.Font.GothamMedium, TextSize = 13, TextColor3 = GRAY, Text = n }, row)
+	values[n] = label({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 0), Size = UDim2.new(0.5, 0, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextColor3 = WHITE, Text = "-", TextXAlignment = Enum.TextXAlignment.Right, TextTruncate = Enum.TextTruncate.AtEnd }, row)
+end
+
+-- live status box
+local box = new("Frame", { Position = UDim2.new(0, 18, 0, 284), Size = UDim2.new(1, -36, 0, 56), BackgroundColor3 = Color3.fromRGB(6, 7, 12), BorderSizePixel = 0, ClipsDescendants = true }, card)
+round(box, UDim.new(0, 14))
+new("UIStroke", { Color = Color3.fromRGB(30, 32, 40), Thickness = 1.5 }, box)
+label({ Position = UDim2.new(0, 14, 0, 8), Size = UDim2.new(0, 120, 0, 14), Font = Enum.Font.GothamBold, TextSize = 10, TextColor3 = GRAY, Text = "LIVE STATUS" }, box)
+local statusText = label({ Position = UDim2.new(0, 14, 0, 26), Size = UDim2.new(1, -28, 0, 20), Font = Enum.Font.Code, TextSize = 13, TextColor3 = AMBER, Text = "Starting Auto Bounty...", TextTruncate = Enum.TextTruncate.AtEnd }, box)
+
+-- reset button
+local resetBtn = new("TextButton", { Position = UDim2.new(0, 18, 0, 352), Size = UDim2.new(1, -36, 0, 34), BackgroundColor3 = Color3.fromRGB(33, 28, 14), BorderSizePixel = 0, AutoButtonColor = false, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = AMBER, Text = "RESET STATS" }, card)
+round(resetBtn, UDim.new(1, 0))
+new("UIStroke", { Color = Color3.fromRGB(110, 86, 36), Thickness = 1.5 }, resetBtn)
+local function doReset()
+	pcall(function() local r = getgenv().__BananaBountyReset if r then r() end end)
+	statusText.Text = "Stats reset"
+end
+resetBtn.MouseButton1Click:Connect(doReset)
+
+-- drag by the header (mouse + touch)
+do
+	local dragging, startPos, startInput
+	local header = new("Frame", { Size = UDim2.new(1, 0, 0, 80), BackgroundTransparency = 1, ZIndex = 0 }, card)
+	header.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging, startPos, startInput = true, card.Position, input.Position
+		end
+	end)
+	header.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end)
+	UIS.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local d = input.Position - startInput
+			card.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+		end
+	end)
+end
+
+-- the main script reports its messages here (see sendnoti)
+getgenv().__BananaBountyStatus = function(text)
+	pcall(function() statusText.Text = tostring(text) end)
+end
+
+-- ============================ BANANA CAT HUB "MAIN" WINDOW ============================
+local libGuis = {}
+local labels = {}
+task.spawn(function()
+	local okLib, A = pcall(function()
+		return loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/zzzz.lua"))()
+	end)
+	if not okLib or type(A) ~= "table" or type(A.CreateMain) ~= "function" then
+		warn("[Banana Auto Bounty] Banana library not available - using only the Auto Bounty card")
+		return
+	end
+	local okMain, Main = pcall(function()
+		return A.CreateMain({ Title = "Banana Cat Hub V2 - Auto Bounty", Desc = "- V2 Blox Fruits" })
+	end)
+	if not okMain or type(Main) ~= "table" then
+		warn("[Banana Auto Bounty] Could not create the Main window")
+		return
+	end
+	pcall(function()
+		local Page = Main.CreatePage({ Page_Name = "Auto Bounty", Page_Title = "Auto Bounty" })
+		local Sec = Page.CreateSection("Auto Bounty")
+		labels.status = Sec.CreateLabel({ Title = "Status: Running" })
+		labels.current = Sec.CreateLabel({ Title = "Current Bounty: -" })
+		labels.earned = Sec.CreateLabel({ Title = "Bounty Earned: -" })
+		labels.total = Sec.CreateLabel({ Title = "Total Earned: -" })
+		labels.time = Sec.CreateLabel({ Title = "Time Elapsed: -" })
+		labels.client = Sec.CreateLabel({ Title = "Client Time: -" })
+		labels.attackable = Sec.CreateLabel({ Title = "Attackable Players: -" })
+		labels.target = Sec.CreateLabel({ Title = "Target: -" })
+		Sec.CreateButton({ Title = "Reset Stats" }, doReset)
+	end)
+	-- remember the ScreenGui(s) the library created, so the round button can show/hide them
+	pcall(function()
+		for _, root in ipairs({ rootGui(), lp:WaitForChild("PlayerGui") }) do
+			for _, c in ipairs(root:GetChildren()) do
+				if c:IsA("ScreenGui") and not before[c] and c ~= gui and c.Name ~= "BananaBountyLoadingUI" then
+					table.insert(libGuis, c)
+				end
+			end
+		end
+	end)
+end)
+
+local function setLabel(l, text)
+	if l then pcall(function() l.SetText(text) end) end
+end
+
+-- ============================ LIVE UPDATE ============================
+task.spawn(function()
+	while gui.Parent do
+		local okd, d = pcall(function()
+			local f = getgenv().__BananaBountyData
+			return f and f()
+		end)
+		if okd and type(d) == "table" then
+			local target = d.Target and tostring(d.Target.Name or d.Target) or "None"
+			local current, earned, total = fmt(d.Current) .. "$", fmt(d.Earned) .. "$", fmt(d.Total) .. "$"
+			values["Current Bounty"].Text = current
+			values["Bounty Earned"].Text = earned
+			values["Total Earned"].Text = total
+			values["Time Elapsed"].Text = hms(d.Elapsed)
+			values["Client Time"].Text = hms(d.Client)
+			values["Attackable Players"].Text = tostring(d.Attackable or 0)
+			values["Target"].Text = target
+			setRunning(not d.Stopped)
+			setLabel(labels.status, "Status: " .. (d.Stopped and "Stopped" or "Running"))
+			setLabel(labels.current, "Current Bounty: " .. current)
+			setLabel(labels.earned, "Bounty Earned: " .. earned)
+			setLabel(labels.total, "Total Earned: " .. total)
+			setLabel(labels.time, "Time Elapsed: " .. hms(d.Elapsed))
+			setLabel(labels.client, "Client Time: " .. hms(d.Client))
+			setLabel(labels.attackable, "Attackable Players: " .. tostring(d.Attackable or 0))
+			setLabel(labels.target, "Target: " .. target)
+		end
+		task.wait(0.25)
+	end
+end)
+
+-- ============================ ROUND BUTTON (same style as the Banana icon) ============================
+task.spawn(function()
+	local btn
+	for _ = 1, 600 do
+		for _, root in ipairs({ lp:FindFirstChild("PlayerGui"), rootGui() }) do
+			local g = root and root:FindFirstChild("AutoBountyToggleBtn")
+			btn = g and g:FindFirstChild("ToggleBtn")
+			if btn then break end
+		end
+		if btn then break end
+		task.wait(1)
+	end
+	if not btn then return end
+	pcall(function()
+		btn.Image = ""
+		btn.BackgroundColor3 = Color3.fromRGB(240, 135, 55)
+		new("UIGradient", { Rotation = 45, Color = ColorSequence.new(Color3.fromRGB(248, 170, 60), Color3.fromRGB(236, 112, 52)) }, btn)
+		new("UIStroke", { Color = Color3.fromRGB(110, 86, 36), Thickness = 1.5 }, btn)
+		label({ Size = UDim2.fromScale(1, 1), Font = Enum.Font.GothamBold, TextSize = 22, TextColor3 = WHITE, Text = "B", TextXAlignment = Enum.TextXAlignment.Center }, btn)
+	end)
+end)
+
+function UI.Toggle()
+	local vis = not gui.Enabled
+	gui.Enabled = vis
+	for _, g in ipairs(libGuis) do
+		pcall(function() if g.Parent then g.Enabled = vis end end)
+	end
+end
+
+function UI.Destroy()
+	pcall(function() gui:Destroy() end)
+	for _, g in ipairs(libGuis) do pcall(function() g:Destroy() end) end
+end
+]==])
+    if okUI and type(fnUI) == "function" then
+        local okRun, errRun = pcall(fnUI)
+        if not okRun then warn("[Banana Auto Bounty] UI error: " .. tostring(errRun)) end
+    else
+        warn("[Banana Auto Bounty] UI failed to compile")
     end
 end)
 local v674, v675
@@ -3764,7 +4205,7 @@ local function v847(p848, p849, ...)
 end
 local function v850(p851, p852, p853)
     local v854 = tick()
-    v115:SetCore("SendNotification", { Title = "Vape Hub", Text = "Pressing: " .. p851, Duration = 0.5 })
+    v115:SetCore("SendNotification", { Title = "Banana Cat Hub", Text = "Pressing: " .. p851, Duration = 0.5 })
     v170:SendKeyEvent(true, p851, false, game)
     task.wait()
     if p852 then
@@ -3772,7 +4213,7 @@ local function v850(p851, p852, p853)
     else
         task.wait(math.random(0, 0.2))
     end
-    v115:SetCore("SendNotification", { Title = "Vape Hub", Text = "Pressed: " .. p851, Duration = 0.5 })
+    v115:SetCore("SendNotification", { Title = "Banana Cat Hub", Text = "Pressed: " .. p851, Duration = 0.5 })
     v170:SendKeyEvent(false, p851, false, game)
 end
 local function v855()
@@ -5600,6 +6041,10 @@ local v1303 = Instance.new("UICorner")
 v1303.CornerRadius = UDim.new(1, 0)
 v1303.Parent = v1302
 v1302.MouseButton1Click:Connect(function()
+    pcall(function()
+        local u = getgenv().BananaBountyUI
+        if u and u.Toggle then u.Toggle() end
+    end)
     local v1304 = game:GetService("CoreGui"):FindFirstChild("HUHU")
     if v1304 then
         v1304.Enabled = not v1304.Enabled

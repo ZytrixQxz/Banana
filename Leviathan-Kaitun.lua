@@ -8,6 +8,195 @@
     - Funciones: Hunt Leviathan, Craft Scrolls, Shop & Status, Webhook Config, Selection Skill
     - Para usarlo: pega/ejecuta este archivo completo en tu executor.
 ]]
+-- ===== Banana Loading UI Progress (same screen as the Banana Cat Hub) =====
+-- While the script loads it shows the loading bar; when everything is ready the SAME box (same position)
+-- turns into the "Banana Kaitun Leviathan" status card with a blinking green light (script is active).
+do
+    local Players_ = game:GetService("Players")
+    local TweenService_ = game:GetService("TweenService")
+    pcall(function()
+        if getgenv().BananaKaitunLoader and getgenv().BananaKaitunLoader.Destroy then getgenv().BananaKaitunLoader.Destroy() end
+    end)
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "BananaLoadingUI"
+    gui.ResetOnSpawn = false
+    gui.IgnoreGuiInset = true
+    gui.DisplayOrder = 2147483647
+    local okParent = pcall(function() gui.Parent = (gethui and gethui()) or game:GetService("CoreGui") end)
+    if not okParent or not gui.Parent then
+        gui.Parent = Players_.LocalPlayer:WaitForChild("PlayerGui")
+    end
+    local box = Instance.new("Frame")
+    box.AnchorPoint = Vector2.new(0.5, 0)
+    box.Position = UDim2.new(0.5, 0, 0, 22)
+    box.Size = UDim2.new(0, 440, 0, 78)
+    box.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    box.BackgroundTransparency = 0.05
+    box.BorderSizePixel = 0
+    box.Parent = gui
+    local boxCorner = Instance.new("UICorner", box)
+    boxCorner.CornerRadius = UDim.new(0, 26)
+    local scale = Instance.new("UIScale", box)
+    pcall(function()
+        local cam = workspace.CurrentCamera
+        if cam and cam.ViewportSize.X < 900 then scale.Scale = 0.8 end
+    end)
+    local title = Instance.new("TextLabel")
+    title.BackgroundTransparency = 1
+    title.Position = UDim2.new(0, 28, 0, 12)
+    title.Size = UDim2.new(1, -150, 0, 28)
+    title.Font = Enum.Font.GothamMedium
+    title.TextSize = 18
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Text = "Banana Loading UI Progress"
+    title.Parent = box
+    local pct = Instance.new("TextLabel")
+    pct.BackgroundTransparency = 1
+    pct.AnchorPoint = Vector2.new(1, 0)
+    pct.Position = UDim2.new(1, -28, 0, 12)
+    pct.Size = UDim2.new(0, 110, 0, 28)
+    pct.Font = Enum.Font.GothamMedium
+    pct.TextSize = 18
+    pct.TextXAlignment = Enum.TextXAlignment.Right
+    pct.TextColor3 = Color3.fromRGB(190, 190, 190)
+    pct.Text = "0%"
+    pct.Parent = box
+    local track = Instance.new("Frame")
+    track.Position = UDim2.new(0, 28, 0, 50)
+    track.Size = UDim2.new(1, -56, 0, 8)
+    track.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+    track.BorderSizePixel = 0
+    track.Parent = box
+    Instance.new("UICorner", track).CornerRadius = UDim.new(1, 0)
+    local fill = Instance.new("Frame")
+    fill.Size = UDim2.new(0, 0, 1, 0)
+    fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    fill.BorderSizePixel = 0
+    fill.Parent = track
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
+
+    local GREEN = Color3.fromRGB(100, 255, 130)
+    local L = { value = 0, done = false, dead = false }
+    getgenv().BananaKaitunLoader = L
+
+    function L.Set(v)
+        if L.done then return end
+        v = math.clamp(math.floor(v), 0, 99)
+        if v <= L.value then return end
+        L.value = v
+        pcall(function()
+            pct.Text = v .. "%"
+            TweenService_:Create(fill, TweenInfo.new(0.25), { Size = UDim2.new(v / 100, 0, 1, 0) }):Play()
+        end)
+    end
+    function L.Destroy()
+        L.done = true
+        L.dead = true
+        pcall(function() gui:Destroy() end)
+    end
+
+    -- loading finished: bar -> "Ready" -> the box becomes the active status card
+    local function showActiveCard()
+        if L.dead then return end
+        pcall(function()
+            for _, o in ipairs(box:GetDescendants()) do
+                if o:IsA("TextLabel") then TweenService_:Create(o, TweenInfo.new(0.3), { TextTransparency = 1 }):Play()
+                elseif o:IsA("Frame") then TweenService_:Create(o, TweenInfo.new(0.3), { BackgroundTransparency = 1 }):Play() end
+            end
+        end)
+        task.wait(0.35)
+        if L.dead then return end
+        for _, c in ipairs(box:GetChildren()) do
+            if not c:IsA("UICorner") and not c:IsA("UIScale") then c:Destroy() end
+        end
+        boxCorner.CornerRadius = UDim.new(0, 22)
+        local stroke = Instance.new("UIStroke")
+        stroke.Color = Color3.fromRGB(60, 200, 95)
+        stroke.Thickness = 1
+        stroke.Transparency = 0.55
+        stroke.Parent = box
+        TweenService_:Create(box, TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), { Size = UDim2.new(0, 340, 0, 56) }):Play()
+
+        -- blinking green light
+        local holder = Instance.new("Frame")
+        holder.BackgroundTransparency = 1
+        holder.AnchorPoint = Vector2.new(0, 0.5)
+        holder.Position = UDim2.new(0, 24, 0.5, 0)
+        holder.Size = UDim2.new(0, 32, 0, 32)
+        holder.Parent = box
+        local ring = Instance.new("Frame")
+        ring.AnchorPoint = Vector2.new(0.5, 0.5)
+        ring.Position = UDim2.new(0.5, 0, 0.5, 0)
+        ring.Size = UDim2.new(0, 14, 0, 14)
+        ring.BackgroundTransparency = 1
+        ring.Parent = holder
+        Instance.new("UICorner", ring).CornerRadius = UDim.new(1, 0)
+        local ringStroke = Instance.new("UIStroke")
+        ringStroke.Color = GREEN
+        ringStroke.Thickness = 2
+        ringStroke.Parent = ring
+        local dot = Instance.new("Frame")
+        dot.AnchorPoint = Vector2.new(0.5, 0.5)
+        dot.Position = UDim2.new(0.5, 0, 0.5, 0)
+        dot.Size = UDim2.new(0, 12, 0, 12)
+        dot.BackgroundColor3 = GREEN
+        dot.BorderSizePixel = 0
+        dot.Parent = holder
+        Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
+
+        local name = Instance.new("TextLabel")
+        name.BackgroundTransparency = 1
+        name.AnchorPoint = Vector2.new(0, 0.5)
+        name.Position = UDim2.new(0, 68, 0.5, 0)
+        name.Size = UDim2.new(1, -84, 0, 26)
+        name.Font = Enum.Font.GothamBold
+        name.TextSize = 18
+        name.TextXAlignment = Enum.TextXAlignment.Left
+        name.TextColor3 = Color3.fromRGB(255, 255, 255)
+        name.Text = "Banana Kaitun Leviathan"
+        name.TextTransparency = 1
+        name.Parent = box
+        TweenService_:Create(name, TweenInfo.new(0.35), { TextTransparency = 0 }):Play()
+
+        -- dot blinks, ring pulses outwards (loops forever while the script is alive)
+        TweenService_:Create(dot, TweenInfo.new(0.55, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), { BackgroundTransparency = 0.75 }):Play()
+        TweenService_:Create(ring, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, -1, false), { Size = UDim2.new(0, 32, 0, 32) }):Play()
+        TweenService_:Create(ringStroke, TweenInfo.new(1.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, -1, false), { Transparency = 1 }):Play()
+    end
+
+    function L.Done()
+        if L.done then return end
+        L.done = true
+        L.value = 100
+        pcall(function()
+            pct.Text = "100%"
+            TweenService_:Create(fill, TweenInfo.new(0.3), { Size = UDim2.new(1, 0, 1, 0) }):Play()
+        end)
+        task.delay(0.45, function()
+            pcall(function()
+                pct.Text = "Ready"
+                pct.TextColor3 = Color3.fromRGB(120, 255, 140)
+            end)
+            task.wait(0.5)
+            pcall(showActiveCard)
+        end)
+    end
+
+    -- the bar creeps up while the script loads; it only reaches 100% when the whole script is ready
+    -- (safety: if loading stays stuck for 2 minutes the card is shown anyway)
+    task.spawn(function()
+        local t0 = os.clock()
+        while not L.done do
+            task.wait(0.1)
+            local el = os.clock() - t0
+            L.Set(3 + 92 * (1 - math.exp(-el / 6)))
+            if el > 120 then L.Done() end
+        end
+    end)
+    L.Set(3)
+end
+
 Services = setmetatable({}, {__index = function(self, name)
     local s, c = pcall(function() return cloneref(game:GetService(name)) end)
     if s then rawset(self, name, c) return c
@@ -56,6 +245,7 @@ _G.SelectedSword = {"Z", "X"}
 _G.ShootHeart = false
 _G.DestroyIDK = false
 _G.AutoRandomFruit = true
+_G.PayLeviathanSpy = false -- paying the Leviathan Spy costs Fragments: only when the toggle is ON
 _G.AutoStoreFruit = true
 _G.PullYHeight = 35
 _G.SpyCheckResult = -1
@@ -305,9 +495,9 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-    while task.wait(30) do
+    while task.wait(2) do
         pcall(function()
-            if _G.SpyCheckResult ~= 5 and _G.SpyCheckResult > -1 then
+            if _G.PayLeviathanSpy and _G.SpyCheckResult ~= 5 and _G.SpyCheckResult > -1 then
                 game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer("InfoLeviathan", "2")
             end
         end)
@@ -349,6 +539,40 @@ local Players = game:GetService("Players")
 
 
 local Themes = {
+    ["Yellow"] = {
+        Background = Color3.fromRGB(30, 24, 0),
+        Darker = Color3.fromRGB(18, 14, 0),
+        ContainerBg = Color3.fromRGB(92, 72, 0),
+        ContainerTrans = 0.6,
+        PillBack = Color3.fromRGB(40, 32, 0),
+        Text = Color3.fromRGB(255, 214, 0),
+        TextDim = Color3.fromRGB(255, 224, 102),
+        Red = Color3.fromRGB(255, 60, 60),
+        Green = Color3.fromRGB(130, 255, 100),
+        Active = Color3.fromRGB(255, 214, 0),
+        TextContrast = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromHex("#FFE066")),
+            ColorSequenceKeypoint.new(0.50, Color3.fromHex("#FFC800")),
+            ColorSequenceKeypoint.new(1, Color3.fromHex("#B38600"))
+        }),
+        TextGrad = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromHex("#FFF2A8")),
+            ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FFD400")),
+            ColorSequenceKeypoint.new(1, Color3.fromHex("#E0A800"))
+        }),
+        RowStroke = Color3.fromRGB(255, 212, 0),
+        RowStrokeGrad = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromHex("#FFE066")),
+            ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FFC800")),
+            ColorSequenceKeypoint.new(1, Color3.fromHex("#FFE066"))
+        }),
+        StrokeGrad = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromHex("#FFE066")),
+            ColorSequenceKeypoint.new(0.5, Color3.fromHex("#FFC800")),
+            ColorSequenceKeypoint.new(1, Color3.fromHex("#FFE066"))
+        })
+    },
+
     ["Dark"] = {
         Background = Color3.fromRGB(15, 15, 15),
         Darker = Color3.fromRGB(8, 8, 8),
@@ -595,7 +819,7 @@ local Themes = {
 	},
 }
 
-local CurrentThemeName = "Dark"
+local CurrentThemeName = "Yellow" -- the whole tracker panel is yellow (theme is locked, see ChangeTheme)
 local Theme = Themes[CurrentThemeName]
 local UI_Elements = {
     Backgrounds = {},
@@ -617,6 +841,7 @@ local ValueLabels = {}
 
 
 local function ChangeTheme(themeName)
+    do return end -- locked: the panel always stays yellow
     if not Themes[themeName] or CurrentThemeName == themeName then return end
     CurrentThemeName = themeName
     local newT = Themes[themeName]
@@ -5114,7 +5339,22 @@ HuntSection.CreateToggle({ Title = "No Frog", Desc = nil, Default = Settings["No
     if g then getgenv().__NoFrogStart() end
 end)
 if Settings["No Frog"] then getgenv().__NoFrogStart() end
-_G.BoostFPS_Executed = false
+
+-- Camera shake removal: built into the script (always on, no toggle), same as the Banana Cat Hub
+task.spawn(function()
+    while true do
+        pcall(function()
+            local cs = require(ReplicatedStorage.Util.CameraShaker)
+            if cs and cs.Stop then cs:Stop() end
+            if cs and cs.SetEnabled then cs:SetEnabled(false) end
+        end)
+        pcall(function()
+            local cs1 = require(ReplicatedStorage.Util.CameraShake)
+            if cs1 and cs1.SetEnabled then cs1:SetEnabled(false) end
+        end)
+        task.wait(5)
+    end
+end)
 HuntSection.CreateToggle({ Title = "Boost Fps", Desc = "Extreme FPS boost & Remove Sound", Default = false }, function(val)
     if val and not _G.BoostFPS_Executed then
         _G.BoostFPS_Executed = true
@@ -5473,14 +5713,6 @@ HuntSection = HuntPage.CreateSection("Hunt Leviathan")
 HuntSection.CreateToggle({ Title = "Destroy IDK", Desc = "Destroy IDK to hunt Leviathan if spy says I Don't Know", Default = false }, function(val)
     _G.DestroyIDK = val
 end)
-
-BananaParagraph(HuntSection, "Destroy IDK Explanation", "🇻🇳 [VIETNAMESE]\n" ..
-    "• Khi BẬT: Bỏ qua Sea Event, tập trung 100% tìm/đánh Leviathan. Đánh xong nếu bị IDK sẽ tự đi phá IDK.\n" ..
-    "• Khi TẮT: Chạy đa nhiệm (Multi-task), vừa đi tìm Leviathan vừa tự động đánh sạch các Sea Event xuất hiện trên đường.\n\n" ..
-    "🇬🇧 [ENGLISH]\n" ..
-    "• When ON: Ignores minor Sea Events, focuses 100% on finding/killing Leviathan. Destroy IDK if stuck after killing.\n" ..
-    "• When OFF: Multi-tasks by hunting all nearby Sea Events while simultaneously searching for Leviathan.")
-
 HuntSection.CreateToggle({ Title = "Start Hunt", Desc = "Start hunting Leviathan process", Default = false }, function(val)
     _G.DangSan = val
     if val then
@@ -5489,6 +5721,18 @@ HuntSection.CreateToggle({ Title = "Start Hunt", Desc = "Start hunting Leviathan
         Library:SendNotification("Hunt Status", "Hunting Stopped")
     end
 end)
+
+BananaParagraph(HuntSection, "Destroy IDK Explanation", "🇻🇳 [VIETNAMESE]\n" ..
+    "• Khi BẬT: Bỏ qua Sea Event, tập trung 100% tìm/đánh Leviathan. Đánh xong nếu bị IDK sẽ tự đi phá IDK.\n" ..
+    "• Khi TẮT: Chạy đa nhiệm (Multi-task), vừa đi tìm Leviathan vừa tự động đánh sạch các Sea Event xuất hiện trên đường.\n\n" ..
+    "🇬🇧 [ENGLISH]\n" ..
+    "• When ON: Ignores minor Sea Events, focuses 100% on finding/killing Leviathan. Destroy IDK if stuck after killing.\n" ..
+    "• When OFF: Multi-tasks by hunting all nearby Sea Events while simultaneously searching for Leviathan.")
+
+HuntSection.CreateToggle({ Title = "Pay Leviathan Spy", Desc = "Pays Fragments to the Spy for the Leviathan info. OFF = never spends Fragments", Default = false }, function(val)
+    _G.PayLeviathanSpy = val and true or false
+end)
+
 
 CraftPage = Main.CreatePage({ Page_Name = "Craft Scrolls", Page_Title = "Craft Scrolls" })
 CraftSection = CraftPage.CreateSection("Auto Craft Config")
@@ -5999,3 +6243,9 @@ task.spawn(function()
     end
 end)
 
+-- script fully loaded: finish the loading bar -> active status card (Banana Kaitun Leviathan + blinking green light)
+pcall(function()
+    if getgenv().BananaKaitunLoader and getgenv().BananaKaitunLoader.Done then
+        getgenv().BananaKaitunLoader.Done()
+    end
+end)

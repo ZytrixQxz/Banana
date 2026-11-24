@@ -7295,7 +7295,7 @@ function toTarget(P, e)
 		else if G then (CFrame.new(0, Settings["Distance Teleport Y"] or 800, 0)) else Z
 	Y, e = math.clamp(tonumber(Settings["Speed Tween "]) or 220, 0, 220), P * Z
 	if getgenv().__FastTweenOn and getgenv().__FastTweenActive then
-		Y = math.clamp(tonumber(getgenv().__FastTweenSpeed) or 300, 50, 300)
+		Y = math.clamp(tonumber(getgenv().__FastTweenSpeed) or 350, 50, 350)
 	end
 	if (e.Position - H.Position).Magnitude < 3 and not ReadyToDodge and not G then
 		TweenManager.CancelTweenOnly()
@@ -7352,8 +7352,9 @@ VM = VM or function(...)
 end
 
 function equiptool(g)
-	if g and (t:FindFirstChild("Backpack")) and (t.Backpack:FindFirstChild(g)) and not t.Character.Humanoid.Sit then
-		t.Character.Humanoid:EquipTool(t.Backpack:FindFirstChild(g))
+	local hum = t.Character and t.Character:FindFirstChildOfClass("Humanoid")
+	if g and hum and (t:FindFirstChild("Backpack")) and (t.Backpack:FindFirstChild(g)) and not hum.Sit then
+		hum:EquipTool(t.Backpack:FindFirstChild(g))
 	end
 end
 function HoldDelay(key, toolName)
@@ -8664,7 +8665,7 @@ SettingFarmMainSection.CreateToggle(
 Settings["Use Teleport Home"] = false
 Settings["Reset Teleport"] = false
 Settings["Use Submarine Teleport"] = false
--- Fast Tween (saved): applies the slider speed for 3s, returns to normal for 5s, repeats
+-- Fast Tween (saved): applies the slider speed for 20s, returns to normal for 5s, repeats
 FastTweenApply = function(on)
 	getgenv().__FastTweenOn = on and true or false
 	getgenv().__FastTweenActive = false
@@ -8675,7 +8676,7 @@ FastTweenApply = function(on)
 			while getgenv().__FastTweenGen == gen and getgenv().__FastTweenOn do
 				getgenv().__FastTweenActive = true
 				local t0 = tick()
-				while tick() - t0 < 3 and getgenv().__FastTweenGen == gen do task.wait(0.1) end
+				while tick() - t0 < 20 and getgenv().__FastTweenGen == gen do task.wait(0.1) end
 				getgenv().__FastTweenActive = false
 				t0 = tick()
 				while tick() - t0 < 5 and getgenv().__FastTweenGen == gen do task.wait(0.1) end
@@ -8684,18 +8685,18 @@ FastTweenApply = function(on)
 		end)
 	end
 end
-getgenv().__FastTweenSpeed = math.clamp(tonumber(Settings["Fast Tween Speed"]) or 300, 50, 300)
+getgenv().__FastTweenSpeed = math.clamp(tonumber(Settings["Fast Tween Speed"]) or 350, 50, 350)
 SettingFarmMainSection.CreateToggle(
-	{ Title = "Fast Tween", Desc = "Applies the slider speed for 3s, returns to normal for 5s and repeats", Default = Settings["Fast Tween"] or false },
+	{ Title = "Fast Tween", Desc = "Applies the slider speed for 20s, returns to normal for 5s and repeats", Default = Settings["Fast Tween"] or false },
 	function(I)
 		SaveSettings("Fast Tween", I)
 		FastTweenApply(I)
 	end
 )
 SettingFarmMainSection.CreateSlider(
-	{ Title = "Fast Tween Speed", Min = 50, Max = 300, Default = Settings["Fast Tween Speed"] or 300, Precise = true },
+	{ Title = "Fast Tween Speed", Min = 50, Max = 350, Default = Settings["Fast Tween Speed"] or 350, Precise = true },
 	function(I)
-		getgenv().__FastTweenSpeed = math.clamp(tonumber(I) or 300, 50, 300)
+		getgenv().__FastTweenSpeed = math.clamp(tonumber(I) or 350, 50, 350)
 		SaveSettings("Fast Tween Speed", getgenv().__FastTweenSpeed)
 	end
 )
@@ -12664,7 +12665,13 @@ local BringMob = function(n)
 		pcall(BringEnemy, n)
 	end
 end
+-- These locals used to shadow the full UsedualFlock / ClickM1 defined earlier, so the Farm never reached
+-- Double Damage or Use Skills + M1. They now hand over to the full versions.
+local __FullUsedualFlock = UsedualFlock
 local UsedualFlock = function()
+	if __FullUsedualFlock then
+		return __FullUsedualFlock()
+	end
 	local mt = getgenv().MasteryTarget
 	if mt and Settings["Farm Mastery"] then
 		EquipTool(mt.name)
@@ -12672,7 +12679,13 @@ local UsedualFlock = function()
 	end
 	EquipTool(NameWeapon(Settings["Select Weapon"] or "Melee"))
 end
-local ClickM1 = function()
+local ClickM1 = function(target, wide)
+	if (Settings["Double Damage"] or Settings["Use M1 + Skills Farm"]) and getgenv().FarmExtras and typeof(target) == "Instance" then
+		local okE, handled = pcall(getgenv().FarmExtras, target, wide)
+		if okE and handled then
+			return
+		end
+	end
 	pcall(AttackNoCoolDown)
 end
 	FormatMagnetTime = function(arg)

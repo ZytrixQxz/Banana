@@ -8106,30 +8106,13 @@ function DeleteIgnoredMob()
 		end
 	end
 end
--- Secret Quest prisoners (Escape from Alcatraz): Auto Farm Level must ignore these special NPCs
-function IsSecretQuestPrisoner(mob)
-	local ok, result = pcall(function()
-		if not mob or not string.find(mob.Name, "Prisoner") then
-			return false
-		end
-		local moment = GetHiddenMoment and GetHiddenMoment("Escape from Alcatraz")
-		local prisoners = moment and moment.MiscData and moment.MiscData.Prisoners
-		if type(prisoners) ~= "table" then
-			return false
-		end
-		for _, prisoner in pairs(prisoners) do
-			if prisoner.Model == mob then
-				return true
-			end
-		end
-		return false
-	end)
-	return ok and result == true
-end
+-- Secret Quest prisoners (Escape from Alcatraz) are ignored by Level Farm / Bring Mob.
+-- The real check is defined in the Secret Quest block (after GetHiddenMoment); this stub keeps it safe before that loads.
+getgenv().IsSecretQuestPrisoner = getgenv().IsSecretQuestPrisoner or function() return false end
 function DetectMob(Q)
 	local d, I = 1 / 0
 	for _, o in pairs(game.Workspace.Enemies:GetChildren()) do
-		if (typeof(Q) == "table" and (table.find(Q, o.Name)) or o.Name == Q) and (IsMobAlive(o)) and not IsSecretQuestPrisoner(o) then
+		if (typeof(Q) == "table" and (table.find(Q, o.Name)) or o.Name == Q) and (IsMobAlive(o)) and not getgenv().IsSecretQuestPrisoner(o) then
 			_ = (
 				o.HumanoidRootPart.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position
 			).magnitude
@@ -8272,7 +8255,7 @@ function BringMob(Q)
 	end)
 	local candidates, grouped = {}, 1
 	for _, mob in ipairs(workspace.Enemies:GetChildren()) do
-		if mob ~= Q and mob.Name == Q.Name and not mob:FindFirstChild("Ignored") then
+		if mob ~= Q and mob.Name == Q.Name and not mob:FindFirstChild("Ignored") and not getgenv().IsSecretQuestPrisoner(mob) then
 			local hrp = mob:FindFirstChild("HumanoidRootPart")
 			local hum = mob:FindFirstChildOfClass("Humanoid")
 			if hrp and hum and hum.Health > 0 then
@@ -12922,6 +12905,30 @@ local FarmotherMain = NXSQPage
 	end
 	GetHiddenMoment = function(arg)
 		return HiddenModules.Controller:GetLoadedMoments()[arg]
+	end
+	-- Marks the special prisoners of the "Escape from Alcatraz" secret quest so Level Farm and Bring Mob skip them
+	do
+		local sqPrisonerSet, sqPrisonerAt = {}, 0
+		getgenv().IsSecretQuestPrisoner = function(mob)
+			if typeof(mob) ~= "Instance" then return false end
+			local now = os.clock()
+			if now - sqPrisonerAt > 0.3 then
+				sqPrisonerAt = now
+				local set = {}
+				pcall(function()
+					local moment = GetHiddenMoment("Escape from Alcatraz")
+					local prisoners = moment and moment.MiscData and moment.MiscData.Prisoners
+					if type(prisoners) == "table" then
+						for _, prisoner in pairs(prisoners) do
+							local model = type(prisoner) == "table" and prisoner.Model
+							if typeof(model) == "Instance" then set[model] = true end
+						end
+					end
+				end)
+				sqPrisonerSet = set
+			end
+			return sqPrisonerSet[mob] == true
+		end
 	end
 	HiddenRelease = function()
 		local anchored = HiddenEvent.anchored

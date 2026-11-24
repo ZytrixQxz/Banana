@@ -24744,6 +24744,16 @@ do
 			return
 		end
 
+		-- remembers which ScreenGuis were already on screen before the roll (Skip Spin never hides these)
+		local pre = {}
+		pcall(function()
+			for _, g in ipairs(plr:WaitForChild("PlayerGui"):GetChildren()) do
+				if g:IsA("ScreenGui") and g.Enabled then
+					pre[g] = true
+				end
+			end
+		end)
+		getgenv().__SpinPre = pre
 		getgenv().__SpinRollAt = tick()
 		local okP, errP = pcall(GachaClient.PurchaseGachaAsync, arg)
 		getgenv().__SpinRollAt = tick()
@@ -24806,39 +24816,52 @@ do
 	end)
 
 	-- ===== Skip Spin Animation =====
-	-- Right after each roll (and while the gacha window is open) it closes the window,
-	-- hides the spin/reveal ScreenGuis and gives the camera back to the player.
+	-- Closes the gacha window and hides ONLY the spin/reveal ScreenGuis that show up during the roll.
+	-- Anything that was already on screen before the roll is never hidden, and if the spin hides the
+	-- HUD / locks the camera / freezes movement, they are given back right away.
 	task.spawn(function()
 		local RunService = game:GetService("RunService")
 		local Lighting = game:GetService("Lighting")
 		local pg = plr:WaitForChild("PlayerGui")
 		local words = { "gacha", "spin", "reveal", "roulette", "fruitroll", "randomfruit" }
 		local ignore = { "banana", "nexora", "zyrox", "hub", "notif" }
-		local hidden = {}
-		local match = function(name)
+		local isIgnored = function(name)
 			name = string.lower(name)
 			for _, w in ipairs(ignore) do
-				if string.find(name, w, 1, true) then return false end
+				if string.find(name, w, 1, true) then return true end
 			end
+			return false
+		end
+		local match = function(name)
+			if isIgnored(name) then return false end
+			name = string.lower(name)
 			for _, w in ipairs(words) do
 				if string.find(name, w, 1, true) then return true end
 			end
 			return false
 		end
+		local lastCtl, savedSpeed = 0, nil
 		while getgenv().__FruitGen == FruitGen do
 			RunService.RenderStepped:Wait()
 			if Settings["Skip Spin Animation"] ~= false and Settings["Random Devil Fruit"] then
 				local active = okGW and pcall(GachaWindow.IsOpen) and GachaWindow.IsOpen()
-				local recent = tick() - (getgenv().__SpinRollAt or 0) < 8
-				if active or recent then
+				local sinceRoll = tick() - (getgenv().__SpinRollAt or 0)
+				if active or sinceRoll < 8 then
+					local pre = getgenv().__SpinPre or {}
 					pcall(function()
 						if active then GachaWindow.Close() end
 					end)
 					pcall(function()
 						for _, g in ipairs(pg:GetChildren()) do
-							if g:IsA("ScreenGui") and g.Enabled and match(g.Name) then
-								g.Enabled = false
-								hidden[g] = true
+							if g:IsA("ScreenGui") then
+								local isSpin = match(g.Name)
+								if g.Enabled and isSpin and not pre[g] then
+									-- new spin/reveal screen created by the roll -> hide it
+									g.Enabled = false
+								elseif not g.Enabled and pre[g] and not isSpin and not isIgnored(g.Name) and sinceRoll < 4 then
+									-- the spin turned off part of the normal interface -> turn it back on
+									g.Enabled = true
+								end
 							end
 						end
 					end)
@@ -24848,6 +24871,21 @@ do
 						if cam and hum and cam.CameraType == Enum.CameraType.Scriptable then
 							cam.CameraType = Enum.CameraType.Custom
 							cam.CameraSubject = hum
+						end
+						-- gives movement back (controls + walk speed) a few times per second
+						if tick() - lastCtl > 0.2 then
+							lastCtl = tick()
+							if hum then
+								if hum.WalkSpeed > 0 then
+									savedSpeed = hum.WalkSpeed
+								elseif savedSpeed then
+									hum.WalkSpeed = savedSpeed
+								end
+							end
+							local pm = plr:FindFirstChild("PlayerScripts") and plr.PlayerScripts:FindFirstChild("PlayerModule")
+							if pm then
+								require(pm):GetControls():Enable()
+							end
 						end
 						-- removes the blur / depth-of-field the spin leaves on the screen (any name, Lighting or Camera).
 						-- Lighting.Blur is skipped while an Observation farm is on, since those read it as a signal.

@@ -904,7 +904,7 @@ task.spawn(function()
                     return
                 end
                 local v258 = v257.ViewportSize
-                local v259 = math.max(0.2, math.min(1.3, (v258.X - 48) / 760, (v258.Y - 150) / 640))
+                local v259 = math.max(0.2, math.min(1.7, (v258.X - 48) / 760, (v258.Y - 80) / 640))
                 v255.Scale = v259
                 v197.Scale = v259
                 local v260 = 76

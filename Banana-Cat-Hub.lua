@@ -9148,7 +9148,7 @@ MasteryFarmSection.CreateToggle(
 	end
 )
 MasteryFarmSection.CreateToggle(
-	{ Title = "Start Farm", Desc = "Start Farm Mastery in Haunted Castle only.", Default = Settings["Start Farm"] or false },
+	{ Title = "Start Farm", Desc = "Start Farm Mastery: Sea 1 = Fountain City, Sea 2 = Forgotten Island, Sea 3 = Haunted Castle.", Default = Settings["Start Farm"] or false },
 	function(V)
 		-- Start Farm is the only switch that activates Farm Mastery.
 		SaveSettings("Farm Mastery", V)
@@ -10881,6 +10881,7 @@ local function HauntedCastleMasteryFarm()
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not root then return end
 
+	-- Start Farm: Sea 3 = Haunted Castle (unchanged); Sea 1 = Fountain City (last island); Sea 2 = Forgotten Island (last island)
 	local masteryMobs = {
 		"Reborn Skeleton",
 		"Demonic Soul",
@@ -10888,10 +10889,21 @@ local function HauntedCastleMasteryFarm()
 		"Possessed Mummy",
 		"Posessed Mummy",
 	}
+	local masteryFallback = CFrame.new(-9509.34961, 142.130661, 5535.16309)
+	local isThirdSea = ThreeWorld
+	if OldWorld then
+		masteryMobs = { "Galley Pirate", "Galley Captain" }
+		masteryFallback = CFrame.new(5569.80518, 38.5269432, 3849.01196)
+		isThirdSea = false
+	elseif NewWorld then
+		masteryMobs = { "Sea Soldier", "Water Fighter" }
+		masteryFallback = CFrame.new(-3115.78223, 63.8785706, -9808.38574)
+		isThirdSea = false
+	end
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then return end
-	-- Auto Accept Quest (Mastery 600): same Bones quest logic used by Auto Farm Bones
-	if Settings["Auto Accept Quest Mastery 600"] then
+	-- Auto Accept Quest (Mastery 600): same Bones quest logic used by Auto Farm Bones (Sea 3 only)
+	if isThirdSea and Settings["Auto Accept Quest Mastery 600"] then
 		local bq = AFQ.Quest["Farm Bones"]
 		if t.Data.Level.Value >= bq[1] and not AFQ.HasQuest() then
 			QuestBoneAndkatakuri(bq[2], bq[3])
@@ -10908,6 +10920,18 @@ local function HauntedCastleMasteryFarm()
 		else
 			toTarget(mob.HumanoidRootPart.CFrame * CFrame.new(7, 20, 0))
 		end
+		-- Double Damage: alternates Blox Fruit + the Select Weapon (Melee -> Melee + Fruit, Sword -> Sword + Fruit).
+		-- The fruit phase uses the Blox Fruit mastery logic (skills); the weapon phase is handled by ClickM1/FarmExtras.
+		if Settings["Double Damage"] and not getgenv().MasteryTarget and NameWeapon("Blox Fruit") then
+			ClickM1(mob)
+			if getgenv().__FarmPhase == "fruit" then
+				local savedMethod = Settings["Select Method Farm Mastery"]
+				Settings["Select Method Farm Mastery"] = "Blox Fruit"
+				pcall(FarmMastery, mob)
+				Settings["Select Method Farm Mastery"] = savedMethod
+			end
+			return
+		end
 		FarmMastery(mob)
 		ClickM1(mob)
 		return
@@ -10916,7 +10940,7 @@ local function HauntedCastleMasteryFarm()
 	if spawnPart then
 		toTarget(spawnPart.CFrame * CFrame.new(0, 60, 0))
 	else
-		toTarget(CFrame.new(-9509.34961, 142.130661, 5535.16309))
+		toTarget(masteryFallback)
 	end
 end
 

@@ -1,4 +1,4 @@
-wait(3)
+wait(1)
 do
     local v1 = getgenv()
     local v2 = v1.KaitunTeleportQueue
@@ -60,7 +60,7 @@ local v18, v19 = pcall(game.HttpGet, game, "https://raw.githubusercontent.com/to
 if not v18 or v19:gsub("%s+", "") ~= "0.0.1" then
     game.Players.LocalPlayer:Kick("Outdated Script")
 end
-wait(7)
+wait(1)
 -- ===== Banana Verifying + Loading screens =====
 local BananaUIEnabled = not (type(getgenv().Config) == "table" and type(getgenv().Config.UI) == "table" and getgenv().Config.UI.Enabled == false)
 if BananaUIEnabled then
@@ -227,7 +227,7 @@ do
 
 	log("Game check v2 starting...", AMBER)
 	setPct(10)
-	task.wait(0.4)
+	task.wait(0.15)
 	local failed
 	for i, c in ipairs(checks) do
 		setState(AMBER, c[1] .. "...", "VERIFYING", c[1])
@@ -235,7 +235,7 @@ do
 		if not ok then failed = msg break end
 		log(msg, GREEN)
 		setPct(10 + math.floor(90 * i / #checks))
-		task.wait(0.3)
+		task.wait()
 	end
 
 	if failed then
@@ -250,12 +250,12 @@ do
 	setPct(100)
 	setState(GREEN, "Game verified. Starting Banana Hub...", "VERIFIED", "All game parameters verified")
 	log("Starting Banana Loading...", GREEN)
-	task.wait(0.9)
+	task.wait(0.3)
 	pcall(function()
 		TweenService:Create(card, TweenInfo.new(0.35), { GroupTransparency = 1 }):Play()
 		TweenService:Create(shade, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
 	end)
-	task.wait(0.4)
+	task.wait(0.15)
 	pcall(function() gui:Destroy() end)
 end
 
@@ -365,13 +365,13 @@ do
 			pct.Text = "100%"
 			TweenService:Create(fill, TweenInfo.new(0.3), { Size = UDim2.new(1, 0, 1, 0) }):Play()
 		end)
-		task.delay(0.45, function()
+		task.delay(0.1, function()
 			-- full bar: shows "Ready" and only then releases the script interface
 			pcall(function()
 				pct.Text = "Ready"
 				pct.TextColor3 = Color3.fromRGB(120, 255, 140)
 			end)
-			task.wait(0.5)
+			task.wait(0.15)
 			for _, c in ipairs(L.conns or {}) do pcall(function() c:Disconnect() end) end
 			L.conns = {}
 			for g, was in pairs(L.hidden) do pcall(function() if g.Parent then g.Enabled = was end end) end
@@ -383,7 +383,7 @@ do
 					elseif o:IsA("Frame") then TweenService:Create(o, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play() end
 				end
 			end)
-			task.wait(0.4)
+			task.wait(0.15)
 			pcall(function() gui:Destroy() end)
 			L.closed = true
 		end)
@@ -402,7 +402,7 @@ end
 do
 	local L = getgenv().BananaLoader
 	if L then
-		for i = 1, 20 do task.wait(5 / 20) L.Set(3 + 96 * i / 20) end
+		for i = 1, 20 do task.wait(1.2 / 20) L.Set(3 + 96 * i / 20) end
 		L.Done()
 		local t0 = os.clock()
 		repeat task.wait(0.1) until L.closed or os.clock() - t0 > 6
@@ -419,7 +419,7 @@ pcall(function()
 end)
 local A =
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/zzzz.lua"))()
-	local Main = A.CreateMain({ Title = "Banana Cat Hub - Kaitun Level", Desc = "- Status / Controls / Inventory" })
+	local Main = A.CreateMain({ Title = "Banana Cat Hub", Desc = "- Kaitun Level" })
 	getgenv().BananaX2 = { A = A, Main = Main }
 end)
 if not okLib then
@@ -1039,26 +1039,26 @@ task.spawn(function()
             -- Task card in the style of the Banana Loading UI Progress (shows what the bot is doing)
             v195.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
             v195.BackgroundTransparency = 0.05
-            v195.Size = UDim2.fromOffset(440, 78)
+            v195.Size = UDim2.fromOffset(620, 112)
             for _, v_c in ipairs(v195:GetChildren()) do
                 if v_c:IsA("UIStroke") then
                     v_c:Destroy()
                 elseif v_c:IsA("UICorner") then
-                    v_c.CornerRadius = UDim.new(0, 26)
+                    v_c.CornerRadius = UDim.new(0, 32)
                 end
             end
-            v196.Position = UDim2.fromOffset(28, 12)
-            v196.Size = UDim2.new(1, -56, 0, 28)
+            v196.Position = UDim2.fromOffset(34, 16)
+            v196.Size = UDim2.new(1, -68, 0, 38)
             v196.Font = Enum.Font.GothamMedium
-            v196.TextSize = 18
+            v196.TextSize = 24
             v196.TextColor3 = Color3.fromRGB(255, 255, 255)
             v196.TextXAlignment = Enum.TextXAlignment.Left
             v196.TextYAlignment = Enum.TextYAlignment.Center
             v196.TextWrapped = false
             v196.TextTruncate = Enum.TextTruncate.AtEnd
             local v_trk = v130("Frame", {
-                Position = UDim2.fromOffset(28, 50),
-                Size = UDim2.new(1, -56, 0, 8),
+                Position = UDim2.fromOffset(34, 74),
+                Size = UDim2.new(1, -68, 0, 12),
                 BackgroundColor3 = Color3.fromRGB(55, 55, 55),
                 BorderSizePixel = 0,
                 ClipsDescendants = true
@@ -1238,33 +1238,69 @@ task.spawn(function()
                     v185(not v160.Visible)
                 end
             end))
-            -- ===== Banana window mirrors the tracker data (the old panel is hidden when this works) =====
+            -- ===== Banana window hosts the original status cards (the old command center is hidden) =====
             local bxInv, bxSync, bxActive
-            local function bxFmt(n)
-                local s = tostring(math.floor(tonumber(n) or 0))
-                return s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
-            end
             do
                 local BX = getgenv().BananaX2
                 if BX and BX.Main then
                     local okUI, errUI = pcall(function()
                         local Main = BX.Main
+                        local function bxFmt(n)
+                            local s = tostring(math.floor(tonumber(n) or 0))
+                            return s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
+                        end
+                        local function bxFind(text)
+                            for _, root in ipairs({ (gethui and gethui()) or game:GetService("CoreGui"), v122:WaitForChild("PlayerGui") }) do
+                                for _, d in ipairs(root:GetDescendants()) do
+                                    if d:IsA("TextLabel") and d.Text == text then
+                                        return d
+                                    end
+                                end
+                            end
+                        end
+                        -- moves an old card frame into the Banana page, in place of a placeholder label
+                        local function embed(text, frame, h)
+                            local ph
+                            local t0 = os.clock()
+                            repeat
+                                ph = bxFind(text)
+                                if not ph then task.wait(0.1) end
+                            until ph or os.clock() - t0 > 4
+                            if not ph then return false end
+                            local row = ph.Parent
+                            if not (row and row:IsA("GuiObject")) or row:IsA("ScrollingFrame") then return false end
+                            ph.Visible = false
+                            local sc = Instance.new("UIScale")
+                            sc.Parent = frame
+                            frame.AnchorPoint = Vector2.new(0.5, 0)
+                            frame.Position = UDim2.new(0.5, 0, 0, 0)
+                            frame.Size = UDim2.fromOffset(552, h)
+                            frame.Visible = true
+                            frame.Parent = row
+                            local function fit()
+                                local w = row.AbsoluteSize.X
+                                local k = (w > 50) and math.min(1, (w - 8) / 552) or 1
+                                sc.Scale = k
+                                row.Size = UDim2.new(row.Size.X.Scale, row.Size.X.Offset, 0, math.floor(h * k) + 8)
+                            end
+                            fit()
+                            row:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit)
+                            return true
+                        end
+
+                        local cache = {}
+                        local function put(key, lbl, txt)
+                            if cache[key] ~= txt then
+                                cache[key] = txt
+                                lbl.SetText(txt)
+                            end
+                        end
+
                         local pgStatus = Main.CreatePage({ Page_Name = "Status", Page_Title = "Status" })
-                        local secTask = pgStatus.CreateSection("Task")
-                        local lblTask = secTask.CreateLabel({ Title = "Waiting for task" })
-                        local secPlayer = pgStatus.CreateSection("Player")
-                        local lblLevel = secPlayer.CreateLabel({ Title = "Level / Sea: -" })
-                        local lblRace = secPlayer.CreateLabel({ Title = "Race: -" })
-                        local lblBeli = secPlayer.CreateLabel({ Title = "Beli: -" })
-                        local lblFrag = secPlayer.CreateLabel({ Title = "Fragments: -" })
-                        local secEq = pgStatus.CreateSection("Equipment")
-                        local lblEq = secEq.CreateLabel({ Title = "Equipment: 0 / 6" })
-                        local eqNames = { "Godhuman", "Cursed Dual Katana", "Skull Guitar", "Mirror Fractal", "Valkyrie Helm", "Pull Lever" }
-                        local eqLbl = {}
-                        for _, n in ipairs(eqNames) do eqLbl[n] = secEq.CreateLabel({ Title = n }) end
-                        local secPerf = pgStatus.CreateSection("Session")
-                        local lblPerf = secPerf.CreateLabel({ Title = "FPS - / PING -" })
-                        local lblTime = secPerf.CreateLabel({ Title = "Session: 00:00:00" })
+                        local secOv = pgStatus.CreateSection("Overview")
+                        secOv.CreateLabel({ Title = "__BX_OVERVIEW__" })
+                        local secSes = pgStatus.CreateSection("Session")
+                        local lblTime = secSes.CreateLabel({ Title = "Session: 00:00:00" })
 
                         local pgCtl = Main.CreatePage({ Page_Name = "Controls", Page_Title = "Controls" })
                         local secGfx = pgCtl.CreateSection("Graphics")
@@ -1295,47 +1331,65 @@ task.spawn(function()
                         end)
 
                         local pgInv = Main.CreatePage({ Page_Name = "Inventory", Page_Title = "Inventory" })
-                        local secInvInfo = pgInv.CreateSection("Info")
-                        local lblInv = secInvInfo.CreateLabel({ Title = "Loading inventory..." })
-                        local secItems = pgInv.CreateSection("Items")
-                        local pool = {}
-                        bxInv = function(items)
-                            lblInv.SetText("Inventory  ·  " .. #items .. " items  ·  refreshed every " .. v113.InventoryRefresh .. "s")
-                            for i = 1, math.max(#items, #pool) do
-                                local it = items[i]
-                                local txt = ""
-                                if it then
-                                    txt = it.Name .. "  ·  " .. tostring(it.Category):upper() .. "  ·  " .. (it.Mastery and ("Mas " .. bxFmt(it.Mastery)) or ("x" .. bxFmt(it.Count)))
-                                end
-                                if not pool[i] and it then
-                                    pool[i] = { lbl = secItems.CreateLabel({ Title = txt }), txt = txt }
-                                elseif pool[i] and pool[i].txt ~= txt then
-                                    pool[i].txt = txt
-                                    pool[i].lbl.SetText(txt)
-                                end
-                            end
-                        end
+                        local secInv = pgInv.CreateSection("Inventory")
+                        secInv.CreateLabel({ Title = "__BX_INVENTORY__" })
 
-                        local cache = {}
-                        local function put(key, lbl, txt)
-                            if cache[key] ~= txt then
-                                cache[key] = txt
-                                lbl.SetText(txt)
-                            end
-                        end
+                        local fbSync
                         bxSync = function()
-                            put("task", lblTask, tostring(v196.Text))
-                            put("lvl", lblLevel, "Level / Sea: " .. v202.Text)
-                            put("race", lblRace, "Race: " .. v203.Text)
-                            put("beli", lblBeli, "Beli: " .. v204.Text)
-                            put("frag", lblFrag, "Fragments: " .. v205.Text)
-                            put("eq", lblEq, v207.Text)
-                            for _, n in ipairs(eqNames) do
-                                if v210[n] then put("eq" .. n, eqLbl[n], v210[n].Text) end
-                            end
-                            put("perf", lblPerf, v216.Text)
                             put("time", lblTime, "Session: " .. v177.Text)
+                            if fbSync then fbSync() end
                         end
+                        task.spawn(function()
+                            local ok1 = pcall(embed, "__BX_OVERVIEW__", v187, 408)
+                            ok1 = ok1 and v187.Parent ~= v160
+                            local ok2 = pcall(embed, "__BX_INVENTORY__", v188, 408)
+                            ok2 = ok2 and v188.Parent ~= v160
+                            if not ok1 then
+                                -- fallback: plain labels
+                                local sec = pgStatus.CreateSection("Status")
+                                local lblTask = sec.CreateLabel({ Title = "Waiting for task" })
+                                local lblLevel = sec.CreateLabel({ Title = "Level / Sea: -" })
+                                local lblRace = sec.CreateLabel({ Title = "Race: -" })
+                                local lblBeli = sec.CreateLabel({ Title = "Beli: -" })
+                                local lblFrag = sec.CreateLabel({ Title = "Fragments: -" })
+                                local lblEq = sec.CreateLabel({ Title = "Equipment: 0 / 6" })
+                                local eqNames = { "Godhuman", "Cursed Dual Katana", "Skull Guitar", "Mirror Fractal", "Valkyrie Helm", "Pull Lever" }
+                                local eqLbl = {}
+                                for _, n in ipairs(eqNames) do eqLbl[n] = sec.CreateLabel({ Title = n }) end
+                                fbSync = function()
+                                    put("task", lblTask, tostring(v196.Text))
+                                    put("lvl", lblLevel, "Level / Sea: " .. v202.Text)
+                                    put("race", lblRace, "Race: " .. v203.Text)
+                                    put("beli", lblBeli, "Beli: " .. v204.Text)
+                                    put("frag", lblFrag, "Fragments: " .. v205.Text)
+                                    put("eq", lblEq, v207.Text)
+                                    for _, n in ipairs(eqNames) do
+                                        if v210[n] then put("eq" .. n, eqLbl[n], v210[n].Text) end
+                                    end
+                                end
+                            end
+                            if not ok2 then
+                                local secI = pgInv.CreateSection("Items")
+                                local lblInv = secI.CreateLabel({ Title = "Loading inventory..." })
+                                local pool = {}
+                                bxInv = function(items)
+                                    lblInv.SetText("Inventory  ·  " .. #items .. " items")
+                                    for i = 1, math.max(#items, #pool) do
+                                        local it = items[i]
+                                        local txt = ""
+                                        if it then
+                                            txt = it.Name .. "  ·  " .. tostring(it.Category):upper() .. "  ·  " .. (it.Mastery and ("Mas " .. bxFmt(it.Mastery)) or ("x" .. bxFmt(it.Count)))
+                                        end
+                                        if not pool[i] and it then
+                                            pool[i] = { lbl = secI.CreateLabel({ Title = txt }), txt = txt }
+                                        elseif pool[i] and pool[i].txt ~= txt then
+                                            pool[i].txt = txt
+                                            pool[i].lbl.SetText(txt)
+                                        end
+                                    end
+                                end
+                            end
+                        end)
                     end)
                     if okUI then
                         bxActive = true
@@ -1584,7 +1638,7 @@ task.spawn(function()
                 for v335, v336 in ipairs(v181) do
                     v334 = math.max(v334, v336)
                 end
-                if v160.Visible then
+                if v160.Visible or v187.Parent ~= v160 then
                     for v337, v338 in ipairs(v180) do
                         local v339 = v181[v337 - (20 - #v181)]
                         v338.Size = UDim2.fromOffset(3, v339 and math.max(2, math.floor(v339 / v334 * 19)) or 2)
@@ -1605,8 +1659,8 @@ task.spawn(function()
                 for v342, v343 in pairs(v210) do
                     local v344 = v298[v342] or (v342 == "Skull Guitar" and v298["Soul Guitar"]) or (v342 == "Godhuman" and v298.GodHuman) or (v342 == "Pull Lever" and v227.Stats.LeverDone)
                     local v345 = v342 == "Pull Lever" and v227.Stats.LeverKnown or (v342 ~= "Pull Lever" and (v227.Stats.InventoryError == nil) and (v227.Stats.InventoryCount > 0))
-                    v343.Text = (v344 and "✓ " or "") .. v342
-                    v343.TextColor3 = v344 and v126 or v128
+                    v343.Text = (v344 and "✓ " or "✗ ") .. v342
+                    v343.TextColor3 = v344 and Color3.fromRGB(80, 225, 120) or Color3.fromRGB(240, 80, 80)
                     v343.Parent.BackgroundColor3 = v344 and Color3.fromRGB(44, 28, 64) or Color3.fromRGB(26, 19, 37)
                     if v344 then
                         v341 = v341 + 1

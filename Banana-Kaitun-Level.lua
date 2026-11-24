@@ -61,372 +61,6 @@ if not v18 or v19:gsub("%s+", "") ~= "0.0.1" then
     game.Players.LocalPlayer:Kick("Outdated Script")
 end
 wait(1)
--- ===== Banana Verifying + Loading screens =====
-local BananaUIEnabled = not (type(getgenv().Config) == "table" and type(getgenv().Config.UI) == "table" and getgenv().Config.UI.Enabled == false)
-if BananaUIEnabled then
--- ===== Banana Verifying: game check screen (runs BEFORE the Banana Loading UI Progress) =====
--- It does not check any key/ID: it only verifies the game parameters (Blox Fruits place, character, player data,
--- remotes, world and interface). If something is wrong it shows the error and stops the hub.
-do
-	local Players = game:GetService("Players")
-	local TweenService = game:GetService("TweenService")
-	if not game:IsLoaded() then game.Loaded:Wait() end
-	local lp = Players.LocalPlayer
-	while not lp do task.wait() lp = Players.LocalPlayer end
-
-	local AMBER, RED, GREEN = Color3.fromRGB(246, 180, 80), Color3.fromRGB(240, 128, 120), Color3.fromRGB(120, 230, 160)
-	local GRAY = Color3.fromRGB(130, 135, 150)
-
-	local gui = Instance.new("ScreenGui")
-	gui.Name = "BananaGameCheckUI"
-	gui.ResetOnSpawn = false
-	gui.IgnoreGuiInset = true
-	gui.DisplayOrder = 2147483647
-	local okParent = pcall(function() gui.Parent = (gethui and gethui()) or game:GetService("CoreGui") end)
-	if not okParent or not gui.Parent then gui.Parent = lp:WaitForChild("PlayerGui") end
-
-	local function new(class, props, parent)
-		local o = Instance.new(class)
-		for k, v in pairs(props) do o[k] = v end
-		o.Parent = parent
-		return o
-	end
-	local function round(o, r) return new("UICorner", { CornerRadius = r }, o) end
-	local function label(props, parent)
-		props.BackgroundTransparency = 1
-		props.TextXAlignment = props.TextXAlignment or Enum.TextXAlignment.Left
-		return new("TextLabel", props, parent)
-	end
-
-	local shade = new("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.45, BorderSizePixel = 0 }, gui)
-	local card = new("CanvasGroup", {
-		AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(0, 640, 0, 400),
-		BackgroundColor3 = Color3.fromRGB(5, 6, 10), BorderSizePixel = 0,
-	}, shade)
-	round(card, UDim.new(0, 36))
-	new("UIStroke", { Color = Color3.fromRGB(80, 68, 44), Thickness = 1.5 }, card)
-	local scale = new("UIScale", {}, card)
-	pcall(function()
-		local vp = workspace.CurrentCamera.ViewportSize
-		scale.Scale = math.clamp(math.min(vp.X / 700, vp.Y / 440), 0.55, 1.1)
-	end)
-
-	-- header: icon, title, subtitle, status badge
-	local icon = new("Frame", { Position = UDim2.new(0, 24, 0, 22), Size = UDim2.new(0, 56, 0, 56), BackgroundColor3 = Color3.fromRGB(240, 135, 55), BorderSizePixel = 0 }, card)
-	round(icon, UDim.new(0, 15))
-	new("UIGradient", { Rotation = 45, Color = ColorSequence.new(Color3.fromRGB(248, 170, 60), Color3.fromRGB(236, 112, 52)) }, icon)
-	label({ Size = UDim2.fromScale(1, 1), Font = Enum.Font.GothamBold, TextSize = 28, TextColor3 = Color3.new(1, 1, 1), Text = "B", TextXAlignment = Enum.TextXAlignment.Center }, icon)
-	label({ Position = UDim2.new(0, 96, 0, 22), Size = UDim2.new(0, 400, 0, 30), Font = Enum.Font.GothamBold, TextSize = 22, TextColor3 = Color3.new(1, 1, 1), Text = "Banana Verifying" }, card)
-	label({ Position = UDim2.new(0, 97, 0, 54), Size = UDim2.new(0, 300, 0, 20), Font = Enum.Font.GothamMedium, TextSize = 13, TextColor3 = GRAY, Text = "GAME CHECK  /  V2" }, card)
-	local badge = new("Frame", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -24, 0, 26), Size = UDim2.new(0, 128, 0, 38), BackgroundColor3 = Color3.fromRGB(33, 28, 14), BorderSizePixel = 0 }, card)
-	round(badge, UDim.new(1, 0))
-	local badgeStroke = new("UIStroke", { Color = Color3.fromRGB(110, 86, 36), Thickness = 1.5 }, badge)
-	local badgeText = label({ Size = UDim2.fromScale(1, 1), Font = Enum.Font.GothamBold, TextSize = 13, TextColor3 = AMBER, Text = "VERIFYING", TextXAlignment = Enum.TextXAlignment.Center }, badge)
-	new("Frame", { Position = UDim2.new(0, 24, 0, 92), Size = UDim2.new(1, -48, 0, 1), BackgroundColor3 = Color3.fromRGB(34, 36, 44), BorderSizePixel = 0 }, card)
-
-	-- status line + percent + gradient bar
-	local statusLbl = label({ Position = UDim2.new(0, 24, 0, 106), Size = UDim2.new(1, -120, 0, 28), Font = Enum.Font.GothamMedium, TextSize = 19, TextColor3 = AMBER, Text = "Checking game parameters..." }, card)
-	local pctLbl = label({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -24, 0, 106), Size = UDim2.new(0, 80, 0, 28), Font = Enum.Font.GothamBold, TextSize = 17, TextColor3 = AMBER, Text = "0%", TextXAlignment = Enum.TextXAlignment.Right }, card)
-	local track = new("Frame", { Position = UDim2.new(0, 24, 0, 146), Size = UDim2.new(1, -48, 0, 9), BackgroundColor3 = Color3.fromRGB(28, 29, 36), BorderSizePixel = 0 }, card)
-	round(track, UDim.new(1, 0))
-	local fill = new("Frame", { Size = UDim2.new(0, 0, 1, 0), BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0 }, track)
-	round(fill, UDim.new(1, 0))
-	new("UIGradient", { Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(240, 120, 50)),
-		ColorSequenceKeypoint.new(0.6, Color3.fromRGB(246, 180, 80)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(160, 112, 88)),
-	}) }, fill)
-
-	-- live activity box
-	local box = new("Frame", { Position = UDim2.new(0, 24, 0, 174), Size = UDim2.new(1, -48, 0, 172), BackgroundColor3 = Color3.fromRGB(6, 7, 12), BorderSizePixel = 0, ClipsDescendants = true }, card)
-	round(box, UDim.new(0, 18))
-	new("UIStroke", { Color = Color3.fromRGB(30, 32, 40), Thickness = 1.5 }, box)
-	label({ Position = UDim2.new(0, 18, 0, 12), Size = UDim2.new(0, 200, 0, 18), Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = GRAY, Text = "LIVE ACTIVITY" }, box)
-	local list = new("Frame", { Position = UDim2.new(0, 18, 0, 36), Size = UDim2.new(1, -36, 1, -46), BackgroundTransparency = 1 }, box)
-	new("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Bottom, Padding = UDim.new(0, 6) }, list)
-
-	-- footer
-	local footDot = new("Frame", { Position = UDim2.new(0, 26, 0, 364), Size = UDim2.new(0, 12, 0, 12), BackgroundColor3 = AMBER, BorderSizePixel = 0 }, card)
-	round(footDot, UDim.new(1, 0))
-	local footLbl = label({ Position = UDim2.new(0, 48, 0, 358), Size = UDim2.new(1, -72, 0, 24), Font = Enum.Font.GothamMedium, TextSize = 15, TextColor3 = GRAY, Text = "Verifying game parameters" }, card)
-
-	local rows, order = {}, 0
-	local function log(text, color)
-		order += 1
-		local row = new("Frame", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 22), LayoutOrder = order }, list)
-		local dot = new("Frame", { Position = UDim2.new(0, 0, 0.5, -5), Size = UDim2.new(0, 10, 0, 10), BackgroundColor3 = color, BorderSizePixel = 0 }, row)
-		round(dot, UDim.new(1, 0))
-		label({ Position = UDim2.new(0, 22, 0, 0), Size = UDim2.new(1, -22, 1, 0), Font = Enum.Font.Code, TextSize = 14, TextColor3 = color, Text = text }, row)
-		rows[#rows + 1] = row
-		while #rows > 5 do table.remove(rows, 1):Destroy() end
-	end
-	local function setPct(v)
-		pctLbl.Text = v .. "%"
-		pcall(function() TweenService:Create(fill, TweenInfo.new(0.25), { Size = UDim2.new(v / 100, 0, 1, 0) }):Play() end)
-	end
-	local function setState(color, status, badgeLabel, foot)
-		statusLbl.Text, statusLbl.TextColor3, pctLbl.TextColor3 = status, color, color
-		badgeText.Text, badgeText.TextColor3, badgeStroke.Color = badgeLabel, color, color
-		footDot.BackgroundColor3, footLbl.Text = color, foot
-	end
-
-	-- game parameters (no key / ID / whitelist check)
-	local PLACES = {
-		[2753915549] = "Sea 1", [85211729168715] = "Sea 1",
-		[4442272183] = "Sea 2", [79091703265657] = "Sea 2",
-		[7449423635] = "Sea 3", [100117331123089] = "Sea 3",
-	}
-	local function waitFor(fn, timeout)
-		local t0 = os.clock()
-		repeat
-			local ok, r = pcall(fn)
-			if ok and r then return r end
-			task.wait(0.2)
-		until os.clock() - t0 >= timeout
-		return nil
-	end
-	local checks = {
-		{ "Checking executor functions", function()
-			if type(getgenv) == "function" and type(loadstring) == "function" then return true, "Executor functions available" end
-			return false, "Executor not supported (getgenv / loadstring missing)"
-		end },
-		{ "Checking game", function()
-			local sea = PLACES[game.PlaceId]
-			if sea then return true, "Blox Fruits detected (" .. sea .. ")" end
-			return false, "Unsupported game. Banana Hub only works in Blox Fruits."
-		end },
-		{ "Checking character", function()
-			local ok = waitFor(function() return lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") end, 30)
-			if ok then return true, "Character loaded" end
-			return false, "Character not found"
-		end },
-		{ "Checking player data", function()
-			local lvl = waitFor(function() return lp:FindFirstChild("Data") and lp.Data:FindFirstChild("Level") end, 30)
-			if lvl then return true, "Player data loaded (Level " .. tostring(lvl.Value) .. ")" end
-			return false, "Player data not found"
-		end },
-		{ "Checking game remotes", function()
-			local ok = waitFor(function()
-				local r = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
-				return r and r:FindFirstChild("CommF_")
-			end, 20)
-			if ok then return true, "Game remotes found" end
-			return false, "Game remotes not found"
-		end },
-		{ "Checking world", function()
-			local ok = waitFor(function() return workspace:FindFirstChild("_WorldOrigin") and workspace:FindFirstChild("Map") end, 20)
-			if ok then return true, "World loaded" end
-			return false, "World not loaded"
-		end },
-		{ "Checking game interface", function()
-			local ok = waitFor(function() return lp:FindFirstChild("PlayerGui") and lp.PlayerGui:FindFirstChild("Main") end, 30)
-			if ok then return true, "Game interface ready" end
-			return false, "Game interface not found"
-		end },
-	}
-
-	log("Game check v2 starting...", AMBER)
-	setPct(10)
-	task.wait(0.15)
-	local failed
-	for i, c in ipairs(checks) do
-		setState(AMBER, c[1] .. "...", "VERIFYING", c[1])
-		local ok, msg = c[2]()
-		if not ok then failed = msg break end
-		log(msg, GREEN)
-		setPct(10 + math.floor(90 * i / #checks))
-		task.wait()
-	end
-
-	if failed then
-		log(failed, RED)
-		setState(RED, failed, "FAILED", "Game check failed")
-		task.wait(5)
-		pcall(function() gui:Destroy() end)
-		warn("[Banana Hub] " .. failed)
-		return -- stops the hub (the game does not match)
-	end
-
-	setPct(100)
-	setState(GREEN, "Game verified. Starting Banana Hub...", "VERIFIED", "All game parameters verified")
-	log("Starting Banana Loading...", GREEN)
-	task.wait(0.3)
-	pcall(function()
-		TweenService:Create(card, TweenInfo.new(0.35), { GroupTransparency = 1 }):Play()
-		TweenService:Create(shade, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
-	end)
-	task.wait(0.15)
-	pcall(function() gui:Destroy() end)
-end
-
--- ===== Banana Loading UI Progress (loading bar) =====
-do
-	local Players = game:GetService("Players")
-	local TweenService = game:GetService("TweenService")
-	pcall(function() if getgenv().BananaLoader and getgenv().BananaLoader.Destroy then getgenv().BananaLoader.Destroy() end end)
-	local gui = Instance.new("ScreenGui")
-	gui.Name = "BananaLoadingUI"
-	gui.ResetOnSpawn = false
-	gui.IgnoreGuiInset = true
-	gui.DisplayOrder = 2147483647
-	local okParent = pcall(function() gui.Parent = (gethui and gethui()) or game:GetService("CoreGui") end)
-	if not okParent or not gui.Parent then
-		gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
-	end
-	local box = Instance.new("Frame")
-	box.AnchorPoint = Vector2.new(0.5, 0)
-	box.Position = UDim2.new(0.5, 0, 0, 22)
-	box.Size = UDim2.new(0, 440, 0, 78)
-	box.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-	box.BackgroundTransparency = 0.05
-	box.BorderSizePixel = 0
-	box.Parent = gui
-	Instance.new("UICorner", box).CornerRadius = UDim.new(0, 26)
-	local scale = Instance.new("UIScale", box)
-	pcall(function()
-		local cam = workspace.CurrentCamera
-		if cam and cam.ViewportSize.X < 900 then scale.Scale = 0.8 end
-	end)
-	local title = Instance.new("TextLabel")
-	title.BackgroundTransparency = 1
-	title.Position = UDim2.new(0, 28, 0, 12)
-	title.Size = UDim2.new(1, -150, 0, 28)
-	title.Font = Enum.Font.GothamMedium
-	title.TextSize = 18
-	title.TextXAlignment = Enum.TextXAlignment.Left
-	title.TextColor3 = Color3.fromRGB(255, 255, 255)
-	title.Text = "Banana Loading UI Progress"
-	title.Parent = box
-	local pct = Instance.new("TextLabel")
-	pct.BackgroundTransparency = 1
-	pct.AnchorPoint = Vector2.new(1, 0)
-	pct.Position = UDim2.new(1, -28, 0, 12)
-	pct.Size = UDim2.new(0, 110, 0, 28)
-	pct.Font = Enum.Font.GothamMedium
-	pct.TextSize = 18
-	pct.TextXAlignment = Enum.TextXAlignment.Right
-	pct.TextColor3 = Color3.fromRGB(190, 190, 190)
-	pct.Text = "0%"
-	pct.Parent = box
-	local track = Instance.new("Frame")
-	track.Position = UDim2.new(0, 28, 0, 50)
-	track.Size = UDim2.new(1, -56, 0, 8)
-	track.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-	track.BorderSizePixel = 0
-	track.Parent = box
-	Instance.new("UICorner", track).CornerRadius = UDim.new(1, 0)
-	local fill = Instance.new("Frame")
-	fill.Size = UDim2.new(0, 0, 1, 0)
-	fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	fill.BorderSizePixel = 0
-	fill.Parent = track
-	Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
-
-	local L = { value = 0, done = false, steps = 0, expected = 27, lastChange = os.clock(), hidden = {}, conns = {} }
-	getgenv().BananaLoader = L
-
-	function L.Set(v)
-		if L.done then return end
-		v = math.clamp(math.floor(v), 0, 99)
-		if v <= L.value then return end
-		L.value = v
-		L.lastChange = os.clock()
-		pcall(function()
-			pct.Text = v .. "%"
-			TweenService:Create(fill, TweenInfo.new(0.25), { Size = UDim2.new(v / 100, 0, 1, 0) }):Play()
-		end)
-	end
-	function L.Step()
-		L.steps += 1
-		L.Set(10 + 85 * math.min(L.steps / L.expected, 1))
-	end
-	-- hide the ScreenGuis created by the library while it loads
-	function L.HideGuis(list)
-		for _, g in ipairs(list) do
-			if g and g.Parent and g ~= gui and g:IsA("ScreenGui") then
-				L.hidden[g] = g.Enabled
-				pcall(function() g.Enabled = false end)
-			end
-		end
-	end
-	function L.Destroy()
-		L.done = true
-		for _, c in ipairs(L.conns or {}) do pcall(function() c:Disconnect() end) end
-		L.conns = {}
-		pcall(function() gui:Destroy() end)
-		for g, was in pairs(L.hidden) do pcall(function() if g.Parent then g.Enabled = was end end) end
-		L.hidden = {}
-	end
-	function L.Done()
-		if L.done then return end
-		L.done = true
-		L.value = 100
-		pcall(function()
-			pct.Text = "100%"
-			TweenService:Create(fill, TweenInfo.new(0.3), { Size = UDim2.new(1, 0, 1, 0) }):Play()
-		end)
-		task.delay(0.1, function()
-			-- full bar: shows "Ready" and only then releases the script interface
-			pcall(function()
-				pct.Text = "Ready"
-				pct.TextColor3 = Color3.fromRGB(120, 255, 140)
-			end)
-			task.wait(0.15)
-			for _, c in ipairs(L.conns or {}) do pcall(function() c:Disconnect() end) end
-			L.conns = {}
-			for g, was in pairs(L.hidden) do pcall(function() if g.Parent then g.Enabled = was end end) end
-			L.hidden = {}
-			pcall(function()
-				TweenService:Create(box, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play()
-				for _, o in ipairs(box:GetDescendants()) do
-					if o:IsA("TextLabel") then TweenService:Create(o, TweenInfo.new(0.35), { TextTransparency = 1 }):Play()
-					elseif o:IsA("Frame") then TweenService:Create(o, TweenInfo.new(0.35), { BackgroundTransparency = 1 }):Play() end
-				end
-			end)
-			task.wait(0.15)
-			pcall(function() gui:Destroy() end)
-			L.closed = true
-		end)
-	end
-	-- safety lock: only releases the UI if loading stays stuck for too long (2 min)
-	task.spawn(function()
-		while not L.done do
-			task.wait(1)
-			if os.clock() - L.lastChange > 120 then L.Done() end
-		end
-	end)
-	L.Set(3)
-end
-
--- loading screen runs first (5s up to 100%), then the Banana window is created
-do
-	local L = getgenv().BananaLoader
-	if L then
-		for i = 1, 20 do task.wait(1.2 / 20) L.Set(3 + 96 * i / 20) end
-		L.Done()
-		local t0 = os.clock()
-		repeat task.wait(0.1) until L.closed or os.clock() - t0 > 6
-		getgenv().BananaLoader = nil
-	end
-end
-
-local okLib, errLib = pcall(function()
-__bcBefore = {}
-pcall(function()
-	for _, root in ipairs({ (gethui and gethui()) or game:GetService("CoreGui"), game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui") }) do
-		for _, c in ipairs(root:GetChildren()) do __bcBefore[c] = true end
-	end
-end)
-local A =
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/obiiyeuem/vthangsitink/refs/heads/main/zzzz.lua"))()
-	local Main = A.CreateMain({ Title = "Banana Cat Hub", Desc = "- Kaitun Level" })
-	getgenv().BananaX2 = { A = A, Main = Main }
-end)
-if not okLib then
-	getgenv().BananaX2 = nil
-	warn("[Banana UI] could not load, keeping the old status panel: " .. tostring(errLib))
-end
-end
 do
     local v20 = getgenv()
     local _v21 = v20.KaitunFixedCamera
@@ -825,10 +459,10 @@ task.spawn(function()
             until v117.LocalPlayer
             local v122 = v117.LocalPlayer
             local v123, v124, v125 = {}, true, v116 or os.clock()
-            local v126 = Color3.fromRGB(183, 139, 250)
-            local v127 = Color3.fromRGB(183, 139, 250)
-            local v128 = Color3.fromRGB(160, 148, 177)
-            local v129 = Color3.fromRGB(240, 233, 250)
+            local v126 = Color3.fromRGB(255, 214, 10)
+            local v127 = Color3.fromRGB(255, 214, 10)
+            local v128 = Color3.fromRGB(196, 178, 110)
+            local v129 = Color3.fromRGB(255, 247, 220)
             local function v130(p131, p132, p133)
                 local v134 = Instance.new(p131)
                 for v135, v136 in pairs(p132) do
@@ -847,7 +481,7 @@ task.spawn(function()
             local v138 = v130("Frame", {
                 Name = "Backdrop",
                 Size = UDim2.fromScale(1, 1),
-                BackgroundColor3 = Color3.fromRGB(5, 2, 10),
+                BackgroundColor3 = Color3.fromRGB(8, 6, 0),
                 BackgroundTransparency = 1 - v113.DimBackground,
                 BorderSizePixel = 0,
                 ZIndex = 0
@@ -873,7 +507,7 @@ task.spawn(function()
                 local v150 = v130("Frame", {
                     Position = p147,
                     Size = p148,
-                    BackgroundColor3 = Color3.fromRGB(16, 12, 23),
+                    BackgroundColor3 = Color3.fromRGB(22, 18, 5),
                     BackgroundTransparency = 0.04,
                     BorderSizePixel = 0
                 }, p146)
@@ -881,7 +515,7 @@ task.spawn(function()
                     CornerRadius = UDim.new(0, p149 and 2 or 8)
                 }, v150)
                 v130("UIStroke", {
-                    Color = p149 and Color3.fromRGB(161, 113, 232) or Color3.fromRGB(110, 83, 141),
+                    Color = p149 and Color3.fromRGB(255, 200, 0) or Color3.fromRGB(150, 120, 20),
                     Thickness = p149 and 2 or 1,
                     Transparency = p149 and 0.18 or 0.9
                 }, v150)
@@ -906,7 +540,7 @@ task.spawn(function()
             v160.ClipsDescendants = true
             local v161 = v130("Frame", {
                 Size = UDim2.new(0, 160, 1, 0),
-                BackgroundColor3 = Color3.fromRGB(10, 7, 16),
+                BackgroundColor3 = Color3.fromRGB(15, 12, 2),
                 BorderSizePixel = 0
             }, v160)
             v130("UICorner", { CornerRadius = UDim.new(0, 2) }, v161)
@@ -917,10 +551,11 @@ task.spawn(function()
                 Name = "HubLogo",
                 Size = UDim2.fromScale(1, 1),
                 BackgroundTransparency = 1,
-                Image = "rbxthumb://type=Asset&id=102614001940598&w=150&h=150",
+                Image = "", ImageTransparency = 1,
                 ScaleType = Enum.ScaleType.Fit
             }, v162)
-            v151(v161, "VAPE", 65, 20, 94, 23, 18, v129)
+            v151(v161, "BANANA CAT", 65, 20, 94, 23, 15, v129)
+            do local v_e = v151(v162, "🍌", 0, 0, 36, 36, 22, v129); v_e.TextXAlignment = Enum.TextXAlignment.Center end
             v151(v161, v122.DisplayName, 65, 43, 100, 12, 9, v128)
             v151(v161, "Menu", 20, 84, 140, 18, 10, v128)
             local function v164(p165, p166)
@@ -932,7 +567,7 @@ task.spawn(function()
                     Font = Enum.Font.GothamBold,
                     TextSize = 12,
                     TextColor3 = v128,
-                    BackgroundColor3 = Color3.fromRGB(26, 19, 37),
+                    BackgroundColor3 = Color3.fromRGB(34, 28, 8),
                     BackgroundTransparency = 1,
                     BorderSizePixel = 0
                 }, v161)
@@ -949,7 +584,7 @@ task.spawn(function()
                     Font = Enum.Font.GothamBold,
                     TextSize = 10,
                     TextColor3 = v129,
-                    BackgroundColor3 = Color3.fromRGB(32, 24, 46),
+                    BackgroundColor3 = Color3.fromRGB(44, 36, 10),
                     BorderSizePixel = 0
                 }, v161)
                 v130("UICorner", { CornerRadius = UDim.new(0, 8) }, v173)
@@ -968,7 +603,7 @@ task.spawn(function()
             v177.Font = Enum.Font.RobotoMono
             local v178 = v151(v161, "", 20, 498, 120, 12, 8, v128)
             local v179, v180, v181 = {}, {}, {}
-            v151(v160, "Vape Hub", 184, 22, 500, 16, 11, v128)
+            v151(v160, "Banana Cat Hub - Kaitun", 184, 22, 500, 16, 12, v128)
             local v182 = v151(v160, "Overview", 184, 43, 500, 30, 23, v129)
             local v183 = v130("TextButton", {
                 Position = UDim2.fromOffset(704, 20),
@@ -983,7 +618,7 @@ task.spawn(function()
                 Name = "TrackerToggle",
                 Position = UDim2.new(0, 18, 0.5, -20),
                 Size = UDim2.fromOffset(104, 40),
-                BackgroundColor3 = Color3.fromRGB(20, 14, 30),
+                BackgroundColor3 = Color3.fromRGB(26, 21, 5),
                 Text = "V  ·  Open",
                 TextSize = 12,
                 TextColor3 = v126,
@@ -1015,7 +650,7 @@ task.spawn(function()
                 for v192, v193 in ipairs({ { v168, "Overview" }, { v169, "Inventory" } }) do
                     local v194 = v193[2] == p191
                     v193[1].BackgroundTransparency = v194 and 0 or 1
-                    v193[1].BackgroundColor3 = v194 and Color3.fromRGB(57, 35, 83) or Color3.fromRGB(26, 19, 37)
+                    v193[1].BackgroundColor3 = v194 and Color3.fromRGB(92, 74, 10) or Color3.fromRGB(34, 28, 8)
                     v193[1].TextColor3 = v194 and v126 or v128
                 end
             end
@@ -1029,7 +664,7 @@ task.spawn(function()
             local v195 = v145(v137, UDim2.new(0.5, 0, 0, 101), UDim2.fromOffset(620, 50), true)
             v195.Name = "TaskHUD"
             v195.AnchorPoint = Vector2.new(0.5, 0)
-            v195.BackgroundColor3 = Color3.fromRGB(20, 14, 30)
+            v195.BackgroundColor3 = Color3.fromRGB(26, 21, 5)
             local v196 = v151(v195, "Waiting for task", 14, 7, 592, 36, 16, v129)
             v196.TextXAlignment = Enum.TextXAlignment.Center
             v196.TextYAlignment = Enum.TextYAlignment.Center
@@ -1037,12 +672,14 @@ task.spawn(function()
             v196.TextTruncate = Enum.TextTruncate.None
             local v197 = v130("UIScale", { Scale = 1 }, v195)
             -- Task card in the style of the Banana Loading UI Progress (shows what the bot is doing)
-            v195.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+            v195.BackgroundColor3 = Color3.fromRGB(14, 11, 2)
             v195.BackgroundTransparency = 0.05
             v195.Size = UDim2.fromOffset(620, 112)
             for _, v_c in ipairs(v195:GetChildren()) do
                 if v_c:IsA("UIStroke") then
-                    v_c:Destroy()
+                    v_c.Color = Color3.fromRGB(255, 214, 10)
+                    v_c.Thickness = 2
+                    v_c.Transparency = 0
                 elseif v_c:IsA("UICorner") then
                     v_c.CornerRadius = UDim.new(0, 32)
                 end
@@ -1051,7 +688,7 @@ task.spawn(function()
             v196.Size = UDim2.new(1, -68, 0, 38)
             v196.Font = Enum.Font.GothamMedium
             v196.TextSize = 24
-            v196.TextColor3 = Color3.fromRGB(255, 255, 255)
+            v196.TextColor3 = Color3.fromRGB(255, 247, 220)
             v196.TextXAlignment = Enum.TextXAlignment.Left
             v196.TextYAlignment = Enum.TextYAlignment.Center
             v196.TextWrapped = false
@@ -1059,7 +696,7 @@ task.spawn(function()
             local v_trk = v130("Frame", {
                 Position = UDim2.fromOffset(34, 74),
                 Size = UDim2.new(1, -68, 0, 12),
-                BackgroundColor3 = Color3.fromRGB(55, 55, 55),
+                BackgroundColor3 = Color3.fromRGB(70, 58, 16),
                 BorderSizePixel = 0,
                 ClipsDescendants = true
             }, v195)
@@ -1067,7 +704,7 @@ task.spawn(function()
             local v_fl = v130("Frame", {
                 Size = UDim2.new(0.3, 0, 1, 0),
                 Position = UDim2.fromScale(-0.3, 0),
-                BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                BackgroundColor3 = Color3.fromRGB(255, 214, 10),
                 BorderSizePixel = 0
             }, v_trk)
             v130("UICorner", { CornerRadius = UDim.new(1, 0) }, v_fl)
@@ -1091,7 +728,7 @@ task.spawn(function()
             local v208 = v130("Frame", {
                 Position = UDim2.fromOffset(16, 39),
                 Size = UDim2.fromOffset(520, 2),
-                BackgroundColor3 = Color3.fromRGB(49, 36, 65),
+                BackgroundColor3 = Color3.fromRGB(70, 58, 16),
                 BorderSizePixel = 0
             }, v206)
             local v209 = v130("Frame", { Size = UDim2.fromScale(0, 1), BackgroundColor3 = v126, BorderSizePixel = 0 }, v208)
@@ -1136,7 +773,7 @@ task.spawn(function()
             local v221 = v130("TextBox", {
                 Position = UDim2.fromOffset(16, 78),
                 Size = UDim2.new(1, -32, 0, 34),
-                BackgroundColor3 = Color3.fromRGB(29, 21, 42),
+                BackgroundColor3 = Color3.fromRGB(40, 33, 9),
                 BorderSizePixel = 0,
                 PlaceholderText = "Search by item name…",
                 PlaceholderColor3 = v128,
@@ -1238,167 +875,6 @@ task.spawn(function()
                     v185(not v160.Visible)
                 end
             end))
-            -- ===== Banana window hosts the original status cards (the old command center is hidden) =====
-            local bxInv, bxSync, bxActive
-            do
-                local BX = getgenv().BananaX2
-                if BX and BX.Main then
-                    local okUI, errUI = pcall(function()
-                        local Main = BX.Main
-                        local function bxFmt(n)
-                            local s = tostring(math.floor(tonumber(n) or 0))
-                            return s:reverse():gsub("(%d%d%d)", "%1,"):reverse():gsub("^,", "")
-                        end
-                        local function bxFind(text)
-                            for _, root in ipairs({ (gethui and gethui()) or game:GetService("CoreGui"), v122:WaitForChild("PlayerGui") }) do
-                                for _, d in ipairs(root:GetDescendants()) do
-                                    if d:IsA("TextLabel") and d.Text == text then
-                                        return d
-                                    end
-                                end
-                            end
-                        end
-                        -- moves an old card frame into the Banana page, in place of a placeholder label
-                        local function embed(text, frame, h)
-                            local ph
-                            local t0 = os.clock()
-                            repeat
-                                ph = bxFind(text)
-                                if not ph then task.wait(0.1) end
-                            until ph or os.clock() - t0 > 4
-                            if not ph then return false end
-                            local row = ph.Parent
-                            if not (row and row:IsA("GuiObject")) or row:IsA("ScrollingFrame") then return false end
-                            ph.Visible = false
-                            local sc = Instance.new("UIScale")
-                            sc.Parent = frame
-                            frame.AnchorPoint = Vector2.new(0.5, 0)
-                            frame.Position = UDim2.new(0.5, 0, 0, 0)
-                            frame.Size = UDim2.fromOffset(552, h)
-                            frame.Visible = true
-                            frame.Parent = row
-                            local function fit()
-                                local w = row.AbsoluteSize.X
-                                local k = (w > 50) and math.min(1, (w - 8) / 552) or 1
-                                sc.Scale = k
-                                row.Size = UDim2.new(row.Size.X.Scale, row.Size.X.Offset, 0, math.floor(h * k) + 8)
-                            end
-                            fit()
-                            row:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit)
-                            return true
-                        end
-
-                        local cache = {}
-                        local function put(key, lbl, txt)
-                            if cache[key] ~= txt then
-                                cache[key] = txt
-                                lbl.SetText(txt)
-                            end
-                        end
-
-                        local pgStatus = Main.CreatePage({ Page_Name = "Status", Page_Title = "Status" })
-                        local secOv = pgStatus.CreateSection("Overview")
-                        secOv.CreateLabel({ Title = "__BX_OVERVIEW__" })
-                        local secSes = pgStatus.CreateSection("Session")
-                        local lblTime = secSes.CreateLabel({ Title = "Session: 00:00:00" })
-
-                        local pgCtl = Main.CreatePage({ Page_Name = "Controls", Page_Title = "Controls" })
-                        local secGfx = pgCtl.CreateSection("Graphics")
-                        local fps0 = v114.FPSBoost
-                        secGfx.CreateToggle({ Title = "FPS Boost", Desc = "Needs FPSBoost.lua", Default = type(fps0) == "table" and fps0.Enabled == true }, function(val)
-                            local f = v114.FPSBoost
-                            if type(f) ~= "table" or not f.ApplyConfig then
-                                v220.Text = "Execute FPSBoost.lua to enable this control"
-                                return
-                            end
-                            f:ApplyConfig({ FPSBoost = val })
-                        end)
-                        secGfx.CreateToggle({ Title = "Render 3D", Default = true }, function(val)
-                            local f = v114.FPSBoost
-                            local okR, errR = pcall(function()
-                                if type(f) == "table" and f.ApplyConfig then
-                                    f:ApplyConfig({ Render3D = val })
-                                else
-                                    v119:Set3dRenderingEnabled(val)
-                                end
-                            end)
-                            if okR then v237 = val else v220.Text = "Render error: " .. tostring(errR) end
-                        end)
-                        local cam0 = v114.KaitunFixedCamera
-                        secGfx.CreateToggle({ Title = "Lock Camera", Default = cam0 and cam0.Enabled == true or false }, function(val)
-                            local c = v114.KaitunFixedCamera
-                            if c then c:SetEnabled(val) end
-                        end)
-
-                        local pgInv = Main.CreatePage({ Page_Name = "Inventory", Page_Title = "Inventory" })
-                        local secInv = pgInv.CreateSection("Inventory")
-                        secInv.CreateLabel({ Title = "__BX_INVENTORY__" })
-
-                        local fbSync
-                        bxSync = function()
-                            put("time", lblTime, "Session: " .. v177.Text)
-                            if fbSync then fbSync() end
-                        end
-                        task.spawn(function()
-                            local ok1 = pcall(embed, "__BX_OVERVIEW__", v187, 408)
-                            ok1 = ok1 and v187.Parent ~= v160
-                            local ok2 = pcall(embed, "__BX_INVENTORY__", v188, 408)
-                            ok2 = ok2 and v188.Parent ~= v160
-                            if not ok1 then
-                                -- fallback: plain labels
-                                local sec = pgStatus.CreateSection("Status")
-                                local lblTask = sec.CreateLabel({ Title = "Waiting for task" })
-                                local lblLevel = sec.CreateLabel({ Title = "Level / Sea: -" })
-                                local lblRace = sec.CreateLabel({ Title = "Race: -" })
-                                local lblBeli = sec.CreateLabel({ Title = "Beli: -" })
-                                local lblFrag = sec.CreateLabel({ Title = "Fragments: -" })
-                                local lblEq = sec.CreateLabel({ Title = "Equipment: 0 / 6" })
-                                local eqNames = { "Godhuman", "Cursed Dual Katana", "Skull Guitar", "Mirror Fractal", "Valkyrie Helm", "Pull Lever" }
-                                local eqLbl = {}
-                                for _, n in ipairs(eqNames) do eqLbl[n] = sec.CreateLabel({ Title = n }) end
-                                fbSync = function()
-                                    put("task", lblTask, tostring(v196.Text))
-                                    put("lvl", lblLevel, "Level / Sea: " .. v202.Text)
-                                    put("race", lblRace, "Race: " .. v203.Text)
-                                    put("beli", lblBeli, "Beli: " .. v204.Text)
-                                    put("frag", lblFrag, "Fragments: " .. v205.Text)
-                                    put("eq", lblEq, v207.Text)
-                                    for _, n in ipairs(eqNames) do
-                                        if v210[n] then put("eq" .. n, eqLbl[n], v210[n].Text) end
-                                    end
-                                end
-                            end
-                            if not ok2 then
-                                local secI = pgInv.CreateSection("Items")
-                                local lblInv = secI.CreateLabel({ Title = "Loading inventory..." })
-                                local pool = {}
-                                bxInv = function(items)
-                                    lblInv.SetText("Inventory  ·  " .. #items .. " items")
-                                    for i = 1, math.max(#items, #pool) do
-                                        local it = items[i]
-                                        local txt = ""
-                                        if it then
-                                            txt = it.Name .. "  ·  " .. tostring(it.Category):upper() .. "  ·  " .. (it.Mastery and ("Mas " .. bxFmt(it.Mastery)) or ("x" .. bxFmt(it.Count)))
-                                        end
-                                        if not pool[i] and it then
-                                            pool[i] = { lbl = secI.CreateLabel({ Title = txt }), txt = txt }
-                                        elseif pool[i] and pool[i].txt ~= txt then
-                                            pool[i].txt = txt
-                                            pool[i].lbl.SetText(txt)
-                                        end
-                                    end
-                                end
-                            end
-                        end)
-                    end)
-                    if okUI then
-                        bxActive = true
-                    else
-                        bxInv, bxSync = nil, nil
-                        warn("[Banana UI] window build failed, keeping the old status panel: " .. tostring(errUI))
-                    end
-                end
-            end
             local v246, v247, v248
             local v249 = false
             local v250 = nil
@@ -1428,7 +904,7 @@ task.spawn(function()
                     return
                 end
                 local v258 = v257.ViewportSize
-                local v259 = math.max(0.2, math.min(1, (v258.X - 48) / 760, (v258.Y - 150) / 640))
+                local v259 = math.max(0.2, math.min(1.3, (v258.X - 48) / 760, (v258.Y - 150) / 640))
                 v255.Scale = v259
                 v197.Scale = v259
                 local v260 = 76
@@ -1560,7 +1036,7 @@ task.spawn(function()
                             local v318 = v130("Frame", {
                                 Position = UDim2.fromOffset(7, 7),
                                 Size = UDim2.fromOffset(29, 29),
-                                BackgroundColor3 = Color3.fromRGB(47, 30, 70),
+                                BackgroundColor3 = Color3.fromRGB(84, 68, 12),
                                 BorderSizePixel = 0
                             }, v317)
                             v130("UICorner", { CornerRadius = UDim.new(0, 8) }, v318)
@@ -1582,7 +1058,6 @@ task.spawn(function()
                         v227.Stats.InventoryError = nil
                         v219.Text = "Inventory  ·  " .. #v300 .. " items"
                         v220.Text = "Owned items · refreshed every " .. v113.InventoryRefresh .. "s"
-                        if bxInv then pcall(bxInv, v300) end
                     else
                         v227.Stats.InventoryError = tostring(v300)
                         v220.Text = "Inventory unavailable · retrying"
@@ -1628,7 +1103,7 @@ task.spawn(function()
                 v177.Text = ("%02d:%02d:%02d"):format(v331 // 3600, v331 // 60 % 60, v331 % 60)
                 v178.Text = ""
                 for v332, v333 in ipairs(v179) do
-                    v333.BackgroundColor3 = v331 % 60 >= (v332 - 1) * 5 and (v332 % 2 == 0 and v127 or v126) or Color3.fromRGB(48, 35, 65)
+                    v333.BackgroundColor3 = v331 % 60 >= (v332 - 1) * 5 and (v332 % 2 == 0 and v127 or v126) or Color3.fromRGB(66, 54, 14)
                 end
                 table.insert(v181, v326)
                 if #v181 > 20 then
@@ -1638,7 +1113,7 @@ task.spawn(function()
                 for v335, v336 in ipairs(v181) do
                     v334 = math.max(v334, v336)
                 end
-                if v160.Visible or v187.Parent ~= v160 then
+                if v160.Visible then
                     for v337, v338 in ipairs(v180) do
                         local v339 = v181[v337 - (20 - #v181)]
                         v338.Size = UDim2.fromOffset(3, v339 and math.max(2, math.floor(v339 / v334 * 19)) or 2)
@@ -1653,30 +1128,22 @@ task.spawn(function()
                 end
                 v175.Text = "Render 3D: " .. (v237 and "ON" or "OFF")
                 v176.Text = "Lock camera: " .. (v114.KaitunFixedCamera and v114.KaitunFixedCamera.Enabled and "ON" or "OFF")
-                v174.BackgroundColor3 = type(v340) == "table" and v340.Enabled and Color3.fromRGB(57, 35, 83) or Color3.fromRGB(32, 24, 46)
-                v175.BackgroundColor3 = v237 and Color3.fromRGB(49, 31, 72) or Color3.fromRGB(32, 24, 46)
+                v174.BackgroundColor3 = type(v340) == "table" and v340.Enabled and Color3.fromRGB(92, 74, 10) or Color3.fromRGB(44, 36, 10)
+                v175.BackgroundColor3 = v237 and Color3.fromRGB(80, 64, 10) or Color3.fromRGB(44, 36, 10)
                 local v341 = 0
                 for v342, v343 in pairs(v210) do
                     local v344 = v298[v342] or (v342 == "Skull Guitar" and v298["Soul Guitar"]) or (v342 == "Godhuman" and v298.GodHuman) or (v342 == "Pull Lever" and v227.Stats.LeverDone)
                     local v345 = v342 == "Pull Lever" and v227.Stats.LeverKnown or (v342 ~= "Pull Lever" and (v227.Stats.InventoryError == nil) and (v227.Stats.InventoryCount > 0))
-                    v343.Text = (v344 and "✓ " or "✗ ") .. v342
-                    v343.TextColor3 = v344 and Color3.fromRGB(80, 225, 120) or Color3.fromRGB(240, 80, 80)
-                    v343.Parent.BackgroundColor3 = v344 and Color3.fromRGB(44, 28, 64) or Color3.fromRGB(26, 19, 37)
+                    v343.Text = (v344 and "✓ " or "") .. v342
+                    v343.TextColor3 = v344 and v126 or v128
+                    v343.Parent.BackgroundColor3 = v344 and Color3.fromRGB(70, 56, 10) or Color3.fromRGB(34, 28, 8)
                     if v344 then
                         v341 = v341 + 1
                     end
                 end
                 v207.Text = "Equipment  ·  " .. v341 .. " / 6"
                 v209.Size = UDim2.fromScale(v341 / 6, 1)
-                if bxSync then pcall(bxSync) end
             end))
-            if bxActive then
-                v113.ToggleKey = Enum.KeyCode.Unknown
-                v160.Visible = false
-                v184.Visible = false
-                v138.BackgroundTransparency = 1
-                v139.Enabled = false
-            end
             v256()
             return v227
         end)()

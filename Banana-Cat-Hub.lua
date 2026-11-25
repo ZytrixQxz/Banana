@@ -37161,15 +37161,9 @@ SettingsAimbotSection.CreateToggle(
 	end
 )
 
-SettingsAimbotSection.CreateToggle(
-	{ Title = "Auto Aimbot Gun", Desc = nil, Default = Settings["Auto Aimbot Gun"] or false },
-	function(b)
-		SaveSettings("Auto Aimbot Gun", b)
-	end
-)
 local b = require(game:GetService("ReplicatedStorage").Modules.CombatUtil).GetTargetPosition
 require(game:GetService("ReplicatedStorage").Modules.CombatUtil).GetTargetPosition = function(s, X, g, f, R)
-	if Settings["Auto Aimbot Gun"] then
+	if Settings["Auto Aimbot"] then
 		local m = nil
 		pcall(function()
 			if Settings["Select Method Aimbot"] == "Select Player" and Settings["Select Player PVP"] then

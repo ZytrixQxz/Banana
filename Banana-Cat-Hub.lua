@@ -37161,76 +37161,66 @@ SettingsAimbotSection.CreateToggle(
 	end
 )
 
-local b = require(game:GetService("ReplicatedStorage").Modules.CombatUtil).GetTargetPosition
-require(game:GetService("ReplicatedStorage").Modules.CombatUtil).GetTargetPosition = function(s, X, g, f, R)
-	if Settings["Auto Aimbot"] then
-		local m = nil
-		pcall(function()
-			if Settings["Select Method Aimbot"] == "Select Player" and Settings["Select Player PVP"] then
-				m = game.Workspace.Characters:FindFirstChild(Settings["Select Player PVP"]) or game.Workspace:FindFirstChild(Settings["Select Player PVP"]) or (game.Players:FindFirstChild(Settings["Select Player PVP"]) and game.Players[Settings["Select Player PVP"]].Character)
-			else
-				m = ClosestPartaimbot()
-			end
-		end)
-		if m then
-			local hrp = m:FindFirstChild("HumanoidRootPart") or m:FindFirstChild("Torso") or m:FindFirstChild("UpperTorso")
-			local head = m:FindFirstChild("Head")
-			local upperTorso = m:FindFirstChild("UpperTorso") or m:FindFirstChild("Torso")
-			local lowerTorso = m:FindFirstChild("LowerTorso")
-			local hum = m:FindFirstChildOfClass("Humanoid")
-			if hrp or head then
-				local targetPart = head or upperTorso or hrp or lowerTorso
-				local vel = hrp and hrp.Velocity or (head and head.Velocity) or Vector3.new(0,0,0)
-				local moveDir = hum and hum.MoveDirection or Vector3.new(0,0,0)
-				local ping = 0
-				pcall(function()
-					ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue() / 1000
-				end)
-				local dist = 0
-				pcall(function()
-					local localChar = game.Players.LocalPlayer.Character or workspace:FindFirstChild(game.Players.LocalPlayer.Name)
-					local localRoot = localChar and (localChar:FindFirstChild("HumanoidRootPart") or localChar:FindFirstChild("Torso"))
-					if localRoot and hrp then
-						dist = (localRoot.Position - hrp.Position).Magnitude
-					elseif localRoot and head then
-						dist = (localRoot.Position - head.Position).Magnitude
-					end
-				end)
-				local predictionFactor = 0.55 + ping * 2.0 + (dist / 900) * 0.20
-				if vel.Magnitude > 35 then predictionFactor = predictionFactor + 0.12 end
-				local predictedPos = targetPart.Position + (vel * predictionFactor)
-				if moveDir.Magnitude > 0.12 then
-					predictedPos = predictedPos + (moveDir * (4.5 + dist/300))
-				end
-				if vel.Y > 12 then
-					predictedPos = predictedPos + Vector3.new(0, vel.Y * 0.32, 0)
-				elseif vel.Y < -12 then
-					predictedPos = predictedPos + Vector3.new(0, vel.Y * 0.18, 0)
-				end
-				if head and targetPart == head then
-					predictedPos = predictedPos + Vector3.new(0, 0.35, 0)
-				end
-				if dist > 100 then
-					predictedPos = predictedPos + Vector3.new(0, (dist / 150) * 0.8, 0)
-				end
-				if dist > 200 then
-					predictedPos = predictedPos + Vector3.new(0, (dist / 200), 0)
-				end
-				if getgenv().LastGunAimPos then
-					local smooth = dist < 80 and 0.80 or 0.70
-					predictedPos = getgenv().LastGunAimPos:Lerp(predictedPos, smooth)
-				end
-				getgenv().LastGunAimPos = predictedPos
-				return predictedPos
-			else
-				pcall(function()
-					return m:GetPivot().Position
-				end)
-			end
-		end
-	end
-	return b(s, X, g, f, R)
+-- Unified Aimbot target provider: the single Auto Aimbot toggle also feeds CombatUtil.
+-- Keep the original CombatUtil implementation as a safe fallback.
+local CombatUtil = require(game:GetService("ReplicatedStorage").Modules.CombatUtil)
+local OriginalGetTargetPosition = CombatUtil.GetTargetPosition
+CombatUtil.GetTargetPosition = function(self, ...)
+    if Settings["Auto Aimbot"] then
+        local target = nil
+        pcall(function()
+            if Settings["Select Method Aimbot"] == "Select Player" and Settings["Select Player PVP"] then
+                local targetName = Settings["Select Player PVP"]
+                local players = game:GetService("Players")
+                local selectedPlayer = players:FindFirstChild(targetName)
+                target = (workspace:FindFirstChild("Characters") and workspace.Characters:FindFirstChild(targetName))
+                    or workspace:FindFirstChild(targetName)
+                    or (selectedPlayer and selectedPlayer.Character)
+            else
+                target = ClosestPartaimbot()
+            end
+        end)
+
+        if target and target:IsA("Model") then
+            local root = target:FindFirstChild("HumanoidRootPart")
+                or target:FindFirstChild("UpperTorso")
+                or target:FindFirstChild("Torso")
+            local head = target:FindFirstChild("Head")
+            local humanoid = target:FindFirstChildOfClass("Humanoid")
+            if (not humanoid or humanoid.Health > 0) and (root or head) then
+                local part = head or root
+                local velocity = (root and root.AssemblyLinearVelocity)
+                    or (part and part.AssemblyLinearVelocity)
+                    or Vector3.zero
+                local moveDirection = humanoid and humanoid.MoveDirection or Vector3.zero
+                local distance = 0
+                pcall(function()
+                    local localPlayer = game:GetService("Players").LocalPlayer
+                    local character = localPlayer.Character
+                    local localRoot = character and character:FindFirstChild("HumanoidRootPart")
+                    if localRoot then distance = (localRoot.Position - part.Position).Magnitude end
+                end)
+                local ping = 0
+                pcall(function()
+                    ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue() / 1000
+                end)
+                local lead = 0.35 + ping * 1.6 + math.clamp(distance / 1200, 0, 0.25)
+                local predicted = part.Position + velocity * lead
+                if moveDirection.Magnitude > 0.15 then
+                    predicted = predicted + moveDirection * (3.2 + distance / 400)
+                end
+                if part == head then predicted = predicted + Vector3.new(0, 0.25, 0) end
+                if getgenv().LastAimPos then
+                    predicted = getgenv().LastAimPos:Lerp(predicted, distance < 50 and 0.85 or 0.75)
+                end
+                getgenv().LastAimPos = predicted
+                return predicted
+            end
+        end
+    end
+    return OriginalGetTargetPosition(self, ...)
 end
+
 MISCPVPSection = PvpTab.CreateSection("MISC PVP")
 MISCPVPSection.CreateSlider(
 	{ Title = "Input WalkSpeed", Min = 0, Max = 220, Default = math.min(tonumber(Settings["Input WalkSpeed"]) or 16, 220), Precise = true },

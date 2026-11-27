@@ -2772,8 +2772,14 @@ do
     local LabelBounty = SectionPlayer.CreateLabel({ Title = "Bounty / Honor: Loading..." })
     local LabelFragments = SectionPlayer.CreateLabel({ Title = "Fragments: Loading..." })
     local LabelLevel = SectionPlayer.CreateLabel({ Title = "Level: Loading..." })
-    local LabelRaceV4 = SectionPlayer.CreateLabel({ Title = "Race: Loading..." })
-    local LabelRaceGear = SectionPlayer.CreateLabel({ Title = "Gears: Loading..." })
+    -- One single line for the race: "Race : Draco - V4 | Fire Fragment - 2/3 (status)"
+    local RaceLine = SectionPlayer.CreateLabel({ Title = "Race: Loading..." })
+    local raceHead, raceGear = "Race: Loading...", ""
+    local function pushRaceLine()
+        RaceLine.SetText(raceGear ~= "" and (raceHead .. " | " .. raceGear) or raceHead)
+    end
+    local LabelRaceV4 = { SetText = function(x) raceHead = x; pushRaceLine() end }
+    local LabelRaceGear = { SetText = function(x) raceGear = x; pushRaceLine() end }
 
     spawn(function()
         local function FormatBounty(val)
@@ -2844,7 +2850,7 @@ do
                 local raceObj = data and data:FindFirstChild("Race")
                 if not raceObj then
                     LabelRaceV4.SetText("Race : N/A")
-                    LabelRaceGear.SetText("Gears : N/A")
+                    LabelRaceGear.SetText("")
                     return
                 end
                 local CommF = game.ReplicatedStorage.Remotes.CommF_
@@ -2859,7 +2865,7 @@ do
                 if rawRace == "Draco" then
                     LabelRaceV4.SetText("Race : Draco - " .. (hasV4 and "V4" or "No V4"))
                     if not hasV4 then
-                        LabelRaceGear.SetText("Race Draco : Fire Fragment - 0/3 (Transform locked)")
+                        LabelRaceGear.SetText("Fire Fragment - 0/3 (Transform locked)")
                         return
                     end
                     local k, r, cost
@@ -2880,7 +2886,7 @@ do
                         gears, status = getgenv().__DracoGearsLast or 0, "Training"
                     end
                     getgenv().__DracoGearsLast = gears
-                    LabelRaceGear.SetText("Race Draco : Fire Fragment - " .. gears .. "/3 (" .. status .. ")  [k=" .. tostring(k) .. ",r=" .. tostring(r) .. "]")
+                    LabelRaceGear.SetText("Fire Fragment - " .. gears .. "/3 (" .. status .. ")")
                     return
                 end
 
@@ -2906,12 +2912,12 @@ do
                         end
                         count = math.max(count, math.clamp((tonumber(rd.A) or 0) + (tonumber(rd.B) or 0), 0, 3))
                         if count <= 0 then
-                            LabelRaceGear.SetText("Race : " .. raceName .. " Gears - Transform")
+                            LabelRaceGear.SetText("Gears - Transform")
                         else
-                            LabelRaceGear.SetText("Race : " .. raceName .. " Gears - Gear " .. count .. "  [" .. table.concat(list, " | ") .. "]")
+                            LabelRaceGear.SetText("Gears - Gear " .. count .. "  [" .. table.concat(list, " | ") .. "]")
                         end
                     else
-                        LabelRaceGear.SetText("Race : " .. raceName .. " Gears - N/A")
+                        LabelRaceGear.SetText("Gears - N/A")
                     end
                     return
                 end
@@ -2923,7 +2929,7 @@ do
                 pcall(function() v2 = CommF:InvokeServer("Alchemist", "1") end)
                 if v3 == -2 then ver = "V3" elseif v2 == -2 then ver = "V2" end
                 LabelRaceV4.SetText("Race : " .. raceName .. " - " .. ver)
-                LabelRaceGear.SetText("Gears : Not V4 yet")
+                LabelRaceGear.SetText("")
             end)
         end
     end)
@@ -20836,6 +20842,7 @@ getgenv().buychip = true
 -- forceFruit = true: always take a fruit out of storage to pay for the Raid and never hop servers
 -- (used by Fully Trial Draco when it needs Fragments).
 function AutoRaidStep(forceFruit)
+	if forceFruit then getgenv().__RaidFruitTick = tick() end
 	local l = game.PlaceId == getgenv().CheckPlaceId2
 		and (game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button:FindFirstChild("Main"))
 	l = if game.PlaceId == getgenv().CheckPlaceId
@@ -20878,6 +20885,7 @@ function AutoRaidStep(forceFruit)
 		if l then
 			repeat
 				task.wait()
+				if forceFruit then getgenv().__RaidFruitTick = tick() end
 				if not getgenv().KillMobRaid and Settings["Kill Aura Only Raid And Volcano"] then
 					getgenv().KillMobRaid = true
 					local y = Settings["Time Delay Kill"] or 5
@@ -21371,7 +21379,9 @@ do
 
 	task.spawn(function()
 		while task.wait(0.75) and getgenv().__FruitGen == FruitGen do
-			if Settings["Auto Store Fruit"] then
+			-- Fully Trial Draco needs the fruit in hand: Auto Store Fruit is ignored only while it runs the Raid for Fragments
+			local raidBusy = (getgenv().__RaidFruitTick and tick() - getgenv().__RaidFruitTick < 30) or false
+			if Settings["Auto Store Fruit"] and not raidBusy then
 				local okL, errL = pcall(UpdStFruit)
 				if not okL then say("Store Fruit", "Error: " .. tostring(errL)) end
 			end
@@ -26200,48 +26210,67 @@ function BuyGearDracoV4()
 	end
 end
 -- ===== Fully Trial Draco: pause training while V4 is active =====
--- Waiting spot: the round altar/fountain in the Haunted Castle hall. To use another spot:
---   getgenv().DracoV4SafeSpot = CFrame.new(x, y, z)
+-- Waiting spot: the fountain in front of the Haunted Castle.
+-- Priority: 1) getgenv().DracoV4SafeSpot (CFrame)  2) spot saved with the "Save Pause Spot Here" button
+--           3) a part/model named "fountain" inside Map["Haunted Castle"]  4) castle entrance
 function DracoV4GetSafeSpot()
 	if typeof(getgenv().DracoV4SafeSpot) == "CFrame" then
 		return getgenv().DracoV4SafeSpot
 	end
+	local saved = Settings["V4 Safe Spot"]
+	if type(saved) == "table" and tonumber(saved.x) and tonumber(saved.y) and tonumber(saved.z) then
+		return CFrame.new(tonumber(saved.x), tonumber(saved.y), tonumber(saved.z))
+	end
 	local cf
 	pcall(function()
-		local det = workspace.Map["Haunted Castle"].Summoner.Detection
-		cf = det.CFrame * CFrame.new(0, 3, 0)
+		local hc = workspace.Map:FindFirstChild("Haunted Castle")
+		if not hc then
+			return
+		end
+		for _, d in ipairs(hc:GetDescendants()) do
+			if string.find(string.lower(d.Name), "fountain") then
+				if d:IsA("BasePart") then
+					cf = d.CFrame * CFrame.new(0, 8, 0)
+					return
+				elseif d:IsA("Model") then
+					cf = d:GetPivot() * CFrame.new(0, 8, 0)
+					return
+				end
+			end
+		end
 	end)
-	return cf or CFrame.new(-9513.47, 142.1 + 3, 5528.84)
+	return cf or CFrame.new(-9509.35, 142.13 + 3, 5535.16)
 end
 function DracoV4IsOn()
 	local ch = t.Character
 	local rt = ch and ch:FindFirstChild("RaceTransformed")
 	return rt ~= nil and rt.Value == true
 end
-function DracoV4PauseNeeded()
-	return Settings["Draco V4 Safe Pause"] ~= false and game.PlaceId == getgenv().CheckPlaceId and DracoV4IsOn()
+-- Shared by Fully Trial Draco and the normal races (Auto Finish Train Quest)
+function V4PauseNeeded(settingKey)
+	return Settings[settingKey] ~= false and game.PlaceId == getgenv().CheckPlaceId and DracoV4IsOn()
 end
-function DracoV4PauseStep()
-	if not DracoV4PauseNeeded() then
-		if getgenv().__DracoV4Paused then
-			getgenv().__DracoV4Paused = false
+function V4PauseStep(settingKey, statusFn, flagKey)
+	if not V4PauseNeeded(settingKey) then
+		if getgenv()[flagKey] then
+			getgenv()[flagKey] = false
 			pcall(function()
 				A.CreateNoti({ Title = "Banana Cat Hub", Desc = "V4 ended: training resumed", ShowTime = 4 })
 			end)
 		end
 		return false
 	end
-	local status = CheckAcientOneDracoStatus()
+	local status = tostring(statusFn())
 	local training = status == "Required Train More"
 		or string.find(status, "^Remaining") ~= nil
 		or string.find(status, "^Upgrades completed") ~= nil
 	if not training then
 		return false
 	end
-	if not getgenv().__DracoV4Paused then
-		getgenv().__DracoV4Paused = true
+	if not getgenv()[flagKey] then
+		getgenv()[flagKey] = true
 		pcall(function()
-			A.CreateNoti({ Title = "Banana Cat Hub", Desc = "Draco V4 active: training paused, waiting at the Haunted Castle fountain", ShowTime = 4 })
+			A.CreateNoti({ Title = "Banana Cat Hub", Desc = "V4 active: training paused, waiting at the Haunted Castle fountain", ShowTime = 4 })
 		end)
 	end
 	local spot = DracoV4GetSafeSpot()
@@ -26249,6 +26278,30 @@ function DracoV4PauseStep()
 		toTarget(spot)
 	end
 	return true
+end
+function DracoV4PauseNeeded()
+	return V4PauseNeeded("Draco V4 Safe Pause")
+end
+function DracoV4PauseStep()
+	return V4PauseStep("Draco V4 Safe Pause", CheckAcientOneDracoStatus, "__DracoV4Paused")
+end
+function RaceV4PauseNeeded()
+	return V4PauseNeeded("Race V4 Safe Pause")
+end
+function RaceV4PauseStep()
+	return V4PauseStep("Race V4 Safe Pause", CheckAcientOneStatus, "__RaceV4Paused")
+end
+function SaveV4PauseSpotHere()
+	local ch = t.Character
+	local hrp = ch and ch:FindFirstChild("HumanoidRootPart")
+	if not hrp then
+		return
+	end
+	local p = hrp.Position
+	SaveSettings("V4 Safe Spot", { x = p.X, y = p.Y, z = p.Z })
+	pcall(function()
+		A.CreateNoti({ Title = "Banana Cat Hub", Desc = "V4 pause spot saved here", ShowTime = 4 })
+	end)
 end
 
 -- ===== Fully Trial Draco: Raid for Fragments =====
@@ -26829,6 +26882,12 @@ RaceDracoSection.CreateToggle(
 	},
 	function(g)
 		SaveSettings("Draco V4 Safe Pause", g)
+	end
+)
+RaceDracoSection.CreateButton(
+	{ Title = "Save Pause Spot Here", Desc = "Stand on the Haunted Castle fountain and press" },
+	function()
+		SaveV4PauseSpotHere()
 	end
 )
 
@@ -27971,6 +28030,9 @@ RaceV4Section.CreateToggle(
 						end
 						TurnOnV4()
 						BuyGearV4()
+						if RaceV4PauseStep() then
+							return
+						end
 						local l = DetectMob(e)
 						if l then
 							repeat
@@ -27984,7 +28046,7 @@ RaceV4Section.CreateToggle(
 								else
 									toTarget(l.HumanoidRootPart.CFrame * CFrame.new(7, 20, 0))
 								end
-							until not IsMobAlive(l) or not Settings["Auto Finish Train Quest"] or not CheckGoTrain()
+							until not IsMobAlive(l) or not Settings["Auto Finish Train Quest"] or not CheckGoTrain() or RaceV4PauseNeeded()
 						elseif typeof(e) == "table" then
 							if #N >= #e then
 								N = {}
@@ -28023,6 +28085,22 @@ RaceV4Section.CreateToggle(
 			end)
 		end
 		SaveSettings("Auto Finish Train Quest", g)
+	end
+)
+RaceV4Section.CreateToggle(
+	{
+		Title = "Race V4 Safe Pause",
+		Desc = "Auto Finish Train Quest: pause training while V4 is active and wait at the Haunted Castle fountain",
+		Default = Settings["Race V4 Safe Pause"] ~= false,
+	},
+	function(g)
+		SaveSettings("Race V4 Safe Pause", g)
+	end
+)
+RaceV4Section.CreateButton(
+	{ Title = "Save Pause Spot Here", Desc = "Stand on the Haunted Castle fountain and press (used by Draco and normal races)" },
+	function()
+		SaveV4PauseSpotHere()
 	end
 )
 RaceV4Section.CreateToggle(

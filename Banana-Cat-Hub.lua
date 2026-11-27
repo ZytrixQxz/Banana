@@ -2664,6 +2664,32 @@ function GetFarNpcCFrame(name, npc, inst)
 	local ok, r = pcall(scan, npc, 0)
 	return ok and r or nil
 end
+-- Checks if an NPC dialogue box is open, without depending on a single interface.
+-- Keeps checking the current interface ("Main.Dialogue") and ALSO checks the names the
+-- old interface used before the last update, so if Blox Fruits switches back and forth,
+-- the farm keeps detecting the dialogue and working normally either way.
+function IsNpcDialogueVisible()
+	local mainGui = t.PlayerGui and t.PlayerGui:FindFirstChild("Main")
+	if not mainGui then
+		return false
+	end
+	local ok, result = pcall(function()
+		-- Current interface
+		local current = mainGui:FindFirstChild("Dialogue")
+		if current and current.Visible then
+			return true
+		end
+		-- Previous interface (and other names Blox Fruits has used for this frame)
+		for _, name in ipairs({ "SimpleDialog", "DialogFrame", "NPCDialog", "NpcDialogue", "Dialog" }) do
+			local legacy = mainGui:FindFirstChild(name)
+			if legacy and legacy.Visible then
+				return true
+			end
+		end
+		return false
+	end)
+	return ok and result or false
+end
 function DetectNpc(f)
 	local K = t.Character and (t.Character:FindFirstChild("HumanoidRootPart"))
 	if not K then
@@ -28681,7 +28707,7 @@ function GuitarPuzzleProgress()
 			SpecialHop("FullMoon")
 		end
 	else
-		if t.PlayerGui.Main.Dialogue.Visible then
+		if IsNpcDialogueVisible() then
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 		end
@@ -29394,7 +29420,7 @@ function GetCDK()
 				toTarget(game:GetService("Workspace").Map.Turtle.Cursed[g].CFrame)
 			end
 		end
-		if t.PlayerGui.Main.Dialogue.Visible then
+		if IsNpcDialogueVisible() then
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 		end

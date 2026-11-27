@@ -2773,6 +2773,7 @@ do
     local LabelFragments = SectionPlayer.CreateLabel({ Title = "Fragments: Loading..." })
     local LabelLevel = SectionPlayer.CreateLabel({ Title = "Level: Loading..." })
     local LabelRaceV4 = SectionPlayer.CreateLabel({ Title = "Race: Loading..." })
+    local LabelRaceGear = SectionPlayer.CreateLabel({ Title = "Gears: Loading..." })
 
     spawn(function()
         local function FormatBounty(val)
@@ -2833,61 +2834,84 @@ do
                 end
             end)
 
-            -- Race: shows the race name + version (V1/V2/V3), or the V4 gear state.
-            --   Race : Shark - V2
-            --   Race : Shark Gears - Transform   (V4 unlocked, no gear yet)
-            --   Race : Shark Gears - Gear 2       (V4 with 1..3 gears)
-            --   Race Draco : Fire Fragment - 3    (Draco)
+            -- Race info (2 lines):
+            --   Race : Shark - V2                 /  Gears : -
+            --   Race : Shark - V4                 /  Race : Shark Gears - Transform | Gear 2  [Alpha | Omega | Blank]
+            --   Race : Draco - V4                 /  Race Draco : Fire Fragment - 2/3  (status)
             pcall(function()
                 local lp = game.Players.LocalPlayer
                 local data = lp:FindFirstChild("Data")
                 local raceObj = data and data:FindFirstChild("Race")
                 if not raceObj then
-                    LabelRaceV4.SetText("Race: N/A")
+                    LabelRaceV4.SetText("Race : N/A")
+                    LabelRaceGear.SetText("Gears : N/A")
                     return
                 end
                 local CommF = game.ReplicatedStorage.Remotes.CommF_
                 local rawRace = tostring(raceObj.Value)
                 local displayNames = { Fishman = "Shark", Skypiea = "Angel", Mink = "Rabbit" }
                 local raceName = displayNames[rawRace] or rawRace
-                local hasV4 = lp.Character and lp.Character:FindFirstChild("RaceTransformed") ~= nil
+                local hasV4 = lp.Character ~= nil and lp.Character:FindFirstChild("RaceTransformed") ~= nil
 
-                -- Gears already chosen at the Temple of Time (0..3)
-                local function GetGearCount()
-                    local info
-                    pcall(function() info = CommF:InvokeServer("TempleClock", "Check") end)
-                    if type(info) == "table" and type(info.RaceDetails) == "table" then
-                        local done = (tonumber(info.RaceDetails.A) or 0) + (tonumber(info.RaceDetails.B) or 0)
-                        return math.clamp(done, 0, 3)
-                    end
-                    return nil
-                end
-
+                ------------------------------------------------------------------
+                -- Draco: "Fire Fragment" = gears bought at the Dragon Dojo
+                ------------------------------------------------------------------
                 if rawRace == "Draco" then
-                    -- Draco: "Fire Fragment" = gears bought at the Dragon Dojo (same UpgradeRace check the hub uses).
-                    local gears = 0
-                    if hasV4 then
-                        local k, r
-                        pcall(function() k, r = CommF:InvokeServer("UpgradeRace", "Check") end)
-                        r = tonumber(r)
-                        if k == 5 then
-                            gears = 3
-                        elseif (k == 2 or k == 4 or k == 6 or k == 7) and r then
-                            gears = math.clamp(r - 2, 0, 3)
-                        end
+                    LabelRaceV4.SetText("Race : Draco - " .. (hasV4 and "V4" or "No V4"))
+                    if not hasV4 then
+                        LabelRaceGear.SetText("Race Draco : Fire Fragment - 0/3 (Transform locked)")
+                        return
                     end
-                    LabelRaceV4.SetText("Race Draco : Fire Fragment - " .. gears)
+                    local k, r, cost
+                    pcall(function() k, r, cost = CommF:InvokeServer("UpgradeRace", "Check", 2) end)
+                    r = tonumber(r)
+                    local gears, status
+                    if k == 5 then
+                        gears, status = 3, "Full"
+                    elseif k == 6 and r then
+                        gears, status = math.clamp(r - 2, 0, 3), "Training"
+                    elseif (k == 2 or k == 4 or k == 7) and r then
+                        gears, status = math.clamp(r - 2, 0, 3), "Can buy gear (" .. tostring(cost) .. " Fragments)"
+                    elseif k == 8 and r then
+                        gears, status = getgenv().__DracoGearsLast or 0, "Training " .. r .. "/10"
+                    elseif k == 0 then
+                        gears, status = getgenv().__DracoGearsLast or 0, "Ready for Trial"
+                    else
+                        gears, status = getgenv().__DracoGearsLast or 0, "Training"
+                    end
+                    getgenv().__DracoGearsLast = gears
+                    LabelRaceGear.SetText("Race Draco : Fire Fragment - " .. gears .. "/3 (" .. status .. ")  [k=" .. tostring(k) .. ",r=" .. tostring(r) .. "]")
                     return
                 end
 
+                ------------------------------------------------------------------
+                -- Other races: V4 gears via Temple of Time
+                ------------------------------------------------------------------
                 if hasV4 then
-                    local done = GetGearCount()
-                    if done == nil then
-                        LabelRaceV4.SetText("Race : " .. raceName .. " Gears - N/A")
-                    elseif done <= 0 then
-                        LabelRaceV4.SetText("Race : " .. raceName .. " Gears - Transform")
+                    LabelRaceV4.SetText("Race : " .. raceName .. " - V4")
+                    local info
+                    pcall(function() info = CommF:InvokeServer("TempleClock", "Check") end)
+                    if type(info) == "table" and type(info.RaceDetails) == "table" then
+                        local rd = info.RaceDetails
+                        local names = { A = "Alpha", B = "Omega" }
+                        local list, count = {}, 0
+                        for i = 1, 3 do
+                            local g = type(rd.Gears) == "table" and rd.Gears[i] or nil
+                            if names[g] then
+                                count = count + 1
+                                list[i] = names[g]
+                            else
+                                list[i] = "Blank"
+                            end
+                        end
+                        count = math.max(count, math.clamp((tonumber(rd.A) or 0) + (tonumber(rd.B) or 0), 0, 3))
+                        if count <= 0 then
+                            LabelRaceGear.SetText("Race : " .. raceName .. " Gears - Transform")
+                        else
+                            LabelRaceGear.SetText("Race : " .. raceName .. " Gears - Gear " .. count .. "  [" .. table.concat(list, " | ") .. "]")
+                        end
                     else
-                        LabelRaceV4.SetText("Race : " .. raceName .. " Gears - Gear " .. done)
+                        LabelRaceGear.SetText("Race : " .. raceName .. " Gears - N/A")
                     end
                     return
                 end
@@ -2899,6 +2923,7 @@ do
                 pcall(function() v2 = CommF:InvokeServer("Alchemist", "1") end)
                 if v3 == -2 then ver = "V3" elseif v2 == -2 then ver = "V2" end
                 LabelRaceV4.SetText("Race : " .. raceName .. " - " .. ver)
+                LabelRaceGear.SetText("Gears : Not V4 yet")
             end)
         end
     end)
@@ -26588,7 +26613,9 @@ function FullyDraco()
 									if t:DistanceFromCharacter((g.WorldPivot * R).Position) > 8 then
 										toTarget(g.WorldPivot * R)
 									end
-									if t:DistanceFromCharacter(g.WorldPivot.Position) < 100 then
+									if Settings["Use Skull Guitar with fix lava"] then
+										UseSkullGuitarFixLava(g)
+									elseif t:DistanceFromCharacter(g.WorldPivot.Position) < 100 then
 										AutoUseSkillFixLava()
 									end
 									getgenv().AimPos = g.WorldPivot
@@ -26616,7 +26643,9 @@ function FullyDraco()
 								if t:DistanceFromCharacter((g.WorldPivot * R).Position) > 8 then
 									toTarget(g.WorldPivot * R)
 								end
-								if t:DistanceFromCharacter(g.WorldPivot.Position) < 100 then
+								if Settings["Use Skull Guitar with fix lava"] then
+									UseSkullGuitarFixLava(g)
+								elseif t:DistanceFromCharacter(g.WorldPivot.Position) < 100 then
 									AutoUseSkillFixLava()
 								end
 								getgenv().AimPos = g.WorldPivot
@@ -31139,6 +31168,12 @@ SettingsVolcanoSection.CreateDropdown(
 	},
 	function(g, f)
 		SaveSettings("Select Weapons Fix Lava", g, f)
+	end
+)
+SettingsVolcanoSection.CreateToggle(
+	{ Title = "Use Skull Guitar with fix lava", Desc = nil, Default = Settings["Use Skull Guitar with fix lava"] or false },
+	function(g)
+		SaveSettings("Use Skull Guitar with fix lava", g)
 	end
 )
 SettingsVolcanoSection.CreateDropdown(

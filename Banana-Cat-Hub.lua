@@ -2664,117 +2664,6 @@ function GetFarNpcCFrame(name, npc, inst)
 	local ok, r = pcall(scan, npc, 0)
 	return ok and r or nil
 end
--- Checks if an NPC dialogue box is open, without depending on a single interface.
--- Keeps checking the current interface ("Main.Dialogue") and ALSO checks the names the
--- old interface used before the last update, so if Blox Fruits switches back and forth,
--- the farm keeps detecting the dialogue and working normally either way.
-function IsNpcDialogueVisible()
-	local mainGui = t.PlayerGui and t.PlayerGui:FindFirstChild("Main")
-	if not mainGui then
-		return false
-	end
-	local ok, result = pcall(function()
-		-- Current interface
-		local current = mainGui:FindFirstChild("Dialogue")
-		if current and current.Visible then
-			return true
-		end
-		-- Previous interface (and other names Blox Fruits has used for this frame)
-		for _, name in ipairs({ "SimpleDialog", "DialogFrame", "NPCDialog", "NpcDialogue", "Dialog" }) do
-			local legacy = mainGui:FindFirstChild(name)
-			if legacy and legacy.Visible then
-				return true
-			end
-		end
-		return false
-	end)
-	return ok and result or false
-end
--- Old interface addition for Auto Quest (Katakuri/Bones/Tyrant): some quest givers (like the
--- Haunted Castle Mission Giver 2) open a "Missão" picker ("Por favor selecione uma missão.")
--- with the sub-quests as clickable buttons, instead of starting the quest straight away like
--- the current interface does. This does NOT change the normal StartQuest call: it only runs
--- as an extra step, clicks one of the quest buttons (never "Esquece"/skip), so Auto Quest keeps
--- working if this old picker shows up again.
-local function ClickOldQuestPickerButton(btn)
-	local x, y = 0, 0
-	local okPos = pcall(function()
-		local gui = btn:FindFirstAncestorWhichIsA("ScreenGui")
-		local inset = (gui and gui.IgnoreGuiInset) and Vector2.new(0, 0) or game:GetService("GuiService"):GetGuiInset()
-		local pos = btn.AbsolutePosition + btn.AbsoluteSize / 2
-		x, y = pos.X + inset.X, pos.Y + inset.Y
-	end)
-	if not okPos then
-		return false
-	end
-	local vim = game:GetService("VirtualInputManager")
-	local clicked = pcall(function()
-		vim:SendMouseMoveEvent(x, y, game)
-		task.wait(0.05)
-		vim:SendMouseButtonEvent(x, y, 0, true, game, 0)
-		task.wait(0.08)
-		vim:SendMouseButtonEvent(x, y, 0, false, game, 0)
-	end)
-	task.delay(0.15, function()
-		pcall(function() vim:SendMouseButtonEvent(x, y, 0, false, game, 0) end)
-	end)
-	if clicked then
-		return true
-	end
-	-- Without VirtualInputManager: fire the button's own click connection/signal
-	local fired = false
-	pcall(function()
-		if getconnections then
-			for _, ev in ipairs({ btn.Activated, btn.MouseButton1Click }) do
-				local conns = getconnections(ev)
-				if #conns > 0 then
-					for _, c in ipairs(conns) do pcall(function() c:Fire() end) end
-					fired = true
-					break
-				end
-			end
-		end
-	end)
-	if not fired then
-		pcall(function() if firesignal then firesignal(btn.Activated) end end)
-	end
-	return fired
-end
-function TryOldQuestPicker()
-	local pg = t.PlayerGui
-	if not pg then
-		return false
-	end
-	local ok, didClick = pcall(function()
-		local anchor
-		for _, inst in ipairs(pg:GetDescendants()) do
-			if
-				(inst:IsA("TextLabel") or inst:IsA("TextButton"))
-				and inst.Visible
-				and (inst.Text == "Por favor selecione uma missão." or inst.Text == "Please select a quest.")
-			then
-				anchor = inst
-				break
-			end
-		end
-		if not anchor then
-			return false
-		end
-		-- Walks up to the picker's outer frame (direct child of its ScreenGui)
-		local dialog = anchor
-		while dialog.Parent and not dialog.Parent:IsA("ScreenGui") do
-			dialog = dialog.Parent
-		end
-		local skipWords = { ["esquece"] = true, ["forget"] = true, ["cancel"] = true, ["fechar"] = true, ["close"] = true }
-		for _, btn in ipairs(dialog:GetDescendants()) do
-			if btn:IsA("TextButton") and btn.Visible and btn.Text ~= "" and not skipWords[btn.Text:lower()] then
-				return ClickOldQuestPickerButton(btn)
-			end
-		end
-		return false
-	end)
-	return ok and didClick or false
-end
 function DetectNpc(f)
 	local K = t.Character and (t.Character:FindFirstChild("HumanoidRootPart"))
 	if not K then
@@ -9458,16 +9347,7 @@ TakeQuestLevel = function()
 		wait(2)
 		CommF:InvokeServer("StartQuest", tostring(V.QuestName), V.Id)
 		local timeout = tick() + 3
-		-- Same dual-interface check as AFQ.QuestTitle (V1 Main.Quest + V2 TrackedQuestFrame).
-		repeat task.wait(0.1) until AFQ.QuestTitle() ~= nil or tick() > timeout
-		-- Old interface: if the NPC opened the "Missão" quest picker instead of starting the
-		-- Level quest directly, click a quest option (never "Esquece"/skip) and check again.
-		if AFQ.QuestTitle() == nil then
-			if pcall(TryOldQuestPicker) then
-				local timeout2 = tick() + 3
-				repeat task.wait(0.1) until AFQ.QuestTitle() ~= nil or tick() > timeout2
-			end
-		end
+		repeat task.wait(0.1) until t.PlayerGui.Main:FindFirstChild("Quest") and t.PlayerGui.Main.Quest.Visible or tick() > timeout
 	else
 		toTarget(CFrame.new(H) * CFrame.new(0, 4, 2), true)
 	end
@@ -9566,13 +9446,6 @@ function QuestBoneAndkatakuri(V, H)
 				CommF:InvokeServer("StartQuest", V, H)
 			end)
 			task.wait(0.5)
-			if ok and not AQIsQuestActive() then
-				-- Old interface: the NPC may have opened the "Missão" quest picker instead
-				-- of starting the quest directly. Extra step only, nothing above was changed.
-				if pcall(TryOldQuestPicker) then
-					task.wait(0.5)
-				end
-			end
 			if ok and AQIsQuestActive() then
 				return true
 			end
@@ -10682,9 +10555,9 @@ function AQIsQuestActive()
     end)
     local shown = false
     pcall(function()
-        -- Uses the same dual-interface check as AFQ.QuestTitle (V1 Main.Quest + V2 TrackedQuestFrame),
-        -- so Auto Quest keeps detecting the active quest box whichever NPC dialogue interface is live.
-        shown = AFQ.QuestTitle() ~= nil
+        local main = t.PlayerGui and t.PlayerGui:FindFirstChild("Main")
+        local q = main and main:FindFirstChild("Quest")
+        shown = q ~= nil and q.Visible == true
     end)
     if not (has or shown) then
         -- Hysteresis: the quest interface/data may flicker for 1 frame when a mob is killed. It only counts as
@@ -28808,7 +28681,7 @@ function GuitarPuzzleProgress()
 			SpecialHop("FullMoon")
 		end
 	else
-		if IsNpcDialogueVisible() then
+		if t.PlayerGui.Main.Dialogue.Visible then
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 		end
@@ -29521,7 +29394,7 @@ function GetCDK()
 				toTarget(game:GetService("Workspace").Map.Turtle.Cursed[g].CFrame)
 			end
 		end
-		if IsNpcDialogueVisible() then
+		if t.PlayerGui.Main.Dialogue.Visible then
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 			game:GetService("VirtualUser"):Button1Down(Vector2.new(0, 0))
 		end

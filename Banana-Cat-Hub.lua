@@ -2751,6 +2751,7 @@ do
     local LabelBounty = SectionPlayer.CreateLabel({ Title = "Bounty / Honor: Loading..." })
     local LabelFragments = SectionPlayer.CreateLabel({ Title = "Fragments: Loading..." })
     local LabelLevel = SectionPlayer.CreateLabel({ Title = "Level: Loading..." })
+    local LabelRaceV4 = SectionPlayer.CreateLabel({ Title = "Race V4: Loading..." })
 
     spawn(function()
         local function FormatBounty(val)
@@ -2808,6 +2809,27 @@ do
                     if bountyVal > 0 then
                         LabelBounty.SetText("Bounty / Honor: " .. FormatShort(bountyVal))
                     end
+                end
+            end)
+
+            -- Race V4 (Temple of Time): counts the gears already chosen (Gear2/Gear3/Gear4 -> Alpha or Omega)
+            -- out of the 3 needed to finish the Race V4 upgrade, and shows how many are still missing.
+            pcall(function()
+                local info
+                pcall(function()
+                    info = game.ReplicatedStorage.Remotes.CommF_:InvokeServer("TempleClock", "Check")
+                end)
+                if type(info) == "table" and type(info.RaceDetails) == "table" then
+                    local done = (tonumber(info.RaceDetails.A) or 0) + (tonumber(info.RaceDetails.B) or 0)
+                    done = math.clamp(done, 0, 3)
+                    local missing = 3 - done
+                    if done >= 3 then
+                        LabelRaceV4.SetText("Race V4: " .. done .. "/3 (Full)")
+                    else
+                        LabelRaceV4.SetText("Race V4: " .. done .. "/3 (Not Full, missing " .. missing .. (missing == 1 and " gear)" or " gears)"))
+                    end
+                else
+                    LabelRaceV4.SetText("Race V4: N/A")
                 end
             end)
         end

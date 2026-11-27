@@ -20832,120 +20832,125 @@ getgenv().CheckIsplayingRaid = function()
 	end
 end
 getgenv().buychip = true
+-- Single Auto Raid step (same logic the Auto Raid toggle always used).
+-- forceFruit = true: always take a fruit out of storage to pay for the Raid and never hop servers
+-- (used by Fully Trial Draco when it needs Fragments).
+function AutoRaidStep(forceFruit)
+	local l = game.PlaceId == getgenv().CheckPlaceId2
+		and (game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button:FindFirstChild("Main"))
+	l = if game.PlaceId == getgenv().CheckPlaceId
+		then game:GetService("Workspace").Map:FindFirstChild("Boat Castle") and (game:GetService(
+			"Workspace"
+		).Map["Boat Castle"].RaidSummon2.Button
+			:FindFirstChild("Main"))
+		else l
+	if not t.PlayerGui.Main.TopHUDList.RaidTimer.Visible and not CheckInRaid() then
+		if getgenv().TickTeleCastle and tick() - getgenv().TickTeleCastle < 5 then
+			return
+		end
+		if not l then
+			if not DetectItemPlr("Special Microchip") then
+				toTarget(CFrame.new(-5500, 314, -2855))
+			else
+				toTarget(CFrame.new(-5500, 314, -2855), false, true)
+			end
+			return
+		end
+	end
+	if DetectItemPlr("Special Microchip") then
+		if getgenv().waitgoraid then
+			wait(5)
+			getgenv().waitgoraid = false
+		end
+		getgenv().buychip = false
+		fireclickdetector(l.ClickDetector)
+		getgenv().TickTeleCastle = tick()
+		if getgenv().Tween then
+			getgenv().Tween:Pause()
+			getgenv().Tween:Cancel()
+		end
+		return
+	end
+	if t.PlayerGui.Main.TopHUDList.RaidTimer.Visible and (CheckInRaid()) then
+		getgenv().waitgoraid = true
+		getgenv().buychip = true
+		l = DetectMobRaid()
+		if l then
+			repeat
+				task.wait()
+				if not getgenv().KillMobRaid and Settings["Kill Aura Only Raid And Volcano"] then
+					getgenv().KillMobRaid = true
+					local y = Settings["Time Delay Kill"] or 5
+					l.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
+					delay(y, function()
+						getgenv().KillMobRaid = false
+					end)
+				end
+				UsedualFlock()
+				ClickM1(l)
+				sizepart(l)
+				BringMobRaid(l)
+				if Settings["Select Weapon"] == "Blox Fruit" then
+					toTarget(l.HumanoidRootPart.CFrame * CFrame.new(-7, 20, 0))
+				else
+					toTarget(l.HumanoidRootPart.CFrame * CFrame.new(10, 20, 0))
+				end
+			until not IsMobAlive(l)
+		else
+			local y = GetLastRaidIsland()
+			if y then
+				if y.Name == "Island 2" and Settings["Select Raid"] == "Phoenix" then
+					toTarget(y.CFrame * CFrame.new(300, 60, 0))
+				else
+					toTarget(y.CFrame * CFrame.new(0, 60, 0))
+				end
+			end
+		end
+		return
+	end
+	if
+		getgenv().buychip
+		and t.Data.Level.Value >= 1100
+		and not t.PlayerGui.Main.TopHUDList.RaidTimer.Visible
+		and not DetectItemPlr("Special Microchip")
+		and not CheckInRaid()
+	then
+		if Settings["Hop Sever Raid"] and not forceFruit then
+			l = GetPathFruit()
+			if l then
+				if not ((l.Handle.Position - t.Character.HumanoidRootPart.Position).Magnitude <= 5) then
+					toTarget(l.Handle.CFrame, true)
+				end
+				return
+			elseif not CheckFruitplr() then
+				HopServer()
+				wait(5)
+				return
+			end
+		end
+		if
+			not CheckFruitplr()
+			and (TakeFruitInventory(true))
+			and (forceFruit or Settings["Get Fruit In Inventory Low Beli"])
+		then
+			game:GetService("ReplicatedStorage").Remotes.CommF_
+				:InvokeServer("LoadFruit", TakeFruitInventory(true))
+			wait(0.5)
+		end
+		game.ReplicatedStorage.Remotes.CommF_:InvokeServer("RaidsNpc", "Check")
+		game.ReplicatedStorage.Remotes.CommF_:InvokeServer(
+			"RaidsNpc",
+			"Select",
+			Settings["Select Raid"] or "Flame"
+		)
+		wait(1)
+	end
+end
 RaidsSection.CreateToggle({ Title = "Auto Raid", Desc = nil, Default = Settings["Auto Raid"] or false }, function(b)
 	if b then
 		spawn(function()
 			while Settings["Auto Raid"] and (task.wait()) do
-				local E, E = pcall(function()
-					local l = game.PlaceId == getgenv().CheckPlaceId2
-						and (game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button:FindFirstChild("Main"))
-					l = if game.PlaceId == getgenv().CheckPlaceId
-						then game:GetService("Workspace").Map:FindFirstChild("Boat Castle") and (game:GetService(
-							"Workspace"
-						).Map["Boat Castle"].RaidSummon2.Button
-							:FindFirstChild("Main"))
-						else l
-					if not t.PlayerGui.Main.TopHUDList.RaidTimer.Visible and not CheckInRaid() then
-						if getgenv().TickTeleCastle and tick() - getgenv().TickTeleCastle < 5 then
-							return
-						end
-						if not l then
-							if not DetectItemPlr("Special Microchip") then
-								toTarget(CFrame.new(-5500, 314, -2855))
-							else
-								toTarget(CFrame.new(-5500, 314, -2855), false, true)
-							end
-							return
-						end
-					end
-					if DetectItemPlr("Special Microchip") then
-						if getgenv().waitgoraid then
-							wait(5)
-							getgenv().waitgoraid = false
-						end
-						getgenv().buychip = false
-						fireclickdetector(l.ClickDetector)
-						getgenv().TickTeleCastle = tick()
-						if getgenv().Tween then
-							getgenv().Tween:Pause()
-							getgenv().Tween:Cancel()
-						end
-						return
-					end
-					if t.PlayerGui.Main.TopHUDList.RaidTimer.Visible and (CheckInRaid()) then
-						getgenv().waitgoraid = true
-						getgenv().buychip = true
-						l = DetectMobRaid()
-						if l then
-							repeat
-								task.wait()
-								if not getgenv().KillMobRaid and Settings["Kill Aura Only Raid And Volcano"] then
-									getgenv().KillMobRaid = true
-									local y = Settings["Time Delay Kill"] or 5
-									l.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-									delay(y, function()
-										getgenv().KillMobRaid = false
-									end)
-								end
-								UsedualFlock()
-								ClickM1(l)
-								sizepart(l)
-								BringMobRaid(l)
-								if Settings["Select Weapon"] == "Blox Fruit" then
-									toTarget(l.HumanoidRootPart.CFrame * CFrame.new(-7, 20, 0))
-								else
-									toTarget(l.HumanoidRootPart.CFrame * CFrame.new(10, 20, 0))
-								end
-							until not IsMobAlive(l)
-						else
-							local y = GetLastRaidIsland()
-							if y then
-								if y.Name == "Island 2" and Settings["Select Raid"] == "Phoenix" then
-									toTarget(y.CFrame * CFrame.new(300, 60, 0))
-								else
-									toTarget(y.CFrame * CFrame.new(0, 60, 0))
-								end
-							end
-						end
-						return
-					end
-					if
-						getgenv().buychip
-						and t.Data.Level.Value >= 1100
-						and not t.PlayerGui.Main.TopHUDList.RaidTimer.Visible
-						and not DetectItemPlr("Special Microchip")
-						and not CheckInRaid()
-					then
-						if Settings["Hop Sever Raid"] then
-							l = GetPathFruit()
-							if l then
-								if not ((l.Handle.Position - t.Character.HumanoidRootPart.Position).Magnitude <= 5) then
-									toTarget(l.Handle.CFrame, true)
-								end
-								return
-							elseif not CheckFruitplr() then
-								HopServer()
-								wait(5)
-								return
-							end
-						end
-						if
-							not CheckFruitplr()
-							and (TakeFruitInventory(true))
-							and Settings["Get Fruit In Inventory Low Beli"]
-						then
-							game:GetService("ReplicatedStorage").Remotes.CommF_
-								:InvokeServer("LoadFruit", TakeFruitInventory(true))
-						end
-						game.ReplicatedStorage.Remotes.CommF_:InvokeServer("RaidsNpc", "Check")
-						game.ReplicatedStorage.Remotes.CommF_:InvokeServer(
-							"RaidsNpc",
-							"Select",
-							Settings["Select Raid"] or "Flame"
-						)
-						wait(1)
-					end
-				end)
+				local E, E = pcall(AutoRaidStep)
 			end
 		end)
 	end
@@ -26194,12 +26199,84 @@ function BuyGearDracoV4()
 		game.ReplicatedStorage.Remotes.CommF_:InvokeServer("UpgradeRace", "Buy", 2)
 	end
 end
+-- ===== Fully Trial Draco: pause training while V4 is active =====
+-- Waiting spot: the round altar/fountain in the Haunted Castle hall. To use another spot:
+--   getgenv().DracoV4SafeSpot = CFrame.new(x, y, z)
+function DracoV4GetSafeSpot()
+	if typeof(getgenv().DracoV4SafeSpot) == "CFrame" then
+		return getgenv().DracoV4SafeSpot
+	end
+	local cf
+	pcall(function()
+		local det = workspace.Map["Haunted Castle"].Summoner.Detection
+		cf = det.CFrame * CFrame.new(0, 3, 0)
+	end)
+	return cf or CFrame.new(-9513.47, 142.1 + 3, 5528.84)
+end
+function DracoV4IsOn()
+	local ch = t.Character
+	local rt = ch and ch:FindFirstChild("RaceTransformed")
+	return rt ~= nil and rt.Value == true
+end
+function DracoV4PauseNeeded()
+	return Settings["Draco V4 Safe Pause"] ~= false and game.PlaceId == getgenv().CheckPlaceId and DracoV4IsOn()
+end
+function DracoV4PauseStep()
+	if not DracoV4PauseNeeded() then
+		if getgenv().__DracoV4Paused then
+			getgenv().__DracoV4Paused = false
+			pcall(function()
+				A.CreateNoti({ Title = "Banana Cat Hub", Desc = "V4 ended: training resumed", ShowTime = 4 })
+			end)
+		end
+		return false
+	end
+	local status = CheckAcientOneDracoStatus()
+	local training = status == "Required Train More"
+		or string.find(status, "^Remaining") ~= nil
+		or string.find(status, "^Upgrades completed") ~= nil
+	if not training then
+		return false
+	end
+	if not getgenv().__DracoV4Paused then
+		getgenv().__DracoV4Paused = true
+		pcall(function()
+			A.CreateNoti({ Title = "Banana Cat Hub", Desc = "Draco V4 active: training paused, waiting at the Haunted Castle fountain", ShowTime = 4 })
+		end)
+	end
+	local spot = DracoV4GetSafeSpot()
+	if spot then
+		toTarget(spot)
+	end
+	return true
+end
+
+-- ===== Fully Trial Draco: Raid for Fragments =====
+function DracoGearFragmentCost()
+	local status = CheckAcientOneDracoStatus()
+	return tonumber(string.match(status, "With ([%d%.]+) Fragments"))
+end
+function DracoRaidForFragments(need)
+	if game.PlaceId ~= getgenv().CheckPlaceId and game.PlaceId ~= getgenv().CheckPlaceId2 then
+		return
+	end
+	if not getgenv().__DracoRaidNoti then
+		getgenv().__DracoRaidNoti = true
+		pcall(function()
+			A.CreateNoti({ Title = "Banana Cat Hub", Desc = "Draco: not enough Fragments (need " .. tostring(need) .. "), running Raid", ShowTime = 5 })
+		end)
+	end
+	AutoRaidStep(true)
+end
 function FullyDraco()
 	if not Settings["Auto Turn On V4"] then
 		m:SetStage(true)
 	end
 	if not Settings["Auto Choose Gears"] and getgenv().ToggleAutoChooseGears then
 		getgenv().ToggleAutoChooseGears:SetStage(true)
+	end
+	if DracoV4PauseStep() then
+		return
 	end
 	if CheckAcientOneDracoStatus() == "Ready For Trial" then
 		if getgenv().WaitingjoinTrial then
@@ -26670,7 +26747,13 @@ function FullyDraco()
 			end
 		end
 	elseif string.find(CheckAcientOneDracoStatus(), "Can Buy Gear") then
-		BuyGearDracoV4()
+		local need = DracoGearFragmentCost()
+		if need and t.Data.Fragments.Value < need then
+			DracoRaidForFragments(need)
+		else
+			getgenv().__DracoRaidNoti = false
+			BuyGearDracoV4()
+		end
 	else
 		local g = DetectMob(e)
 		if g then
@@ -26685,7 +26768,7 @@ function FullyDraco()
 				else
 					toTarget(g.HumanoidRootPart.CFrame * CFrame.new(7, 20, 0))
 				end
-			until not IsMobAlive(g) or not Settings["Fully Trial Draco"]
+			until not IsMobAlive(g) or not Settings["Fully Trial Draco"] or DracoV4PauseNeeded()
 		elseif typeof(e) == "table" then
 			if #N >= #e then
 				N = {}
@@ -26736,6 +26819,16 @@ RaceDracoSection.CreateToggle(
 			end)
 		end
 		SaveSettings("Fully Trial Draco", g)
+	end
+)
+RaceDracoSection.CreateToggle(
+	{
+		Title = "Draco V4 Safe Pause",
+		Desc = "Fully Trial Draco: pause training while V4 is active and wait at the Haunted Castle fountain",
+		Default = Settings["Draco V4 Safe Pause"] ~= false,
+	},
+	function(g)
+		SaveSettings("Draco V4 Safe Pause", g)
 	end
 )
 

@@ -9373,7 +9373,8 @@ TakeQuestLevel = function()
 		wait(2)
 		CommF:InvokeServer("StartQuest", tostring(V.QuestName), V.Id)
 		local timeout = tick() + 3
-		repeat task.wait(0.1) until t.PlayerGui.Main:FindFirstChild("Quest") and t.PlayerGui.Main.Quest.Visible or tick() > timeout
+		-- Same dual-interface check as AFQ.QuestTitle (V1 Main.Quest + V2 TrackedQuestFrame).
+		repeat task.wait(0.1) until AFQ.QuestTitle() ~= nil or tick() > timeout
 	else
 		toTarget(CFrame.new(H) * CFrame.new(0, 4, 2), true)
 	end
@@ -10581,9 +10582,9 @@ function AQIsQuestActive()
     end)
     local shown = false
     pcall(function()
-        local main = t.PlayerGui and t.PlayerGui:FindFirstChild("Main")
-        local q = main and main:FindFirstChild("Quest")
-        shown = q ~= nil and q.Visible == true
+        -- Uses the same dual-interface check as AFQ.QuestTitle (V1 Main.Quest + V2 TrackedQuestFrame),
+        -- so Auto Quest keeps detecting the active quest box whichever NPC dialogue interface is live.
+        shown = AFQ.QuestTitle() ~= nil
     end)
     if not (has or shown) then
         -- Hysteresis: the quest interface/data may flicker for 1 frame when a mob is killed. It only counts as

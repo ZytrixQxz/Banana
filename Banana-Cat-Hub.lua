@@ -2538,6 +2538,27 @@ SectionShopMisc.CreateButton({ Title = "Reroll Race" }, function()
 	game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Reroll", "2")
 end)
 
+SectionShopMisc.CreateButton({ Title = "Buy Race Draco", Desc = "Change To Draco Race" }, function()
+	if getgenv().BuyRaceDracoRunning then return end
+	getgenv().BuyRaceDracoRunning = true
+	task.spawn(function()
+		-- reset the one-shot flags used by AutoBuyRaceDraco (Dragon Wizard flow ported from Kaitun)
+		getgenv().AutoBuyRaceDracoHydraStarted = false
+		getgenv().AutoBuyRaceDracoMovingNoti = false
+		getgenv().AutoBuyRaceDracoEquippedNoti = false
+		pcall(function()
+			for _ = 1, 240 do
+				local lp = game:GetService("Players").LocalPlayer
+				local race = lp:FindFirstChild("Data") and lp.Data:FindFirstChild("Race")
+				if race and tostring(race.Value) == "Draco" then break end
+				pcall(AutoBuyRaceDraco)
+				task.wait(0.5)
+			end
+		end)
+		getgenv().BuyRaceDracoRunning = false
+	end)
+end)
+
 SectionShopMisc.CreateButton({ Title = "Reset Stats" }, function()
 	game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Refund", "1")
 	game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Refund", "2")
@@ -2751,7 +2772,7 @@ do
     local LabelBounty = SectionPlayer.CreateLabel({ Title = "Bounty / Honor: Loading..." })
     local LabelFragments = SectionPlayer.CreateLabel({ Title = "Fragments: Loading..." })
     local LabelLevel = SectionPlayer.CreateLabel({ Title = "Level: Loading..." })
-    local LabelRaceV4 = SectionPlayer.CreateLabel({ Title = "Race V4: Loading..." })
+    local LabelRaceV4 = SectionPlayer.CreateLabel({ Title = "Race: Loading..." })
 
     spawn(function()
         local function FormatBounty(val)
@@ -2812,25 +2833,72 @@ do
                 end
             end)
 
-            -- Race V4 (Temple of Time): counts the gears already chosen (Gear2/Gear3/Gear4 -> Alpha or Omega)
-            -- out of the 3 needed to finish the Race V4 upgrade, and shows how many are still missing.
+            -- Race: shows the race name + version (V1/V2/V3), or the V4 gear state.
+            --   Race : Shark - V2
+            --   Race : Shark Gears - Transform   (V4 unlocked, no gear yet)
+            --   Race : Shark Gears - Gear 2       (V4 with 1..3 gears)
+            --   Race Draco : Fire Fragment - 3    (Draco)
             pcall(function()
-                local info
-                pcall(function()
-                    info = game.ReplicatedStorage.Remotes.CommF_:InvokeServer("TempleClock", "Check")
-                end)
-                if type(info) == "table" and type(info.RaceDetails) == "table" then
-                    local done = (tonumber(info.RaceDetails.A) or 0) + (tonumber(info.RaceDetails.B) or 0)
-                    done = math.clamp(done, 0, 3)
-                    local missing = 3 - done
-                    if done >= 3 then
-                        LabelRaceV4.SetText("Race V4: " .. done .. "/3 (Full)")
-                    else
-                        LabelRaceV4.SetText("Race V4: " .. done .. "/3 (Not Full, missing " .. missing .. (missing == 1 and " gear)" or " gears)"))
-                    end
-                else
-                    LabelRaceV4.SetText("Race V4: N/A")
+                local lp = game.Players.LocalPlayer
+                local data = lp:FindFirstChild("Data")
+                local raceObj = data and data:FindFirstChild("Race")
+                if not raceObj then
+                    LabelRaceV4.SetText("Race: N/A")
+                    return
                 end
+                local CommF = game.ReplicatedStorage.Remotes.CommF_
+                local rawRace = tostring(raceObj.Value)
+                local displayNames = { Fishman = "Shark", Skypiea = "Angel", Mink = "Rabbit" }
+                local raceName = displayNames[rawRace] or rawRace
+                local hasV4 = lp.Character and lp.Character:FindFirstChild("RaceTransformed") ~= nil
+
+                -- Gears already chosen at the Temple of Time (0..3)
+                local function GetGearCount()
+                    local info
+                    pcall(function() info = CommF:InvokeServer("TempleClock", "Check") end)
+                    if type(info) == "table" and type(info.RaceDetails) == "table" then
+                        local done = (tonumber(info.RaceDetails.A) or 0) + (tonumber(info.RaceDetails.B) or 0)
+                        return math.clamp(done, 0, 3)
+                    end
+                    return nil
+                end
+
+                if rawRace == "Draco" then
+                    -- Draco: "Fire Fragment" = gears bought at the Dragon Dojo (same UpgradeRace check the hub uses).
+                    local gears = 0
+                    if hasV4 then
+                        local k, r
+                        pcall(function() k, r = CommF:InvokeServer("UpgradeRace", "Check") end)
+                        r = tonumber(r)
+                        if k == 5 then
+                            gears = 3
+                        elseif (k == 2 or k == 4 or k == 6 or k == 7) and r then
+                            gears = math.clamp(r - 2, 0, 3)
+                        end
+                    end
+                    LabelRaceV4.SetText("Race Draco : Fire Fragment - " .. gears)
+                    return
+                end
+
+                if hasV4 then
+                    local done = GetGearCount()
+                    if done == nil then
+                        LabelRaceV4.SetText("Race : " .. raceName .. " Gears - N/A")
+                    elseif done <= 0 then
+                        LabelRaceV4.SetText("Race : " .. raceName .. " Gears - Transform")
+                    else
+                        LabelRaceV4.SetText("Race : " .. raceName .. " Gears - Gear " .. done)
+                    end
+                    return
+                end
+
+                -- V1 / V2 / V3 (same checks as CheckRace)
+                local ver = "V1"
+                local v3, v2
+                pcall(function() v3 = CommF:InvokeServer("Wenlocktoad", "1") end)
+                pcall(function() v2 = CommF:InvokeServer("Alchemist", "1") end)
+                if v3 == -2 then ver = "V3" elseif v2 == -2 then ver = "V2" end
+                LabelRaceV4.SetText("Race : " .. raceName .. " - " .. ver)
             end)
         end
     end)

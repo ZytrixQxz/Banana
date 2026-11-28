@@ -23641,7 +23641,7 @@ do
 		-- V13: Raise Boat Manual Drive fully independent - does not block any other boat function
 		-- Only locks Y, keeping X/Z free, can coexist with Sea Event, Leviathan, Prehistoric, etc.
 		-- Auto Find Leviathan and the dodges control the boat height on their own: it does not fight them.
-		if Settings["Auto Find Leviathan"] or getgenv().ReadyToDodge or getgenv().__ProtectBoatActive then return end
+		if getgenv().ReadyToDodge or getgenv().__ProtectBoatActive then return end
 		pcall(function()
 			local char = t.Character
 			local hum = char and char:FindFirstChildOfClass("Humanoid")
@@ -25743,189 +25743,197 @@ function DetectSeaEventDodge(g)
 	end
 	return false
 end
+-- ===== Find Leviathan estilo Kaitun (patrulha por waypoints + AlignPosition) =====
+getgenv().__MHMove = getgenv().__MHMove or {}
+function MH_FindStop()
+	local M = getgenv().__MHMove
+	if M.conn then M.conn:Disconnect() M.conn = nil end
+	M.target = nil
+	if M.align then M.align.Enabled = false end
+	if not M.active then return end
+	M.active = false
+	local ch = t.Character
+	if ch then
+		local root = ch:FindFirstChild("HumanoidRootPart")
+		local hum = ch:FindFirstChildOfClass("Humanoid")
+		if hum and not (hum.Sit or hum.SeatPart ~= nil) then
+			hum.PlatformStand = false
+			hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+		end
+		if root then
+			root.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+			root.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+		end
+	end
+	pcall(function()
+		local boat = checkboat()
+		local seat = boat and boat:FindFirstChild("VehicleSeat")
+		local bp = seat and seat:FindFirstChildOfClass("BodyPosition")
+		if bp and bp:GetAttribute("MHForce") then
+			bp.MaxForce = bp:GetAttribute("MHForce")
+			bp:SetAttribute("MHForce", nil)
+		end
+	end)
+end
+function MH_FindMoveTo(cf)
+	local M = getgenv().__MHMove
+	if typeof(cf) ~= "CFrame" then MH_FindStop() return end
+	local ch = t.Character
+	local root = ch and ch:FindFirstChild("HumanoidRootPart")
+	local hum = ch and ch:FindFirstChildOfClass("Humanoid")
+	if not root or not hum then return end
+	M.active = true
+	M.target = cf
+	local speed = math.clamp(tonumber(Settings["Value Speed Tween Boat"]) or 350, 1, 390)
+	if not M.align or M.align.Parent ~= root then
+		for _, k in ipairs({ "align", "tAtt", "rAtt" }) do
+			if M[k] then pcall(function() M[k]:Destroy() end) M[k] = nil end
+		end
+		M.tAtt = Instance.new("Attachment")
+		M.tAtt.Name = "MHTargetAtt"
+		M.tAtt.Parent = workspace.Terrain
+		M.rAtt = Instance.new("Attachment")
+		M.rAtt.Name = "MHRootAtt"
+		M.rAtt.Parent = root
+		local ap = Instance.new("AlignPosition")
+		ap.Name = "MHAlign"
+		ap.Mode = Enum.PositionAlignmentMode.TwoAttachment
+		ap.Attachment0 = M.rAtt
+		ap.Attachment1 = M.tAtt
+		ap.MaxForce = 9e99
+		ap.MaxVelocity = speed
+		ap.Responsiveness = 200
+		ap.ApplyAtCenterOfMass = true
+		ap.Parent = root
+		M.align = ap
+	end
+	if not (hum.Sit or hum.SeatPart ~= nil) then hum.PlatformStand = true end
+	M.align.MaxVelocity = speed
+	M.alignY = math.abs(cf.Position.Y - root.Position.Y) > 25
+	M.tAtt.WorldPosition = M.alignY and Vector3.new(root.Position.X, cf.Position.Y, root.Position.Z) or cf.Position
+	M.align.Enabled = true
+	if not M.conn then
+		M.conn = game:GetService("RunService").PostSimulation:Connect(function()
+			local c = getgenv().__MHMove
+			local tg = c.target
+			if not tg then MH_FindStop() return end
+			local r2 = t.Character and t.Character:FindFirstChild("HumanoidRootPart")
+			if not r2 or not c.align or not c.tAtt then return end
+			r2.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+			local pos, fin = r2.Position, tg.Position
+			if c.alignY then
+				if math.abs(fin.Y - pos.Y) <= 3 then
+					c.alignY = false
+					c.tAtt.WorldPosition = fin
+				else
+					c.tAtt.WorldPosition = Vector3.new(c.tAtt.WorldPosition.X, fin.Y, c.tAtt.WorldPosition.Z)
+				end
+			else
+				c.tAtt.WorldPosition = fin
+			end
+			c.align.MaxVelocity = math.clamp(tonumber(Settings["Value Speed Tween Boat"]) or 350, 1, 390)
+			if (fin - pos).Magnitude < 3 then MH_FindStop() end
+		end)
+	end
+end
+function MH_FindPatrol(boat, root)
+	local M = getgenv().__MHMove
+	local now = tick()
+	if not M.hNext or now >= M.hNext then
+		M.hNext = now + 0.5
+		local okD, dodgeRes = pcall(DetectSeaEventDodge, true)
+		M.dodge = okD and dodgeRes and true or false
+		pcall(NoclipBoat, boat)
+		for _, d in ipairs(t.Character:GetDescendants()) do
+			if d:IsA("BasePart") and d.CanCollide then d.CanCollide = false end
+		end
+	end
+	local raise = Settings["Raise Boat Manual Drive"]
+	local y
+	if raise then y = root.Position.Y -- Raise Boat Manual Drive controla a altura: o Find nao briga com ele
+	elseif M.dodge then y = 500 -- sea event perto: sobe pra desviar
+	else y = tonumber(Settings["Find Leviathan Height"]) or 20 end
+	local seat = boat:FindFirstChild("VehicleSeat")
+	local bp = seat and seat:FindFirstChildOfClass("BodyPosition")
+	if bp then
+		if y > 40 and not raise then
+			if not bp:GetAttribute("MHForce") then bp:SetAttribute("MHForce", bp.MaxForce) end
+			bp.MaxForce = Vector3.new(0, 0, 0)
+		elseif bp:GetAttribute("MHForce") then
+			bp.MaxForce = bp:GetAttribute("MHForce")
+			bp:SetAttribute("MHForce", nil)
+		end
+	end
+	local spawnPos = Vector3.new(-16204.9668, 0, 474.9888)
+	local here = Vector3.new(root.Position.X, 0, root.Position.Z)
+	local st = getgenv().__MHPatrolState
+	if not st or (here - spawnPos).Magnitude < 500 then st = 1 end
+	local sea1 = Vector3.new(-14202.8643, y, 447.1369)
+	local sea6 = Vector3.new(-16143.5469, y, 37085.2148)
+	local sea9 = Vector3.new(-16256.7344, y, 106649.3828)
+	local function flat(v) return Vector3.new(v.X, 0, v.Z) end
+	if st == 1 or st == 2 then
+		MH_FindMoveTo(CFrame.new(sea1))
+		if (here - flat(sea1)).Magnitude <= 200 then st = 3 end
+	elseif st == 3 then
+		MH_FindMoveTo(CFrame.new(sea6))
+		if root.Position.Z >= sea6.Z or (here - flat(sea6)).Magnitude <= 200 then st = 4 end
+	elseif st == 4 then
+		MH_FindMoveTo(CFrame.new(sea9))
+		if root.Position.Z >= sea9.Z or (here - flat(sea9)).Magnitude <= 200 then st = 5 end
+	else
+		MH_FindMoveTo(CFrame.new(sea6))
+		if root.Position.Z <= sea6.Z or (here - flat(sea6)).Magnitude <= 200 then st = 4 end
+	end
+	getgenv().__MHPatrolState = st
+end
 function AutoFindLeviathanCore()
-	local myGen = getgenv().__FindLeviGen
 	if Settings["Auto Destroy IDK"] and getgenv().DesIdk then
 		getgenv().DesIdk2 = true
+		MH_FindStop()
 		return
 	end
 	if Settings["Auto Destroy IDK"] and getgenv().DesIdk2 then
+		MH_FindStop()
 		toTarget(getgenv().OldBoat.VehicleSeat.CFrame)
 		if t.Character.Humanoid.Sit then
 			getgenv().DesIdk2 = false
 		end
 		return
 	end
-	local g = checkboatFind()
 	if not game.workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension") then
 		getgenv().RespawnLeviathan = true
-		local I = checkboat()
-		if not I and Settings["Auto Buy Boat Beast Hunter"] then
-			AutoBuyBoatBeastHunter()
+		if getgenv().Doding or getgenv().ReadyToDodge then return end
+		local boat = checkboat()
+		if not boat then
+			MH_FindStop()
+			if Settings["Auto Buy Boat Beast Hunter"] then AutoBuyBoatBeastHunter() end
 			return
-		elseif g and (not t.Character:FindFirstChildOfClass("Humanoid") or t.Character:FindFirstChildOfClass("Humanoid").SeatPart ~= g.VehicleSeat) then
-			-- FIX: estava perto do barco mas nao sentado -> o tween do barco cancela ("BoatNotSeated") e o loop saia na hora
-			local hum = t.Character:FindFirstChildOfClass("Humanoid")
-			local root = t.Character:FindFirstChild("HumanoidRootPart")
-			local seat = g.VehicleSeat
-			if hum and root and seat then
-				if (seat.Position - root.Position).Magnitude > 12 then
-					toTarget(seat.CFrame)
-				else
-					pcall(function() seat.CanTouch = true seat.CanCollide = true end)
-					hum.Sit = false
+		end
+		local ch = t.Character
+		local hum = ch and ch:FindFirstChildOfClass("Humanoid")
+		local root = ch and ch:FindFirstChild("HumanoidRootPart")
+		local seat = boat:FindFirstChild("VehicleSeat")
+		if not hum or not root or not seat then return end
+		getgenv().OldBoat = boat
+		if hum.SeatPart ~= seat then
+			-- embarcar (igual ao Kaitun: chega perto e senta)
+			MH_FindStop()
+			if (seat.Position - root.Position).Magnitude > 10 then
+				toTarget(seat.CFrame * CFrame.new(0, 3, 0))
+			else
+				pcall(function() seat:Sit(hum) end)
+				task.wait(0.3)
+				if hum.SeatPart ~= seat then
 					root.CFrame = seat.CFrame * CFrame.new(0, 2, 0)
 					task.wait(0.4)
 				end
 			end
 			return
-		elseif g then
-			getgenv().noclip = false
-			local y, P, Y, H, Z =
-				CFrame.new(-118834.515625, 160, -78.9505844116211) * CFrame.new(0, 0, 99999999),
-				CFrame.new(-32975.9921875, 160, 25963.7109375),
-				if Settings["Will Back When over 10km"]
-					then if DistanceFindLeviathan() >= 12000
-						then true
-						else if DistanceFindLeviathan() <= 4800 then false else false
-					else false,
-				g.VehicleSeat.Position.Y,
-				(g.VehicleSeat:FindFirstChildOfClass("BodyVelocity") or { MaxForce = Vector3.new(0, 0, 0) }).MaxForce
-			wait(0.5)
-			local C = false
-			do local bvObj = g.VehicleSeat:FindFirstChildOfClass("BodyVelocity") if bvObj then bvObj.MaxForce = Vector3.new(1 / 0, 1 / 0, 1 / 0) end end
-			local J = s(g.VehicleSeat.Position.Y, 1000)
-			if not t.PlayerGui.Main.Compass.Frame.DangerLevel.Visible then
-				wait(0.2)
-				g.VehicleSeat.CFrame = g.VehicleSeat.CFrame * CFrame.new(0, J, 0)
-				wait(1)
-				C = true
-			else
-				wait(0.2)
-				g.VehicleSeat.CFrame = g.VehicleSeat.CFrame * CFrame.new(0, s(g.VehicleSeat.Position.Y, 160), 0)
-				wait(1)
-			end
-			J = false
-			repeat
-				task.wait(0.5)
-				-- Dodge/skill of the boat in progress: does not touch the boat (no tween, no height, no noclip).
-				if getgenv().Doding or getgenv().ReadyToDodge then
-					if getgenv().TweenBoat then pcall(function() getgenv().TweenBoat:Pause(); getgenv().TweenBoat:Cancel() end) end
-					if getgenv().TweenBoatBack then pcall(function() getgenv().TweenBoatBack:Pause(); getgenv().TweenBoatBack:Cancel() end) end
-					continue
-				end
-				NoclipBoat(g)
-				if t.Character:FindFirstChild("HumanoidRootPart") and (t.Character:FindFirstChild("Humanoid")) then
-					local F, q, c = next, t.Character:GetDescendants()
-					for D, D in F, q, c do
-						if (D:IsA("MeshPart") or (D:IsA("Part"))) and D.CanCollide then
-							D.CanCollide = false
-						end
-					end
-				end
-				if
-					C
-					and (
-						t.PlayerGui.Main.Compass.Frame.DangerLevel.Visible
-							and t.PlayerGui.Main.Compass.Frame.DangerText.Visible
-							and tonumber(
-								game:GetService("Players").LocalPlayer.PlayerGui.Main.Compass.Frame.DangerLevel.TextLabel.Text
-							) >= 1
-						or _(t.Character.HumanoidRootPart.CFrame) >= 4000
-					)
-				then
-					if getgenv().TweenBoat then pcall(function() getgenv().TweenBoat:Pause() getgenv().TweenBoat:Cancel() end) end
-					wait(0.5)
-					g.VehicleSeat.CFrame = g.VehicleSeat.CFrame * CFrame.new(0, s(g.VehicleSeat.Position.Y, 160), 0)
-					wait(0.5)
-					C = false
-				end
-				if not C and g.VehicleSeat.Position.Y < 150 then
-					if getgenv().TweenBoat then
-						getgenv().TweenBoat:Pause()
-						getgenv().TweenBoat:Cancel()
-					end
-					if getgenv().TweenBoatBack then
-						getgenv().TweenBoatBack:Pause()
-						getgenv().TweenBoatBack:Cancel()
-					end
-					wait(0.5)
-					g.VehicleSeat.CFrame = g.VehicleSeat.CFrame * CFrame.new(0, s(g.VehicleSeat.Position.Y, 160), 0)
-				end
-				if not J and (DetectSeaEventDodge(true)) and g.VehicleSeat.Position.Y < 500 then
-					y, P =
-						CFrame.new(-118834.515625, 500, -78.9505844116211) * CFrame.new(0, 0, 99999999),
-						CFrame.new(-32975.9921875, 500, 25963.7109375)
-					if getgenv().TweenBoat then
-						getgenv().TweenBoat:Pause()
-						getgenv().TweenBoat:Cancel()
-					end
-					if getgenv().TweenBoatBack then
-						getgenv().TweenBoatBack:Pause()
-						getgenv().TweenBoatBack:Cancel()
-					end
-					wait(0.5)
-					g.VehicleSeat.CFrame = g.VehicleSeat.CFrame * CFrame.new(0, s(g.VehicleSeat.Position.Y, 500), 0)
-					wait(0.5)
-					J = true
-				elseif J and not DetectSeaEventDodge(true) then
-					y, P =
-						CFrame.new(-118834.515625, 160, -78.9505844116211) * CFrame.new(0, 0, 99999999),
-						CFrame.new(-32975.9921875, 160, 25963.7109375)
-					if getgenv().TweenBoat then
-						getgenv().TweenBoat:Pause()
-						getgenv().TweenBoat:Cancel()
-					end
-					if getgenv().TweenBoatBack then
-						getgenv().TweenBoatBack:Pause()
-						getgenv().TweenBoatBack:Cancel()
-					end
-					wait(0.5)
-					g.VehicleSeat.CFrame = g.VehicleSeat.CFrame * CFrame.new(0, s(g.VehicleSeat.Position.Y, 160), 0)
-					wait(0.5)
-					J = false
-				end
-				if Settings["Will Back When over 10km"] then
-					Y = if DistanceFindLeviathan() >= 10000
-						then true
-						else if DistanceFindLeviathan() <= 4800 then false else Y
-					if Y then
-						manageTween(g.VehicleSeat, P, 350, "TweenBoatBack")
-					end
-				end
-				if not Y or not Settings["Will Back When over 10km"] then
-					manageTween(g.VehicleSeat, y, 350, "TweenBoat")
-				end
-			until not Settings["Auto Find Leviathan"]
-				or getgenv().__FindLeviGen ~= myGen
-				or not t.Character.Humanoid.Sit
-				or (game.workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension"))
-				or Settings["Auto Destroy IDK"] and getgenv().DesIdk
-			do local bvObj = g.VehicleSeat:FindFirstChildOfClass("BodyVelocity") if bvObj then bvObj.MaxForce = Z end end
-			getgenv().OldBoat = g
-			if getgenv().TweenBoat then
-				getgenv().TweenBoat:Pause()
-				getgenv().TweenBoat:Cancel()
-			end
-			if getgenv().TweenBoatBack then
-				getgenv().TweenBoatBack:Pause()
-				getgenv().TweenBoatBack:Cancel()
-			end
-			g.VehicleSeat.CFrame = CFrame.new(g.VehicleSeat.Position.X, H, g.VehicleSeat.Position.Z)
-		elseif I and Settings["Auto Buy Boat Beast Hunter"] then
-			if not t.Character.Humanoid.Sit then
-				toTarget(I.VehicleSeat.CFrame)
-			end
 		end
+		MH_FindPatrol(boat, root)
 	else
-		if getgenv().TweenBoat then
-			getgenv().TweenBoat:Pause()
-			getgenv().TweenBoat:Cancel()
-		end
-		if getgenv().TweenBoatBack then
-			getgenv().TweenBoatBack:Pause()
-			getgenv().TweenBoatBack:Cancel()
-		end
+		MH_FindStop()
 		A.CreateNoti({ Title = "Mistyc Hub", Desc = "Frozen Dimension Spawned", ShowTime = 5 })
 		if getgenv().RespawnLeviathan and Settings["Webhook Find Leviathan"] then
 			getgenv().RespawnLeviathan = false
@@ -26133,6 +26141,7 @@ LeviathanEventSection.CreateToggle(
 			if getgenv()[k] then pcall(function() getgenv()[k]:Pause() getgenv()[k]:Cancel() end) end
 		end
 		getgenv().DesIdk, getgenv().DesIdk2 = false, false
+		pcall(MH_FindStop)
 		if s then
 			Settings["Auto Find Leviathan"] = true
 			spawn(function()

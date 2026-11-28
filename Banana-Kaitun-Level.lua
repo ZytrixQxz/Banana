@@ -1781,7 +1781,7 @@ end
 
 -- ===== Mistyc theme helpers (loading screens) =====
 MISTYC_ICON_URL = getgenv().MistycUIIcon or "https://i.ibb.co/HpVX8gMv/file-000000009ac4820e9b7257a0f590991e.png"
-MISTYC_BG_URL = getgenv().MistycUIBackground or "https://i.ibb.co/wFRD8PNG/68602.png"
+MISTYC_BG_URL = getgenv().MistycUIBackground or "https://i.ibb.co/tGhfc98/68608.png"
 MISTYC_ACCENT, MISTYC_ACCENT2 = Color3.fromRGB(176, 130, 255), Color3.fromRGB(90, 210, 255)
 function MistycAssetAsync(src, name, cb)
 	task.spawn(function()
@@ -1808,7 +1808,7 @@ function MistycFX(parent, radius)
 	local bg = rd(Instance.new("ImageLabel"))
 	bg.BackgroundTransparency, bg.Size, bg.ScaleType, bg.ZIndex = 1, UDim2.fromScale(1, 1), Enum.ScaleType.Crop, 0
 	bg.Parent = parent
-	MistycAssetAsync(MISTYC_BG_URL, "bg2", function(id) bg.Image = id end)
+	MistycAssetAsync(MISTYC_BG_URL, "bg3", function(id) bg.Image = id end)
 	local veil = rd(Instance.new("Frame"))
 	veil.BackgroundColor3, veil.BackgroundTransparency, veil.Size, veil.ZIndex, veil.BorderSizePixel = Color3.fromRGB(14, 12, 24), 0.5, UDim2.fromScale(1, 1), 0, 0
 	veil.Parent = parent
@@ -2246,7 +2246,7 @@ local function ud(t, d) if type(t) == "table" and #t == 4 then return UDim2.new(
 local function pk(o) return { o.Position.X.Scale, o.Position.X.Offset, o.Position.Y.Scale, o.Position.Y.Offset } end
 
 local ICON = getgenv().MistycUIIcon or "https://i.ibb.co/HpVX8gMv/file-000000009ac4820e9b7257a0f590991e.png"
-local BG = getgenv().MistycUIBackground or "https://i.ibb.co/wFRD8PNG/68602.png"
+local BG = getgenv().MistycUIBackground or "https://i.ibb.co/tGhfc98/68608.png"
 
 local T = {
 	accent = Color3.fromRGB(176, 130, 255), accent2 = Color3.fromRGB(90, 210, 255),
@@ -2330,7 +2330,7 @@ function Lib.CreateMain(cfg)
 	local scale = new("UIScale", { Scale = 1 }, win)
 
 	-- fundo (sua imagem) + véu
-	local bgId = asset(BG, "bg2")
+	local bgId = asset(BG, "bg3")
 	if bgId ~= "" then
 		round(new("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = bgId, ScaleType = Enum.ScaleType.Crop, ZIndex = 0 }, win), 18)
 	end
@@ -2348,20 +2348,6 @@ function Lib.CreateMain(cfg)
 			end
 		end)
 	end
-	blob(T.accent, 200, 0.05, 0.1, 0.4, 0.3, 5)
-	blob(T.accent2, 170, 0.55, 0.45, -0.3, -0.3, 6)
-	blob(Color3.fromRGB(255, 120, 200), 140, 0.3, 0.6, 0.3, -0.25, 7)
-
-	-- brilho que varre o vidro
-	local sheen = new("Frame", { BackgroundColor3 = T.white, BackgroundTransparency = 0, Size = UDim2.fromScale(1, 1), ZIndex = 50, Active = false }, win)
-	local sg = new("UIGradient", { Rotation = 25, Offset = Vector2.new(-1.2, 0), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.45, 1), NumberSequenceKeypoint.new(0.5, 0.9), NumberSequenceKeypoint.new(0.55, 1), NumberSequenceKeypoint.new(1, 1) }) }, sheen)
-	task.spawn(function()
-		while sheen:IsDescendantOf(game) do
-			sg.Offset = Vector2.new(-1.2, 0)
-			tw(sg, 3.2, { Offset = Vector2.new(1.2, 0) }).Completed:Wait()
-			task.wait(2.5)
-		end
-	end)
 
 	-- borda de vidro com gradiente girando
 	local st = new("UIStroke", { Color = T.white, Thickness = 1.6, Transparency = 0.15 }, win)

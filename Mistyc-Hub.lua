@@ -1852,7 +1852,7 @@ function MistycFX(parent, radius)
 		end)
 	end
 	local st = Instance.new("UIStroke")
-	st.Color, st.Thickness, st.Transparency = Color3.fromRGB(90, 80, 130), 1.5, 0
+	st.Color, st.Thickness, st.Transparency = Color3.fromRGB(50, 130, 190), 1.5, 0
 	st.Parent = parent
 end
 
@@ -2256,9 +2256,9 @@ local ICON = getgenv().MistycUIIcon or "https://i.ibb.co/HpVX8gMv/file-000000009
 local BG = getgenv().MistycUIBackground or "https://i.ibb.co/tGhfc98/68608.png"
 
 local T = {
-	accent = Color3.fromRGB(176, 130, 255), accent2 = Color3.fromRGB(90, 210, 255),
+	accent = Color3.fromRGB(0, 208, 255), accent2 = Color3.fromRGB(0, 255, 200),
 	text = Color3.fromRGB(245, 245, 255), dim = Color3.fromRGB(190, 190, 215),
-	dark = Color3.fromRGB(14, 12, 24), white = Color3.new(1, 1, 1),
+	dark = Color3.fromRGB(7, 13, 24), white = Color3.new(1, 1, 1),
 }
 
 local function asset(src, name)
@@ -2288,16 +2288,43 @@ local function autoY(o, l) l:GetPropertyChangedSignal("AbsoluteContentSize"):Con
 local function tw(o, t, p) local x = TS:Create(o, TweenInfo.new(t, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), p) x:Play() return x end
 
 -- painéis sólidos (sem vidro)
-local P1, P2, P3 = Color3.fromRGB(22, 20, 34), Color3.fromRGB(34, 32, 50), Color3.fromRGB(50, 47, 72)
+local P1, P2, P3 = Color3.fromRGB(12, 22, 38), Color3.fromRGB(18, 32, 54), Color3.fromRGB(28, 50, 82)
 local function glass(o, tr, stroke)
 	o.BackgroundColor3 = (tr >= 0.9 and P1) or (tr >= 0.84 and P2) or P3
 	o.BackgroundTransparency = 0.12
-	return new("UIStroke", { Color = Color3.fromRGB(76, 68, 112), Transparency = (stroke or 0.5) >= 1 and 1 or 0.35, Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, o)
+	return new("UIStroke", { Color = Color3.fromRGB(40, 90, 135), Transparency = (stroke or 0.5) >= 1 and 1 or 0.35, Thickness = 1, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, o)
 end
 local function hover(b)
 	local c = b.BackgroundColor3
 	b.MouseEnter:Connect(function() tw(b, 0.15, { BackgroundColor3 = c:Lerp(T.accent, 0.3) }) end)
 	b.MouseLeave:Connect(function() tw(b, 0.2, { BackgroundColor3 = c }) end)
+end
+
+-- ===== Efeitos (ripple, spotlight magnetico, press) =====
+local function ripple(p, x)
+	pcall(function()
+		p.ClipsDescendants = true
+		local r = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(math.clamp(x - p.AbsolutePosition.X, 0, p.AbsoluteSize.X), p.AbsoluteSize.Y / 2), Size = UDim2.fromOffset(0, 0), BackgroundColor3 = T.white, BackgroundTransparency = 0.72, BorderSizePixel = 0, ZIndex = 11 }, p)
+		round(r, 200)
+		local m = math.max(p.AbsoluteSize.X, 40) * 1.4
+		tw(r, 0.6, { Size = UDim2.fromOffset(m, m), BackgroundTransparency = 1 }).Completed:Connect(function() r:Destroy() end)
+	end)
+end
+local function fx(r)
+	r.ClipsDescendants = true
+	local sc = new("UIScale", { Scale = 1 }, r)
+	local spot = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0, -100, 0.5, 0), Size = UDim2.new(0, 130, 2, 0), BackgroundColor3 = T.accent, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 6 }, r)
+	round(spot, 65)
+	r.MouseEnter:Connect(function() tw(sc, 0.18, { Scale = 1.012 }) tw(spot, 0.25, { BackgroundTransparency = 0.88 }) end)
+	r.MouseMoved:Connect(function(x) TS:Create(spot, TweenInfo.new(0.12, Enum.EasingStyle.Quad), { Position = UDim2.new(0, x - r.AbsolutePosition.X, 0.5, 0) }):Play() end)
+	r.MouseLeave:Connect(function() tw(sc, 0.2, { Scale = 1 }) tw(spot, 0.3, { BackgroundTransparency = 1 }) end)
+	r.InputBegan:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+			tw(sc, 0.08, { Scale = 0.975 })
+			ripple(r, i.Position.X)
+			i.Changed:Connect(function() if i.UserInputState == Enum.UserInputState.End then TS:Create(sc, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play() end end)
+		end
+	end)
 end
 
 local Lib = { Options = {} }
@@ -2329,8 +2356,8 @@ function Lib.CreateMain(cfg)
 	local gui = new("ScreenGui", { Name = "NexoraUI", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, CG)
 	local mobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
 	local vp0 = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
-	local W = math.clamp(tonumber(Saved.w) or (mobile and 500 or 640), 440, math.max(vp0.X - 20, 440))
-	local H = math.clamp(tonumber(Saved.h) or (mobile and 320 or 430), 280, math.max(vp0.Y - 20, 280))
+	local W = math.clamp(tonumber(Saved.w) or (mobile and 500 or 640), 280, math.max(vp0.X, 280))
+	local H = math.clamp(tonumber(Saved.h) or (mobile and 320 or 430), 180, math.max(vp0.Y, 180))
 	local win = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = T.dark, Position = ud(Saved.wp, UDim2.fromScale(0.5, 0.5)), Size = UDim2.new(0, W, 0, H), ClipsDescendants = true }, gui)
 	round(win, 18)
 	local scale = new("UIScale", { Scale = 1 }, win)
@@ -2342,11 +2369,32 @@ function Lib.CreateMain(cfg)
 	end
 	new("Frame", { BackgroundColor3 = T.dark, BackgroundTransparency = 0.55, Size = UDim2.fromScale(1, 1), ZIndex = 1 }, win)
 
-	new("UIStroke", { Color = Color3.fromRGB(90, 80, 130), Thickness = 1.5 }, win)
+	local ws = new("UIStroke", { Color = T.white, Thickness = 2 }, win)
+	local wg = new("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, T.accent), ColorSequenceKeypoint.new(0.35, Color3.fromRGB(70, 120, 255)), ColorSequenceKeypoint.new(0.7, T.accent2), ColorSequenceKeypoint.new(1, T.accent) }) }, ws)
+	task.spawn(function() while win:IsDescendantOf(game) do wg.Rotation = (wg.Rotation + 1.5) % 360 task.wait(0.03) end end)
+	-- particulas flutuando (neve/brilho) atras do conteudo
+	local pf = new("Frame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ZIndex = 2, ClipsDescendants = true }, win)
+	for n = 1, 14 do
+		task.spawn(function()
+			local rnd = Random.new(n * 977)
+			local dot = new("Frame", { BackgroundColor3 = (n % 2 == 0) and T.accent or T.accent2, BorderSizePixel = 0, ZIndex = 2 }, pf)
+			round(dot, 10)
+			task.wait(rnd:NextNumber(0, 6))
+			while win:IsDescendantOf(game) do
+				local sz, x = rnd:NextInteger(2, 5), rnd:NextNumber(0.02, 0.98)
+				dot.Size = UDim2.fromOffset(sz, sz) dot.Position = UDim2.new(x, 0, 1.05, 0) dot.BackgroundTransparency = 0.55
+				local tw2 = TS:Create(dot, TweenInfo.new(rnd:NextNumber(8, 15), Enum.EasingStyle.Linear), { Position = UDim2.new(math.clamp(x + rnd:NextNumber(-0.12, 0.12), 0, 1), 0, -0.05, 0), BackgroundTransparency = 1 })
+				tw2:Play() tw2.Completed:Wait()
+			end
+		end)
+	end
 
 	-- topo
 	local top = new("Frame", { Size = UDim2.new(1, 0, 0, 44), ZIndex = 5 }, win)
 	glass(top, 0.9, 1)
+	local tl = new("Frame", { Position = UDim2.new(0, 0, 1, -2), Size = UDim2.new(1, 0, 0, 2), BackgroundColor3 = T.white, BorderSizePixel = 0, ZIndex = 7 }, top)
+	local tlg = new("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, T.accent), ColorSequenceKeypoint.new(0.5, T.accent2), ColorSequenceKeypoint.new(1, T.accent) }), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(1, 1) }), Offset = Vector2.new(-1, 0) }, tl)
+	task.spawn(function() while win:IsDescendantOf(game) do tlg.Offset = Vector2.new(-1, 0) local a = TS:Create(tlg, TweenInfo.new(2.4, Enum.EasingStyle.Sine), { Offset = Vector2.new(1, 0) }) a:Play() a.Completed:Wait() end end)
 	local iconId = asset(ICON, "icon")
 	local tx = 14
 	if iconId ~= "" then
@@ -2360,6 +2408,7 @@ function Lib.CreateMain(cfg)
 		if v then
 			gui.Enabled = true scale.Scale = 0.8 tw(scale, 0.35, { Scale = 1 })
 		else
+			Saved.w, Saved.h, Saved.wp = W, H, pk(win) saveCfg()
 			tw(scale, 0.25, { Scale = 0.8 }).Completed:Wait() gui.Enabled = false
 		end
 	end
@@ -2369,39 +2418,63 @@ function Lib.CreateMain(cfg)
 	end
 	local body = new("Frame", { BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0, 44), Size = UDim2.new(1, 0, 1, -44), ZIndex = 5 }, win)
 	local mini = false
-	tbtn("-", -64, function() mini = not mini body.Visible = not mini tw(win, 0.3, { Size = mini and UDim2.new(0, W, 0, 44) or UDim2.new(0, W, 0, H) }) end)
+	tbtn("-", -64, function() mini = not mini Saved.wp = pk(win) saveCfg() body.Visible = not mini tw(win, 0.3, { Size = mini and UDim2.new(0, W, 0, 44) or UDim2.new(0, W, 0, H) }) end)
 	tbtn("X", -34, function() setOpen(false) end)
 
 	-- arrastar janela
 	local function draggable(handle, target)
 		local drag, ds, sp
 		handle.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then drag, ds, sp = true, i.Position, target.Position end end)
-		UIS.InputChanged:Connect(function(i) if drag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then local d = i.Position - ds target.Position = UDim2.new(sp.X.Scale, sp.X.Offset + d.X, sp.Y.Scale, sp.Y.Offset + d.Y) end end)
+		UIS.InputChanged:Connect(function(i) if drag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then local d = i.Position - ds local vp = gui.AbsoluteSize
+			local cx, cy = sp.X.Scale * vp.X + sp.X.Offset + d.X, sp.Y.Scale * vp.Y + sp.Y.Offset + d.Y
+			local hw, hh = target.AbsoluteSize.X / 2, target.AbsoluteSize.Y / 2
+			if math.abs(cx - vp.X / 2) < 18 then cx = vp.X / 2 end
+			if math.abs(cy - vp.Y / 2) < 18 then cy = vp.Y / 2 end
+			if math.abs(cx - hw - 6) < 14 then cx = hw + 6 elseif math.abs(cx + hw - (vp.X - 6)) < 14 then cx = vp.X - 6 - hw end
+			if math.abs(cy - hh - 6) < 14 then cy = hh + 6 elseif math.abs(cy + hh - (vp.Y - 6)) < 14 then cy = vp.Y - 6 - hh end
+			target.Position = UDim2.fromOffset(cx, cy) end end)
 		UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then if drag then drag = false Saved.wp = pk(target) saveCfg() end end end)
 	end
 	draggable(top, win)
 
 	-- redimensionar (canto inferior direito) + salva tamanho
-	local grip = new("TextButton", { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -5, 1, -5), Size = UDim2.new(0, 24, 0, 24), BackgroundTransparency = 1, Text = "◢", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = T.white, TextTransparency = 0.35, ZIndex = 60, AutoButtonColor = false }, win)
+	local grip = new("TextButton", { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -2, 1, -2), Size = UDim2.new(0, 44, 0, 44), BackgroundTransparency = 1, Text = "◢", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = T.white, TextTransparency = 0.35, ZIndex = 60, AutoButtonColor = false }, win)
 	local rs, rin, rstart, rsize, rpos = false, nil, nil, nil, nil
+	local sx, sy = 1, 1 -- direcao do redimensionamento: -1 esquerda/cima, 1 direita/baixo, 0 = nao muda
 	grip.MouseEnter:Connect(function() tw(grip, 0.2, { TextTransparency = 0, TextColor3 = T.accent }) end)
 	grip.MouseLeave:Connect(function() tw(grip, 0.2, { TextTransparency = 0.35, TextColor3 = T.white }) end)
-	grip.InputBegan:Connect(function(i)
+	local function startResize(i, ax, ay)
 		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+			sx, sy = ax, ay
 			rs, rin, rstart, rsize, rpos = true, i, i.Position, Vector2.new(W, H), win.Position
 			i.Changed:Connect(function() if i.UserInputState == Enum.UserInputState.End and rs then rs = false Saved.w, Saved.h, Saved.wp = W, H, pk(win) saveCfg() end end)
 		end
-	end)
+	end
+	grip.InputBegan:Connect(function(i) startResize(i, 1, 1) end)
 	UIS.InputChanged:Connect(function(i)
 		if rs and (i == rin or i.UserInputType == Enum.UserInputType.MouseMovement) and not mini then
 			local vp = gui.AbsoluteSize
 			local d = i.Position - rstart
-			W = math.clamp(rsize.X + d.X, 440, math.max(vp.X - 10, 440))
-			H = math.clamp(rsize.Y + d.Y, 280, math.max(vp.Y - 10, 280))
+			if sx ~= 0 then W = math.clamp(rsize.X + sx * d.X, 280, math.max(vp.X, 280)) end
+			if sy ~= 0 then H = math.clamp(rsize.Y + sy * d.Y, 180, math.max(vp.Y, 180)) end
 			win.Size = UDim2.new(0, W, 0, H)
-			win.Position = UDim2.new(rpos.X.Scale, rpos.X.Offset + (W - rsize.X) / 2, rpos.Y.Scale, rpos.Y.Offset + (H - rsize.Y) / 2)
+			-- o lado oposto ao que voce puxa fica parado
+			win.Position = UDim2.new(rpos.X.Scale, rpos.X.Offset + sx * (W - rsize.X) / 2, rpos.Y.Scale, rpos.Y.Offset + sy * (H - rsize.Y) / 2)
 		end
 	end)
+	-- bordas e cantos: redimensiona para todos os lados
+	local function edge(pos, size, ax, ay)
+		local e = new("TextButton", { BackgroundTransparency = 1, Text = "", AutoButtonColor = false, Position = pos, Size = size, ZIndex = 58 }, win)
+		e.InputBegan:Connect(function(i) startResize(i, ax, ay) end)
+	end
+	local E, C = 12, 28
+	edge(UDim2.new(1, -E, 0, C + 16), UDim2.new(0, E, 1, -(C * 2 + 16)), 1, 0)   -- direita
+	edge(UDim2.new(0, 0, 0, C + 16), UDim2.new(0, E, 1, -(C * 2 + 16)), -1, 0)   -- esquerda
+	edge(UDim2.new(0, C, 1, -E), UDim2.new(1, -(C * 2 + 40), 0, E), 0, 1)       -- baixo
+	edge(UDim2.new(0, C, 0, 0), UDim2.new(1, -(C * 2 + 100), 0, 6), 0, -1)      -- cima (so a faixa fina para nao atrapalhar o titulo)
+	edge(UDim2.new(0, 0, 0, 0), UDim2.new(0, C, 0, C), -1, -1)                   -- canto sup. esquerdo
+	edge(UDim2.new(1, -C, 0, 0), UDim2.new(0, C, 0, 6), 1, -1)                   -- canto sup. direito (fina, nao cobre o X)
+	edge(UDim2.new(0, 0, 1, -C), UDim2.new(0, C, 0, C), -1, 1)                   -- canto inf. esquerdo
 
 	-- botão flutuante (FORA da interface, arrasta livre, abre/fecha a UI)
 	local tg = new("ScreenGui", { Name = "MistycToggle", ResetOnSpawn = false, DisplayOrder = 999, IgnoreGuiInset = true, ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, CG)
@@ -2447,7 +2520,12 @@ function Lib.CreateMain(cfg)
 			i.Changed:Connect(function()
 				if i.UserInputState == Enum.UserInputState.End then
 					dragging = false
-					if not moved then clickFX() task.spawn(setOpen, not gui.Enabled) else Saved.tp = pk(fb) saveCfg() end
+					if not moved then clickFX() task.spawn(setOpen, not gui.Enabled) else
+						local vp = tg.AbsoluteSize
+						local tx = (fb.AbsolutePosition.X + 30 < vp.X / 2) and 10 or (vp.X - 70)
+						local sn = TS:Create(fb, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0, tx, fb.Position.Y.Scale, fb.Position.Y.Offset) })
+						sn:Play() sn.Completed:Connect(function() Saved.tp = pk(fb) saveCfg() end)
+					end
 				end
 			end)
 		end
@@ -2481,35 +2559,49 @@ function Lib.CreateMain(cfg)
 		if current then
 			current.frame.Visible = false
 			tw(current.gl, 0.2, { BackgroundColor3 = P2, BackgroundTransparency = 0.35 })
-			tw(current.gls, 0.2, { Color = Color3.fromRGB(76, 68, 112), Transparency = 0.6 })
+			tw(current.gls, 0.2, { Color = Color3.fromRGB(40, 90, 135), Transparency = 0.6 })
 			tw(current.bar, 0.2, { BackgroundTransparency = 1, Size = UDim2.new(0, 3, 0, 0) })
-			current.btn.TextColor3 = T.dim current.btn.Font = Enum.Font.GothamMedium
+			current.lbl.TextColor3 = T.dim current.lbl.Font = Enum.Font.GothamMedium
 		end
 		current = p p.frame.Visible = true
+		p.frame.Position = UDim2.new(0, 34, 0, 0) tw(p.frame, 0.45, { Position = UDim2.new(0, 0, 0, 0) })
 		tw(p.gl, 0.2, { BackgroundColor3 = T.accent:Lerp(P2, 0.62), BackgroundTransparency = 0.05 })
 		tw(p.gls, 0.2, { Color = T.accent, Transparency = 0 })
 		tw(p.bar, 0.25, { BackgroundTransparency = 0, Size = UDim2.new(0, 3, 0.62, 0) })
-		p.btn.TextColor3 = T.white p.btn.Font = Enum.Font.GothamBold
+		p.lbl.TextColor3 = T.white p.lbl.Font = Enum.Font.GothamBold
 	end
 	function Main.CreateNoti(c, d) return Lib.CreateNoti(c, d) end
 
 	function Main.CreatePage(info)
 		info = type(info) == "table" and info or { Page_Name = tostring(info) }
 		local name = info.Page_Name or info.Page_Title or "Page"
-		local btn = new("TextButton", { Size = UDim2.new(1, 0, 0, 34), BackgroundTransparency = 1, Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.dim, Text = name, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, AutoButtonColor = false, ZIndex = 8 }, side)
+		local btn = new("TextButton", { Size = UDim2.new(1, 0, 0, 34), BackgroundTransparency = 1, Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.dim, Text = "", AutoButtonColor = false, ZIndex = 8 }, side)
 		new("UIPadding", { PaddingLeft = UDim.new(0, 16), PaddingRight = UDim.new(0, 8) }, btn)
 		local gl = new("Frame", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -16, 0.5, 0), Size = UDim2.new(1, 24, 1, 0), BackgroundColor3 = P2, BackgroundTransparency = 0.35, ZIndex = 6 }, btn)
 		round(gl, 10)
-		local gls = new("UIStroke", { Color = Color3.fromRGB(76, 68, 112), Transparency = 0.6, Thickness = 1 }, gl)
+		local gls = new("UIStroke", { Color = Color3.fromRGB(40, 90, 135), Transparency = 0.6, Thickness = 1 }, gl)
 		local bar = new("Frame", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -10, 0.5, 0), Size = UDim2.new(0, 3, 0, 0), BackgroundColor3 = T.accent2, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 9 }, btn)
 		round(bar, 2)
-		btn.MouseEnter:Connect(function() if not (current and current.btn == btn) then tw(gl, 0.15, { BackgroundColor3 = P3, BackgroundTransparency = 0.15 }) end end)
-		btn.MouseLeave:Connect(function() if not (current and current.btn == btn) then tw(gl, 0.2, { BackgroundColor3 = P2, BackgroundTransparency = 0.35 }) end end)
+		local lbl = new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.dim, Text = name, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, ZIndex = 12 }, btn)
+		btn.MouseEnter:Connect(function() if not (current and current.btn == btn) then tw(gl, 0.15, { BackgroundColor3 = P3, BackgroundTransparency = 0.15 }) tw(lbl, 0.25, { Position = UDim2.new(0, 6, 0, 0) }) end end)
+		btn.MouseLeave:Connect(function() tw(lbl, 0.25, { Position = UDim2.new(0, 0, 0, 0) }) if not (current and current.btn == btn) then tw(gl, 0.2, { BackgroundColor3 = P2, BackgroundTransparency = 0.35 }) end end)
+		btn.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then ripple(gl, i.Position.X) end end)
+		Main.__n = (Main.__n or 0) + 1
+		local order = Main.__n
+		lbl.TextTransparency = 1 gl.BackgroundTransparency = 1 gls.Transparency = 1
+		task.delay(0.25 + 0.05 * order, function()
+			pcall(function()
+				local sel = current and current.btn == btn
+				tw(lbl, 0.45, { TextTransparency = 0 })
+				tw(gl, 0.45, { BackgroundTransparency = sel and 0.05 or 0.35 })
+				tw(gls, 0.45, { Transparency = sel and 0 or 0.6 })
+			end)
+		end)
 		local frame = new("ScrollingFrame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ScrollBarThickness = 3, BorderSizePixel = 0, Visible = false, ZIndex = 5 }, content)
 		pad(frame, 4) autoY(frame, list(frame, 8))
-		local P = { frame = frame, btn = btn, gl = gl, gls = gls, bar = bar }
-		btn.MouseButton1Click:Connect(function() select(P) end)
-		if not current then select(P) end
+		local P = { frame = frame, btn = btn, gl = gl, gls = gls, bar = bar, lbl = lbl }
+		btn.MouseButton1Click:Connect(function() select(P) Saved.tab = name saveCfg() end)
+		if not current or Saved.tab == name then select(P) end
 
 		local Page = {}
 		function Page.CreateSection(title)
@@ -2535,14 +2627,16 @@ function Lib.CreateMain(cfg)
 			function S.CreateToggle(c, cb)
 				c = c or {} cb = cb or function() end
 				local r = row(c.Desc and 46 or 34)
+				fx(r)
 				lbl(r, tostring(c.Title) .. (c.Desc and ("\n" .. c.Desc) or ""), 0.8)
 				local sw = new("TextButton", { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -10, 0.5, 0), Size = UDim2.new(0, 42, 0, 22), Text = "", AutoButtonColor = false, ZIndex = 7 }, r)
-				round(sw, 11) glass(sw, 0.7, 0.6)
+				round(sw, 11) local sws = glass(sw, 0.7, 0.6)
 				local dot = new("Frame", { Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(0, 3, 0.5, -8), BackgroundColor3 = T.dim, ZIndex = 8 }, sw) round(dot, 8)
 				local state = c.Default == true
 				local function render()
 					tw(dot, 0.2, { Position = state and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8), BackgroundColor3 = state and T.white or T.dim })
 					tw(sw, 0.2, { BackgroundColor3 = state and T.accent or P3 })
+					tw(sws, 0.25, { Color = state and T.accent2 or Color3.fromRGB(40, 90, 135), Thickness = state and 2.2 or 1 })
 				end
 				local obj = { Value = state }
 				local function set(v) state = v and true or false obj.Value = state render() task.spawn(cb, state) end
@@ -2558,7 +2652,7 @@ function Lib.CreateMain(cfg)
 			function S.CreateButton(c, cb)
 				c = type(c) == "table" and c or { Title = tostring(c) } cb = cb or function() end
 				local b = new("TextButton", { Size = UDim2.new(1, 0, 0, 34), Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.text, Text = c.Title or "Button", AutoButtonColor = false, ZIndex = 6 }, sec)
-				round(b, 10) glass(b, 0.86, 0.7) hover(b)
+				round(b, 10) glass(b, 0.86, 0.7) hover(b) fx(b)
 				b.MouseButton1Click:Connect(function()
 					tw(b, 0.1, { BackgroundColor3 = T.accent }).Completed:Connect(function() tw(b, 0.3, { BackgroundColor3 = P2 }) end)
 					task.spawn(cb)
@@ -7576,7 +7670,6 @@ function toTarget(P, e)
     local bestPortal = nil
 
     pcall(function()
-        do return end -- PORTAL REMOVED
         if Settings and Settings["Use Portals"] == false then return end
         local myPos = H.Position
         local targetPos = P.Position
@@ -7640,7 +7733,7 @@ function toTarget(P, e)
         end
 
         if bestPortal then
-            shouldUsePortal = false -- REMOVED
+            shouldUsePortal = true
             warn("[Nexora Portal] "..myIsland.." -> "..bestPortal.Dest.." = "..bestPortal.Name)
         end
     end)
@@ -24881,6 +24974,7 @@ function DetectSeaEventDodge(g)
 	return false
 end
 function AutoFindLeviathanCore()
+	local myGen = getgenv().__FindLeviGen
 	if Settings["Auto Destroy IDK"] and getgenv().DesIdk then
 		getgenv().DesIdk2 = true
 		return
@@ -25017,6 +25111,7 @@ function AutoFindLeviathanCore()
 					manageTween(g.VehicleSeat, y, 350, "TweenBoat")
 				end
 			until not Settings["Auto Find Leviathan"]
+				or getgenv().__FindLeviGen ~= myGen
 				or not t.Character.Humanoid.Sit
 				or (game.workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension"))
 				or Settings["Auto Destroy IDK"] and getgenv().DesIdk
@@ -25054,7 +25149,11 @@ function AutoFindLeviathanCore()
 	end
 end
 function AutoFindLeviathan()
+	-- nunca roda dois ciclos ao mesmo tempo (ligar/desligar/ligar rapido deixava 2 ciclos brigando pelo barco)
+	if getgenv().__FindLeviBusy then task.wait(0.2) return end
+	getgenv().__FindLeviBusy = true
 	local ok, err = pcall(AutoFindLeviathanCore)
+	getgenv().__FindLeviBusy = false
 	if not ok then
 		warn("[Mistyc Hub] Auto Find Leviathan erro: " .. tostring(err))
 		for _, k in ipairs({ "TweenBoat", "TweenBoatBack" }) do
@@ -25241,12 +25340,18 @@ LeviathanEventSection.CreateToggle(
 LeviathanEventSection.CreateToggle(
 	{ Title = "Auto Find Leviathan", Desc = nil, Default = Settings["Auto Find Leviathan"] or false },
 	function(s)
+		-- nova "geracao": o ciclo antigo (se ainda estiver rodando) encerra sozinho
+		getgenv().__FindLeviGen = (getgenv().__FindLeviGen or 0) + 1
+		local gen = getgenv().__FindLeviGen
+		for _, k in ipairs({ "TweenBoat", "TweenBoatBack" }) do
+			if getgenv()[k] then pcall(function() getgenv()[k]:Pause() getgenv()[k]:Cancel() end) end
+		end
+		getgenv().DesIdk, getgenv().DesIdk2 = false, false
 		if s then
+			Settings["Auto Find Leviathan"] = true
 			spawn(function()
-				while Settings["Auto Find Leviathan"] and (task.wait()) do
-					local g, g = pcall(function()
-						AutoFindLeviathan()
-					end)
+				while Settings["Auto Find Leviathan"] and getgenv().__FindLeviGen == gen and (task.wait()) do
+					pcall(AutoFindLeviathan)
 				end
 			end)
 		end

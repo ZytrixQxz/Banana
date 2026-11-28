@@ -2694,6 +2694,7 @@ function Lib.CreateMain(cfg)
 					table.sort(opts) text() build()
 				end
 				obj.SetList = obj.Refresh
+				obj.GetNewList = obj.Refresh -- o script chama :GetNewList(lista) para atualizar dropdowns (jogadores, bosses, sea event)
 				function obj.GetValue() return multi and state or cur end
 				reg(c, "dropdown", obj, { list = c.List, value = multi and state or cur })
 				return obj
@@ -23853,10 +23854,13 @@ if game.PlaceId == getgenv().CheckPlaceId then
 	_ = require(game:GetService("ReplicatedStorage").DangerDistance)
 end
 function DistanceFindLeviathan()
-	local y = Z:GetNearestNPC(game.Players.LocalPlayer.Character.HumanoidRootPart.Position, 2600)[1]
-	return (
-		math.floor((Z:GetDistance(y) - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude / 10)
-	)
+	local ok, d = pcall(function()
+		local root = game.Players.LocalPlayer.Character.HumanoidRootPart
+		local y = Z:GetNearestNPC(root.Position, 2600)[1]
+		if not y then return 0 end
+		return math.floor((Z:GetDistance(y) - root.Position).magnitude / 10)
+	end)
+	return ok and tonumber(d) or 0
 end
 ToggleFindMirage = FarmingSeaEventSection.CreateToggle(
 	{ Title = "Auto Find Mirage", Desc = nil, Default = Settings["Auto Find Mirage"] or false },
@@ -24876,7 +24880,7 @@ function DetectSeaEventDodge(g)
 	end
 	return false
 end
-function AutoFindLeviathan()
+function AutoFindLeviathanCore()
 	if Settings["Auto Destroy IDK"] and getgenv().DesIdk then
 		getgenv().DesIdk2 = true
 		return
@@ -24950,8 +24954,7 @@ function AutoFindLeviathan()
 						or _(t.Character.HumanoidRootPart.CFrame) >= 4000
 					)
 				then
-					getgenv().TweenBoat:Pause()
-					getgenv().TweenBoat:Cancel()
+					if getgenv().TweenBoat then pcall(function() getgenv().TweenBoat:Pause() getgenv().TweenBoat:Cancel() end) end
 					wait(0.5)
 					g.VehicleSeat.CFrame = g.VehicleSeat.CFrame * CFrame.new(0, s(g.VehicleSeat.Position.Y, 160), 0)
 					wait(0.5)
@@ -25048,6 +25051,16 @@ function AutoFindLeviathan()
 			WebhookFindLeviathan()
 		end
 		wait(5)
+	end
+end
+function AutoFindLeviathan()
+	local ok, err = pcall(AutoFindLeviathanCore)
+	if not ok then
+		warn("[Mistyc Hub] Auto Find Leviathan erro: " .. tostring(err))
+		for _, k in ipairs({ "TweenBoat", "TweenBoatBack" }) do
+			if getgenv()[k] then pcall(function() getgenv()[k]:Pause() getgenv()[k]:Cancel() end) end
+		end
+		task.wait(1)
 	end
 end
 function DestroyIDK()

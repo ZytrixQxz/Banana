@@ -25763,6 +25763,22 @@ function AutoFindLeviathanCore()
 		if not I and Settings["Auto Buy Boat Beast Hunter"] then
 			AutoBuyBoatBeastHunter()
 			return
+		elseif g and (not t.Character:FindFirstChildOfClass("Humanoid") or t.Character:FindFirstChildOfClass("Humanoid").SeatPart ~= g.VehicleSeat) then
+			-- FIX: estava perto do barco mas nao sentado -> o tween do barco cancela ("BoatNotSeated") e o loop saia na hora
+			local hum = t.Character:FindFirstChildOfClass("Humanoid")
+			local root = t.Character:FindFirstChild("HumanoidRootPart")
+			local seat = g.VehicleSeat
+			if hum and root and seat then
+				if (seat.Position - root.Position).Magnitude > 12 then
+					toTarget(seat.CFrame)
+				else
+					pcall(function() seat.CanTouch = true seat.CanCollide = true end)
+					hum.Sit = false
+					root.CFrame = seat.CFrame * CFrame.new(0, 2, 0)
+					task.wait(0.4)
+				end
+			end
+			return
 		elseif g then
 			getgenv().noclip = false
 			local y, P, Y, H, Z =
@@ -25774,10 +25790,10 @@ function AutoFindLeviathanCore()
 						else if DistanceFindLeviathan() <= 4800 then false else false
 					else false,
 				g.VehicleSeat.Position.Y,
-				g.VehicleSeat.BodyVelocity.MaxForce
+				(g.VehicleSeat:FindFirstChildOfClass("BodyVelocity") or { MaxForce = Vector3.new(0, 0, 0) }).MaxForce
 			wait(0.5)
 			local C = false
-			g.VehicleSeat.BodyVelocity.MaxForce = Vector3.new(1 / 0, 1 / 0, 1 / 0)
+			do local bvObj = g.VehicleSeat:FindFirstChildOfClass("BodyVelocity") if bvObj then bvObj.MaxForce = Vector3.new(1 / 0, 1 / 0, 1 / 0) end end
 			local J = s(g.VehicleSeat.Position.Y, 1000)
 			if not t.PlayerGui.Main.Compass.Frame.DangerLevel.Visible then
 				wait(0.2)
@@ -25885,7 +25901,7 @@ function AutoFindLeviathanCore()
 				or not t.Character.Humanoid.Sit
 				or (game.workspace._WorldOrigin.Locations:FindFirstChild("Frozen Dimension"))
 				or Settings["Auto Destroy IDK"] and getgenv().DesIdk
-			g.VehicleSeat.BodyVelocity.MaxForce = Z
+			do local bvObj = g.VehicleSeat:FindFirstChildOfClass("BodyVelocity") if bvObj then bvObj.MaxForce = Z end end
 			getgenv().OldBoat = g
 			if getgenv().TweenBoat then
 				getgenv().TweenBoat:Pause()

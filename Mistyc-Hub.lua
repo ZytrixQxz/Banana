@@ -344,11 +344,36 @@ until game:IsLoaded() and game.Players.LocalPlayer
 repeat
 	wait()
 until game:FindFirstChild("CoreGui")
-getgenv().ExploitReq = syn and syn.request
-	or identifyexecutor() == "Fluxus" and request
+getgenv().ExploitReq = (syn and syn.request)
+	or request
 	or http_request
-	or http.request
+	or (http and http.request)
+	or (fluxus and fluxus.request)
 	or requests
+
+-- Helpers que o script chamava mas nunca eram definidos (causavam erro e travavam funcoes)
+if type(CurrentQuestMatches) ~= "function" then
+	function CurrentQuestMatches(name)
+		local ok, res = pcall(function()
+			local q = game.Players.LocalPlayer.PlayerGui.Main.Quest
+			if not q.Visible then return false end
+			return string.find(string.lower(q.Container.QuestTitle.Title.Text), string.lower(tostring(name)), 1, true) ~= nil
+		end)
+		return ok and res == true
+	end
+end
+if type(CheckSwordLegendary) ~= "function" then
+	function CheckSwordLegendary()
+		for _, n in ipairs({ "Shisui", "Saddi", "Wando" }) do
+			local ok, has = pcall(function() return CheckItemInventory(n) end)
+			if not (ok and has) then return n end
+		end
+		return nil
+	end
+end
+if type(ebgzqifrwa) ~= "function" then
+	function ebgzqifrwa(jobId) return jobId end
+end
 if getgenv().LoadScript then
 	return
 end
@@ -2453,24 +2478,36 @@ function Lib.CreateMain(cfg)
 
 	local Main, current = {}, nil
 	local function select(p)
-		if current then current.frame.Visible = false tw(current.gl, 0.2, { BackgroundColor3 = P2 }) tw(current.gls, 0.2, { Color = Color3.fromRGB(76, 68, 112) }) end
+		if current then
+			current.frame.Visible = false
+			tw(current.gl, 0.2, { BackgroundColor3 = P2, BackgroundTransparency = 0.35 })
+			tw(current.gls, 0.2, { Color = Color3.fromRGB(76, 68, 112), Transparency = 0.6 })
+			tw(current.bar, 0.2, { BackgroundTransparency = 1, Size = UDim2.new(0, 3, 0, 0) })
+			current.btn.TextColor3 = T.dim current.btn.Font = Enum.Font.GothamMedium
+		end
 		current = p p.frame.Visible = true
-		tw(p.gl, 0.2, { BackgroundColor3 = T.accent }) tw(p.gls, 0.2, { Color = T.accent2 })
+		tw(p.gl, 0.2, { BackgroundColor3 = T.accent:Lerp(P2, 0.62), BackgroundTransparency = 0.05 })
+		tw(p.gls, 0.2, { Color = T.accent, Transparency = 0 })
+		tw(p.bar, 0.25, { BackgroundTransparency = 0, Size = UDim2.new(0, 3, 0.62, 0) })
+		p.btn.TextColor3 = T.white p.btn.Font = Enum.Font.GothamBold
 	end
 	function Main.CreateNoti(c, d) return Lib.CreateNoti(c, d) end
 
 	function Main.CreatePage(info)
 		info = type(info) == "table" and info or { Page_Name = tostring(info) }
 		local name = info.Page_Name or info.Page_Title or "Page"
-		local btn = new("TextButton", { Size = UDim2.new(1, 0, 0, 34), BackgroundTransparency = 1, Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.text, Text = name, TextTruncate = Enum.TextTruncate.AtEnd, AutoButtonColor = false, ZIndex = 8 }, side)
-		local gl = new("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = P2, BackgroundTransparency = 0.1, ZIndex = 6 }, btn)
+		local btn = new("TextButton", { Size = UDim2.new(1, 0, 0, 34), BackgroundTransparency = 1, Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.dim, Text = name, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, AutoButtonColor = false, ZIndex = 8 }, side)
+		new("UIPadding", { PaddingLeft = UDim.new(0, 16), PaddingRight = UDim.new(0, 8) }, btn)
+		local gl = new("Frame", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -16, 0.5, 0), Size = UDim2.new(1, 24, 1, 0), BackgroundColor3 = P2, BackgroundTransparency = 0.35, ZIndex = 6 }, btn)
 		round(gl, 10)
-		local gls = new("UIStroke", { Color = Color3.fromRGB(76, 68, 112), Transparency = 0.35, Thickness = 1 }, gl)
-		btn.MouseEnter:Connect(function() if not (current and current.btn == btn) then tw(gl, 0.15, { BackgroundColor3 = P3 }) end end)
-		btn.MouseLeave:Connect(function() if not (current and current.btn == btn) then tw(gl, 0.2, { BackgroundColor3 = P2 }) end end)
+		local gls = new("UIStroke", { Color = Color3.fromRGB(76, 68, 112), Transparency = 0.6, Thickness = 1 }, gl)
+		local bar = new("Frame", { AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, -10, 0.5, 0), Size = UDim2.new(0, 3, 0, 0), BackgroundColor3 = T.accent2, BackgroundTransparency = 1, BorderSizePixel = 0, ZIndex = 9 }, btn)
+		round(bar, 2)
+		btn.MouseEnter:Connect(function() if not (current and current.btn == btn) then tw(gl, 0.15, { BackgroundColor3 = P3, BackgroundTransparency = 0.15 }) end end)
+		btn.MouseLeave:Connect(function() if not (current and current.btn == btn) then tw(gl, 0.2, { BackgroundColor3 = P2, BackgroundTransparency = 0.35 }) end end)
 		local frame = new("ScrollingFrame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ScrollBarThickness = 3, BorderSizePixel = 0, Visible = false, ZIndex = 5 }, content)
 		pad(frame, 4) autoY(frame, list(frame, 8))
-		local P = { frame = frame, btn = btn, gl = gl, gls = gls }
+		local P = { frame = frame, btn = btn, gl = gl, gls = gls, bar = bar }
 		btn.MouseButton1Click:Connect(function() select(P) end)
 		if not current then select(P) end
 
@@ -2479,7 +2516,10 @@ function Lib.CreateMain(cfg)
 			title = type(title) == "table" and (title.Title or title.Name) or tostring(title or "Section")
 			local sec = new("Frame", { Size = UDim2.new(1, -8, 0, 30), AutomaticSize = Enum.AutomaticSize.Y, ZIndex = 5 }, frame)
 			round(sec, 14) glass(sec, 0.9, 0.75) pad(sec, 8) list(sec, 6)
-			new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 18), Font = Enum.Font.GothamBold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = T.accent, Text = title, LayoutOrder = -1, ZIndex = 6 }, sec)
+			new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.new(1, 0, 0, 18), Font = Enum.Font.GothamBold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = T.accent, Text = title, LayoutOrder = -2, ZIndex = 6 }, sec)
+			local div = new("Frame", { Size = UDim2.new(1, 0, 0, 2), BackgroundColor3 = T.accent, BorderSizePixel = 0, LayoutOrder = -1, ZIndex = 6 }, sec)
+			round(div, 1)
+			new("UIGradient", { Color = ColorSequence.new(T.accent, T.accent2), Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.1), NumberSequenceKeypoint.new(1, 1) }) }, div)
 
 			local function row(h) local r = new("Frame", { Size = UDim2.new(1, 0, 0, h or 32), ZIndex = 6 }, sec) round(r, 10) glass(r, 0.86, 0.8) return r end
 			local function lbl(r, t, w) return new("TextLabel", { BackgroundTransparency = 1, Position = UDim2.new(0, 10, 0, 0), Size = UDim2.new(w or 1, -20, 1, 0), Font = Enum.Font.Gotham, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, TextColor3 = T.text, TextWrapped = true, Text = tostring(t or ""), ZIndex = 7 }, r) end

@@ -1781,7 +1781,7 @@ end
 
 -- ===== Mistyc theme helpers (loading screens) =====
 MISTYC_ICON_URL = getgenv().MistycUIIcon or "https://i.ibb.co/HpVX8gMv/file-000000009ac4820e9b7257a0f590991e.png"
-MISTYC_BG_URL = getgenv().MistycUIBackground or "https://i.ibb.co/prQCfg9M/68586.png"
+MISTYC_BG_URL = getgenv().MistycUIBackground or "https://i.ibb.co/wFRD8PNG/68602.png"
 MISTYC_ACCENT, MISTYC_ACCENT2 = Color3.fromRGB(176, 130, 255), Color3.fromRGB(90, 210, 255)
 function MistycAssetAsync(src, name, cb)
 	task.spawn(function()
@@ -1808,7 +1808,7 @@ function MistycFX(parent, radius)
 	local bg = rd(Instance.new("ImageLabel"))
 	bg.BackgroundTransparency, bg.Size, bg.ScaleType, bg.ZIndex = 1, UDim2.fromScale(1, 1), Enum.ScaleType.Crop, 0
 	bg.Parent = parent
-	MistycAssetAsync(MISTYC_BG_URL, "bg", function(id) bg.Image = id end)
+	MistycAssetAsync(MISTYC_BG_URL, "bg2", function(id) bg.Image = id end)
 	local veil = rd(Instance.new("Frame"))
 	veil.BackgroundColor3, veil.BackgroundTransparency, veil.Size, veil.ZIndex, veil.BorderSizePixel = Color3.fromRGB(14, 12, 24), 0.5, UDim2.fromScale(1, 1), 0, 0
 	veil.Parent = parent
@@ -1895,6 +1895,12 @@ do
 		local vp = workspace.CurrentCamera.ViewportSize
 		scale.Scale = math.clamp(math.min(vp.X / 700, vp.Y / 440), 0.55, 1.1)
 	end)
+	card.Position = UDim2.fromScale(0.5, 1.6)
+	card.GroupTransparency = 1
+	shade.BackgroundTransparency = 1
+	TweenService:Create(card, TweenInfo.new(1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.fromScale(0.5, 0.5) }):Play()
+	TweenService:Create(card, TweenInfo.new(0.6), { GroupTransparency = 0 }):Play()
+	TweenService:Create(shade, TweenInfo.new(0.6), { BackgroundTransparency = 0.45 }):Play()
 
 	-- header: icon, title, subtitle, status badge
 	local icon = new("Frame", { Position = UDim2.new(0, 24, 0, 22), Size = UDim2.new(0, 56, 0, 56), BackgroundTransparency = 1, BorderSizePixel = 0 }, card)
@@ -2074,13 +2080,14 @@ do
 	end
 	local box = Instance.new("Frame")
 	box.AnchorPoint = Vector2.new(0.5, 0)
-	box.Position = UDim2.new(0.5, 0, 0, 22)
+	box.Position = UDim2.new(0.5, 0, 1, 0)
 	box.Size = UDim2.new(0, 480, 0, 86)
 	box.BackgroundColor3 = Color3.fromRGB(14, 12, 24)
 	box.BackgroundTransparency = 0.2
 	box.BorderSizePixel = 0
 	box.ClipsDescendants = true
 	box.Parent = gui
+	game:GetService("TweenService"):Create(box, TweenInfo.new(1, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Position = UDim2.new(0.5, 0, 0, 22) }):Play()
 	Instance.new("UICorner", box).CornerRadius = UDim.new(0, 26)
 	MistycFX(box, UDim.new(0, 26))
 	local scale = Instance.new("UIScale", box)
@@ -2230,9 +2237,16 @@ local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local TS = game:GetService("TweenService")
 local CG = (gethui and gethui()) or game:GetService("CoreGui")
+local HttpService = game:GetService("HttpService")
+local CFG_FILE = "MistycUI_config.json"
+local Saved = {}
+pcall(function() if isfile and isfile(CFG_FILE) then Saved = HttpService:JSONDecode(readfile(CFG_FILE)) end end)
+local function saveCfg() pcall(function() if writefile then writefile(CFG_FILE, HttpService:JSONEncode(Saved)) end end) end
+local function ud(t, d) if type(t) == "table" and #t == 4 then return UDim2.new(t[1], t[2], t[3], t[4]) end return d end
+local function pk(o) return { o.Position.X.Scale, o.Position.X.Offset, o.Position.Y.Scale, o.Position.Y.Offset } end
 
 local ICON = getgenv().MistycUIIcon or "https://i.ibb.co/HpVX8gMv/file-000000009ac4820e9b7257a0f590991e.png"
-local BG = getgenv().MistycUIBackground or "https://i.ibb.co/prQCfg9M/68586.png"
+local BG = getgenv().MistycUIBackground or "https://i.ibb.co/wFRD8PNG/68602.png"
 
 local T = {
 	accent = Color3.fromRGB(176, 130, 255), accent2 = Color3.fromRGB(90, 210, 255),
@@ -2308,13 +2322,15 @@ function Lib.CreateMain(cfg)
 	pcall(function() for _, n in ipairs({ "NexoraUI", "MistycToggle" }) do local o = CG:FindFirstChild(n) if o then o:Destroy() end end end)
 	local gui = new("ScreenGui", { Name = "NexoraUI", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, CG)
 	local mobile = UIS.TouchEnabled and not UIS.KeyboardEnabled
-	local W, H = mobile and 500 or 640, mobile and 320 or 430
-	local win = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = T.dark, Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(0, W, 0, H), ClipsDescendants = true }, gui)
+	local vp0 = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(1280, 720)
+	local W = math.clamp(tonumber(Saved.w) or (mobile and 500 or 640), 440, math.max(vp0.X - 20, 440))
+	local H = math.clamp(tonumber(Saved.h) or (mobile and 320 or 430), 280, math.max(vp0.Y - 20, 280))
+	local win = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = T.dark, Position = ud(Saved.wp, UDim2.fromScale(0.5, 0.5)), Size = UDim2.new(0, W, 0, H), ClipsDescendants = true }, gui)
 	round(win, 18)
 	local scale = new("UIScale", { Scale = 1 }, win)
 
 	-- fundo (sua imagem) + véu
-	local bgId = asset(BG, "bg")
+	local bgId = asset(BG, "bg2")
 	if bgId ~= "" then
 		round(new("ImageLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Image = bgId, ScaleType = Enum.ScaleType.Crop, ZIndex = 0 }, win), 18)
 	end
@@ -2385,19 +2401,67 @@ function Lib.CreateMain(cfg)
 		local drag, ds, sp
 		handle.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then drag, ds, sp = true, i.Position, target.Position end end)
 		UIS.InputChanged:Connect(function(i) if drag and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then local d = i.Position - ds target.Position = UDim2.new(sp.X.Scale, sp.X.Offset + d.X, sp.Y.Scale, sp.Y.Offset + d.Y) end end)
-		UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then drag = false end end)
+		UIS.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then if drag then drag = false Saved.wp = pk(target) saveCfg() end end end)
 	end
 	draggable(top, win)
 
+	-- redimensionar (canto inferior direito) + salva tamanho
+	local grip = new("TextButton", { AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -5, 1, -5), Size = UDim2.new(0, 24, 0, 24), BackgroundTransparency = 1, Text = "◢", Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = T.white, TextTransparency = 0.35, ZIndex = 60, AutoButtonColor = false }, win)
+	local rs, rin, rstart, rsize, rpos = false, nil, nil, nil, nil
+	grip.MouseEnter:Connect(function() tw(grip, 0.2, { TextTransparency = 0, TextColor3 = T.accent }) end)
+	grip.MouseLeave:Connect(function() tw(grip, 0.2, { TextTransparency = 0.35, TextColor3 = T.white }) end)
+	grip.InputBegan:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+			rs, rin, rstart, rsize, rpos = true, i, i.Position, Vector2.new(W, H), win.Position
+			i.Changed:Connect(function() if i.UserInputState == Enum.UserInputState.End and rs then rs = false Saved.w, Saved.h, Saved.wp = W, H, pk(win) saveCfg() end end)
+		end
+	end)
+	UIS.InputChanged:Connect(function(i)
+		if rs and (i == rin or i.UserInputType == Enum.UserInputType.MouseMovement) and not mini then
+			local vp = gui.AbsoluteSize
+			local d = i.Position - rstart
+			W = math.clamp(rsize.X + d.X, 440, math.max(vp.X - 10, 440))
+			H = math.clamp(rsize.Y + d.Y, 280, math.max(vp.Y - 10, 280))
+			win.Size = UDim2.new(0, W, 0, H)
+			win.Position = UDim2.new(rpos.X.Scale, rpos.X.Offset + (W - rsize.X) / 2, rpos.Y.Scale, rpos.Y.Offset + (H - rsize.Y) / 2)
+		end
+	end)
+
 	-- botão flutuante (FORA da interface, arrasta livre, abre/fecha a UI)
 	local tg = new("ScreenGui", { Name = "MistycToggle", ResetOnSpawn = false, DisplayOrder = 999, IgnoreGuiInset = true, ZIndexBehavior = Enum.ZIndexBehavior.Sibling }, CG)
-	local fb = new("ImageButton", { Active = true, Position = UDim2.new(0, 24, 0.5, -30), Size = UDim2.new(0, 60, 0, 60), Image = iconId, BackgroundColor3 = T.dark, BackgroundTransparency = 0.25, AutoButtonColor = false, ScaleType = Enum.ScaleType.Fit }, tg)
+	local fb = new("ImageButton", { Active = true, Position = ud(Saved.tp, UDim2.new(0, 24, 0.5, -30)), Size = UDim2.new(0, 60, 0, 60), Image = iconId, BackgroundColor3 = T.dark, BackgroundTransparency = 0.25, AutoButtonColor = false, ScaleType = Enum.ScaleType.Fit }, tg)
 	round(fb, 30)
 	if iconId == "" then new("TextLabel", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), Font = Enum.Font.GothamBold, TextSize = 28, TextColor3 = T.accent, Text = "M" }, fb) end
 	local fs = new("UIStroke", { Color = T.white, Thickness = 2 }, fb)
 	local fg = new("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, T.accent), ColorSequenceKeypoint.new(0.5, T.accent2), ColorSequenceKeypoint.new(1, T.accent) }) }, fs)
 	task.spawn(function() while fb:IsDescendantOf(game) do fg.Rotation = (fg.Rotation + 2) % 360 task.wait(0.03) end end)
 	local fsc = new("UIScale", {}, fb)
+	local spinning = false
+	local function sine(o, t, p) local x = TS:Create(o, TweenInfo.new(t, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), p) x:Play() return x end
+	task.spawn(function() -- balanço suave do ícone
+		while fb:IsDescendantOf(game) do
+			while spinning do task.wait() end
+			sine(fb, 1.5, { Rotation = 8 }).Completed:Wait()
+			while spinning do task.wait() end
+			sine(fb, 1.5, { Rotation = -8 }).Completed:Wait()
+		end
+	end)
+	task.spawn(function() -- pulso do brilho da borda
+		while fb:IsDescendantOf(game) do
+			sine(fs, 1.1, { Thickness = 5, Transparency = 0.55 }).Completed:Wait()
+			sine(fs, 1.1, { Thickness = 2, Transparency = 0 }).Completed:Wait()
+		end
+	end)
+	local function clickFX()
+		spinning = true
+		local r = new("Frame", { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromOffset(fb.AbsolutePosition.X + fb.AbsoluteSize.X / 2, fb.AbsolutePosition.Y + fb.AbsoluteSize.Y / 2), Size = UDim2.fromOffset(60, 60), BackgroundColor3 = T.accent, BackgroundTransparency = 0.5 }, tg)
+		round(r, 100)
+		tw(r, 0.6, { Size = UDim2.fromOffset(150, 150), BackgroundTransparency = 1 }).Completed:Connect(function() r:Destroy() end)
+		tw(fsc, 0.12, { Scale = 0.82 }).Completed:Connect(function() tw(fsc, 0.45, { Scale = 1.1 }) end)
+		local sp = TS:Create(fb, TweenInfo.new(0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Rotation = 360 })
+		sp:Play()
+		sp.Completed:Connect(function() fb.Rotation = 0 spinning = false end)
+	end
 	fb.MouseEnter:Connect(function() tw(fsc, 0.2, { Scale = 1.1 }) end)
 	fb.MouseLeave:Connect(function() tw(fsc, 0.2, { Scale = 1 }) end)
 	local dragging, dinput, dstart, dpos, moved = false, nil, nil, nil, false
@@ -2407,7 +2471,7 @@ function Lib.CreateMain(cfg)
 			i.Changed:Connect(function()
 				if i.UserInputState == Enum.UserInputState.End then
 					dragging = false
-					if not moved then task.spawn(setOpen, not gui.Enabled) end
+					if not moved then clickFX() task.spawn(setOpen, not gui.Enabled) else Saved.tp = pk(fb) saveCfg() end
 				end
 			end)
 		end
@@ -2438,19 +2502,29 @@ function Lib.CreateMain(cfg)
 
 	local Main, current = {}, nil
 	local function select(p)
-		if current then current.frame.Visible = false tw(current.btn, 0.3, { BackgroundTransparency = 0.88, BackgroundColor3 = T.white }) end
-		current = p p.frame.Visible = true tw(p.btn, 0.3, { BackgroundTransparency = 0.45, BackgroundColor3 = T.accent })
+		if current then current.frame.Visible = false tw(current.gl, 0.35, { BackgroundTransparency = 0.86, BackgroundColor3 = T.white }) tw(current.gls, 0.35, { Color = T.white, Transparency = 0.7 }) end
+		current = p p.frame.Visible = true
+		tw(p.gl, 0.35, { BackgroundTransparency = 0.4, BackgroundColor3 = T.accent }) tw(p.gls, 0.35, { Color = T.accent2, Transparency = 0.15 })
+		p.frame.Position = UDim2.new(0, 28, 0, 0) tw(p.frame, 0.45, { Position = UDim2.new(0, 0, 0, 0) })
 	end
 	function Main.CreateNoti(c, d) return Lib.CreateNoti(c, d) end
 
 	function Main.CreatePage(info)
 		info = type(info) == "table" and info or { Page_Name = tostring(info) }
 		local name = info.Page_Name or info.Page_Title or "Page"
-		local btn = new("TextButton", { Size = UDim2.new(1, 0, 0, 32), Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.text, Text = name, TextTruncate = Enum.TextTruncate.AtEnd, AutoButtonColor = false, ZIndex = 6 }, side)
-		round(btn, 10) glass(btn, 0.88, 0.8)
+		local btn = new("TextButton", { Size = UDim2.new(1, 0, 0, 34), BackgroundTransparency = 1, Font = Enum.Font.GothamMedium, TextSize = 12, TextColor3 = T.text, Text = name, TextTruncate = Enum.TextTruncate.AtEnd, AutoButtonColor = false, ZIndex = 8 }, side)
+		local gl = new("Frame", { Size = UDim2.fromScale(1, 1), BackgroundColor3 = T.white, BackgroundTransparency = 0.86, ZIndex = 6 }, btn)
+		round(gl, 12)
+		local gls = new("UIStroke", { Color = T.white, Transparency = 0.7, Thickness = 1 }, gl)
+		new("UIGradient", { Rotation = 90, Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0), NumberSequenceKeypoint.new(0.5, 0.25), NumberSequenceKeypoint.new(1, 0.5) }) }, gl)
+		local gsc = new("UIScale", {}, gl)
+		btn.MouseEnter:Connect(function() tw(gsc, 0.25, { Scale = 1.04 }) if not (current and current.btn == btn) then tw(gl, 0.25, { BackgroundTransparency = 0.7 }) end end)
+		btn.MouseLeave:Connect(function() tw(gsc, 0.3, { Scale = 1 }) if not (current and current.btn == btn) then tw(gl, 0.3, { BackgroundTransparency = 0.86 }) end end)
+		btn.MouseButton1Down:Connect(function() tw(gsc, 0.1, { Scale = 0.93 }) end)
+		btn.MouseButton1Up:Connect(function() tw(gsc, 0.3, { Scale = 1.04 }) end)
 		local frame = new("ScrollingFrame", { BackgroundTransparency = 1, Size = UDim2.fromScale(1, 1), ScrollBarThickness = 3, BorderSizePixel = 0, Visible = false, ZIndex = 5 }, content)
 		pad(frame, 4) autoY(frame, list(frame, 8))
-		local P = { frame = frame, btn = btn }
+		local P = { frame = frame, btn = btn, gl = gl, gls = gls }
 		btn.MouseButton1Click:Connect(function() select(P) end)
 		if not current then select(P) end
 
